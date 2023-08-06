@@ -146,6 +146,9 @@ jobs:
       #     adb devices
       #   shell: bash
 
+      - name: Set executable permissions for gradlew
+        run: chmod +x ./gradlew
+        
       - name: Run espresso tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
