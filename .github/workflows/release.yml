@@ -156,7 +156,7 @@ jobs:
       #   run: ./gradlew connectedCheck
 
       - name: Run connected tests
-        uses: ReactiveCircus/android-emulator-runner@v2
+        uses: ReactiveCircus/android-emulator-runner@v2.28.0
         with:
           api-level: 30
           target: google_apis
