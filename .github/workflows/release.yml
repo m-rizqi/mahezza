@@ -133,10 +133,9 @@ jobs:
       #   run: yes | sdkmanager --licenses && sdkmanager "platform-tools" "emulator" "platforms;android-29" "build-tools;29.0.3"
 
       - name: Set up Android SDK
-        uses: actions/setup-android-environment@v1
+        uses: actions/setup-android@v2
         with:
-          sdk-version: 30
-          ndk-version: 23.0.7599858
+          sdk-version: '31'
           
       - name: Create and start Android Emulator
         run: |
