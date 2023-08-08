@@ -61,7 +61,7 @@ jobs:
           
           job_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ job.id }}"
 
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{ github.job }} at ${{github.workflow}} with $message is ${{ job.status }}. See the detail here $runs_url"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{ github.job }} at ${{github.workflow}} with $message is ${{ job.status }}. See the detail here $job-url"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           GITHUB_EVENT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
           GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
@@ -89,3 +89,22 @@ jobs:
 
       - name: Run Unit tests
         run: ./gradlew test --stacktrace
+
+      - name: Notify to Slack
+        run: |
+          if [[ -n "$GITHUB_EVENT_PULL_REQUEST_TITLE" ]]; then
+            message="pull request title: $GITHUB_EVENT_PULL_REQUEST_TITLE"
+          elif [[ -n "$GITHUB_EVENT_HEAD_COMMIT_MESSAGE" ]]; then
+            message="commit message $GITHUB_EVENT_HEAD_COMMIT_MESSAGE"
+          else
+            message="No commit or pull request message found."
+          fi
+
+          job_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ job.id }}"
+
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{ github.job }} at ${{github.workflow}} with $message is ${{ job.status }}. See the detail here $job-url"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
+          GITHUB_EVENT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+          GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+        if: always()
