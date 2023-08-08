@@ -206,7 +206,7 @@ jobs:
       - name: Make artifact
         uses: actions/upload-artifact@v2
         with:
-          name: app-release-signed-apk
+          name: app-release-signed.apk
           path: ${{steps.sign_apk.outputs.signedReleaseFile}}
 
       - name: Build AAB
@@ -225,7 +225,7 @@ jobs:
       - name: Make artifact
         uses: actions/upload-artifact@v2
         with:
-          name: app-release-signed-aab
+          name: app-release-signed.aab
           path: ${{steps.sign_aab.outputs.signedReleaseFile}}
           
       - name: Get Tag
