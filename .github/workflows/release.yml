@@ -11,168 +11,168 @@ on:
       - master
 
 jobs:
-  # lint:
-  #   name: Lint Checks
-  #   runs-on:
-  #     - ubuntu-latest
+  lint:
+    name: Lint Checks
+    runs-on:
+      - ubuntu-latest
 
-  #   steps:
-  #   - name: Check out Git repository
-  #     uses: actions/checkout@v3
+    steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v3
 
-  #   - name: Set up JDK 17
-  #     uses: actions/setup-java@v3
-  #     with:
-  #       java-version: '17'
-  #       distribution: 'temurin'
-  #       cache: gradle
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
         
-  #   - name: Make gradlew executable
-  #     run: chmod +x gradlew
+    - name: Make gradlew executable
+      run: chmod +x gradlew
 
-  #   - name: Gradle clean
-  #     run: ./gradlew clean
+    - name: Gradle clean
+      run: ./gradlew clean
 
-  #   - name: Run lint
-  #     run: ./gradlew lint
+    - name: Run lint
+      run: ./gradlew lint
 
-  #   - name: Upload html test report
-  #     uses: actions/upload-artifact@v3
-  #     with:
-  #       name: lint-report
-  #       path: app/build/reports/lint-results-debug.html
+    - name: Upload html test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: lint-report
+        path: app/build/reports/lint-results-debug.html
         
-  # unit-test:
-  #   name: Unit Tests
-  #   needs: [lint]
-  #   runs-on:
-  #     - ubuntu-latest
+  unit-test:
+    name: Unit Tests
+    needs: [lint]
+    runs-on:
+      - ubuntu-latest
 
-  #   steps:
-  #   - name: Check out Git repository
-  #     uses: actions/checkout@v3
+    steps:
+    - name: Check out Git repository
+      uses: actions/checkout@v3
 
-  #   - name: Set up JDK 17
-  #     uses: actions/setup-java@v3
-  #     with:
-  #       java-version: '17'
-  #       distribution: 'temurin'
-  #       cache: gradle
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
         
-  #   - name: Make gradlew executable
-  #     run: chmod +x gradlew
+    - name: Make gradlew executable
+      run: chmod +x gradlew
 
-  #   - name: Run Unit tests
-  #     run: ./gradlew test --stacktrace
+    - name: Run Unit tests
+      run: ./gradlew test --stacktrace
 
-  # instrumentation-test:
-  #     name: Instrumentation Tests
-  #     needs: [unit-test]
-  #     runs-on:
-  #       - macos-latest
+  instrumentation-test:
+      name: Instrumentation Tests
+      needs: [unit-test]
+      runs-on:
+        - macos-latest
   
-  #     steps:
-  #     - name: Check out Git repository
-  #       uses: actions/checkout@v3
+      steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
 
-  #     - name: Set up JDK 17
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: 17
-  #         distribution: 'adopt'
-  #         cache: 'gradle'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'adopt'
+          cache: 'gradle'
           
-  #     - name: Make gradlew executable
-  #       run: chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod +x gradlew
         
-  #     - name: Run instrumented tests
-  #       uses: reactivecircus/android-emulator-runner@v2
-  #       with:
-  #         api-level: 30
-  #         target: google_apis
-  #         arch: x86_64
-  #         script: ./gradlew connectedCheck --stacktrace
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          script: ./gradlew connectedCheck --stacktrace
 
-  #     - name: Upload test report
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: instrumentation_test_report
-  #         path: app/build/reports/androidTests/connected/
+      - name: Upload test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: instrumentation_test_report
+          path: app/build/reports/androidTests/connected/
 
-  # apk-debug:
-  #   name: Generate APK Debug
-  #   needs: [unit-test]
-  #   runs-on:
-  #     - ubuntu-latest
+  apk-debug:
+    name: Generate APK Debug
+    needs: [unit-test]
+    runs-on:
+      - ubuntu-latest
   
-  #   steps:
-  #     - name: Check out Git repository
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
   
-  #     - name: Set up JDK 17
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: '17'
-  #         distribution: 'temurin'
-  #         cache: gradle
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
           
-  #     - name: Make gradlew executable
-  #       run: chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
-  #     - name: Assemble app debug APK
-  #       run: bash ./gradlew assembleDebug --stacktrace
+      - name: Assemble app debug APK
+        run: bash ./gradlew assembleDebug --stacktrace
         
-  #     - name: Upload app debug APK
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: app-debug
-  #         path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Upload app debug APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
           
-  #     - name: Assemble Android Instrumentation Tests
-  #       run: bash ./gradlew assembleDebugAndroidTest
+      - name: Assemble Android Instrumentation Tests
+        run: bash ./gradlew assembleDebugAndroidTest
         
-  #     - name: Upload Android Test APK
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: app-debug-androidTest
-  #         path: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+      - name: Upload Android Test APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug-androidTest
+          path: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
   
-  # firebase-testlab:
-  #   name: Run UI tests with Firebase Test Lab
-  #   needs: apk-debug
-  #   runs-on: ubuntu-latest
+  firebase-testlab:
+    name: Run UI tests with Firebase Test Lab
+    needs: apk-debug
+    runs-on: ubuntu-latest
     
-  #   steps:
-  #     - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Download app APK
-  #       uses: actions/download-artifact@v1
-  #       with:
-  #         name: app-debug
+      - name: Download app APK
+        uses: actions/download-artifact@v1
+        with:
+          name: app-debug
 
-  #     - name: Download Android test APK
-  #       uses: actions/download-artifact@v1
-  #       with:
-  #         name: app-debug-androidTest
+      - name: Download Android test APK
+        uses: actions/download-artifact@v1
+        with:
+          name: app-debug-androidTest
 
-  #     - name: Authenticate with Google Cloud
-  #       id: 'auth'
-  #       uses: 'google-github-actions/auth@v0'
-  #       with:
-  #         credentials_json: ${{ secrets.GCLOUD_AUTH }}
+      - name: Authenticate with Google Cloud
+        id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
           
-  #     - name: Setup Google Cloud SDK
-  #       uses: google-github-actions/setup-gcloud@v0
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
 
-  #     - name: Set current project
-  #       run: gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
+      - name: Set current project
+        run: gcloud config set project ${{ secrets.FIREBASE_PROJECT_ID }}
 
-  #     - name: Run Instrumentation Tests in Firebase Test Lab
-  #       run: gcloud firebase test android run --type instrumentation --app app-debug/app-debug.apk --test app-debug-androidTest/app-debug-androidTest.apk --device model=Pixel2,version=28,locale=pl,orientation=portrait
+      - name: Run Instrumentation Tests in Firebase Test Lab
+        run: gcloud firebase test android run --type instrumentation --app app-debug/app-debug.apk --test app-debug-androidTest/app-debug-androidTest.apk --device model=Pixel2,version=28,locale=pl,orientation=portrait
 
   build:
     name: Build and Sign APK
-    # needs: [instrumentation-test, firebase-testlab]
+    needs: [instrumentation-test, firebase-testlab]
     runs-on: ubuntu-latest
     
     steps:
