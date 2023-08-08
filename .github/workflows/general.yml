@@ -1,4 +1,4 @@
-name: Mahezza Android CI/CD for Development
+name: Mahezza Android CI/CD for General Branches
 
 on:
   push:
@@ -8,13 +8,13 @@ on:
       - master
       - staging
       - dev
-    pull_request:
+  pull_request:
 #      branches:
 #        - '*'
-      branches-ignore:
-        - master
-        - staging
-        - dev
+    branches-ignore:
+      - master
+      - staging
+      - dev
 
 jobs:
   lint:
@@ -59,8 +59,8 @@ jobs:
             message="No commit or pull request message found."
           fi
           
-          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${{ env.GITHUB_WORKFLOW }}-${{ matrix.job }} with status ${{ job.status }}. $message\"}" ${{ secrets.SLACK_WEBHOOK_URL }}
-          env:
+          curl -X POST -H 'Content-type: application/json' --data "{"text":"${{ env.GITHUB_WORKFLOW }}-${{ matrix.job }} with message $message is ${{ job.status }}"}" ${{ secrets.SLACK_WEBHOOK_URL }}
+        env:
           GITHUB_EVENT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
           GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
