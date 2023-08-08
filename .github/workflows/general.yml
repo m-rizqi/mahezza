@@ -2,15 +2,15 @@ name: Mahezza Android CI/CD for Development
 
 on:
   push:
-    branches:
-      - '*'
+#    branches:
+#      - '*'
     branches-ignore:
       - master
       - staging
       - dev
     pull_request:
-      branches:
-        - '*'
+#      branches:
+#        - '*'
       branches-ignore:
         - master
         - staging
