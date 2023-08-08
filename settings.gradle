@@ -14,3 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Mahezza"
 include ':app'
+include ':core'
+include ':coreui'
+include ':features'
+include ':testlib'
