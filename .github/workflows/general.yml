@@ -59,7 +59,7 @@ jobs:
             message="No commit or pull request message found."
           fi
 
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"$workflow_name-${{ job.container }} with message $message is ${{ job.status }}"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{workflow_name}}-${{ job.container }} with ($message) is ${{ job.status }}"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           GITHUB_EVENT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
           GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
