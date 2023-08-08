@@ -61,7 +61,7 @@ jobs:
           
           job_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job}}"
 
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{ github.job }} at ${{github.workflow}} with $message is ${{ job.status }}. See the detail here $job_url"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{ github.job }} at ${{github.workflow}} with $message is ${{ job.status }}. See the detail here ${{steps.jobs.outputs.html_url}}"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
           GITHUB_EVENT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
           GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
