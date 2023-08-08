@@ -48,6 +48,14 @@ jobs:
           name: lint-report
           path: app/build/reports/lint-results-debug.html
 
+      - name: Slack Notification
+        uses: act10ns/slack@v1
+        with:
+          status: starting
+          channel: '#app-cicd'
+          message: Starting Build and Deploy...
+        if: always()
+
   unit-test:
     name: Unit Tests
     runs-on:
@@ -69,3 +77,15 @@ jobs:
 
       - name: Run Unit tests
         run: ./gradlew test --stacktrace
+
+#  notify:
+#    name: Notify to Channels
+#    runs-on:
+#      -ubuntu-latest
+#
+#    steps:
+#      - name: Notify to Whatsapp
+#        env:
+#          account_sid: ${{ secrets.TWILLIO_ACCOUNT_SID }}
+#          auth_token: ${{ secrets.TWILLIO_AUTH_TOKEN }}
+#          to_whatsapp_no: ${{ secrets.WHATSAPP_NUMBER }}
