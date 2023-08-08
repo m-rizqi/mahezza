@@ -51,7 +51,18 @@ jobs:
 
       - name: Notify to Slack
         run: |
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"${{github.action}}-${{job}} is  ${{job.status}}"}' ${{secrets.SLACK_WEBHOOK_URL}}
+          if [[ -n "$GITHUB_EVENT_PULL_REQUEST_TITLE" ]]; then
+            message="Pull Request Title: $GITHUB_EVENT_PULL_REQUEST_TITLE"
+          elif [[ -n "$GITHUB_EVENT_HEAD_COMMIT_MESSAGE" ]]; then
+            message="Commit Message: $GITHUB_EVENT_HEAD_COMMIT_MESSAGE"
+          else
+            message="No commit or pull request message found."
+          fi
+          
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${{ env.GITHUB_WORKFLOW }}-${{ matrix.job }} with status ${{ job.status }}. $message\"}" ${{ secrets.SLACK_WEBHOOK_URL }}
+          env:
+          GITHUB_EVENT_PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
+          GITHUB_EVENT_HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
 #  unit-test:
 #    name: Unit Tests
