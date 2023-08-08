@@ -59,7 +59,7 @@ jobs:
             message="No commit or pull request message found."
           fi
           
-          job_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job }}"
+          job_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ job.run_number }}"
 
           curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${{ github.job }} at ${{github.workflow}} with $message is ${{ job.status }}. See the detail here $job_url"'"}' ${{ secrets.SLACK_WEBHOOK_URL }}
         env:
