@@ -189,10 +189,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Get Tag
-        id: var
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-
       - name: Build APK
         id: build
         run: bash ./gradlew assembleRelease
@@ -210,7 +206,7 @@ jobs:
       - name: Make artifact
         uses: actions/upload-artifact@v2
         with:
-          name: app-release-signed
+          name: app-release-signed-apk
           path: ${{steps.sign_apk.outputs.signedReleaseFile}}
 
       - name: Build AAB
@@ -229,11 +225,16 @@ jobs:
       - name: Make artifact
         uses: actions/upload-artifact@v2
         with:
-          name: app-release-signed
+          name: app-release-signed-aab
           path: ${{steps.sign_aab.outputs.signedReleaseFile}}
-
+          
+      - name: Get Tag
+        if: startsWith(github.ref, 'refs/tags/')
+        id: var
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
       - name: Build Changelog
+        if: startsWith(github.ref, 'refs/tags/')
         id: changelog
         uses: ardalanamini/auto-changelog@v3
         with:
@@ -243,26 +244,29 @@ jobs:
           semver: false
 
       - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref }}
+          _name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           body: ${{ steps.changelog.outputs.changelog }} &#x20;
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Upload APK
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{steps.sign_apk.outputs.signedReleaseFile}}
-          asset_name: app-release-signed-${{ steps.var.outputs.tag }}.apk
+          asset_name: app-release-signed-${{ steps.var.outputs. }}.apk
           asset_content_type: application/zip
 
       - name: Upload AAB
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
