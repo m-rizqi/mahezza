@@ -97,13 +97,13 @@ jobs:
           name: instrumentation_test_report
           path: app/build/reports/androidTests/connected/
 
-    apk-debug:
-      name: Generate APK for Debug
-      needs: [unit-test]
-      runs-on:
-        - ubuntu-latest
+  apk-debug:
+    name: Generate APK for Debug
+    needs: [unit-test]
+    runs-on:
+      - ubuntu-latest
   
-      steps:
+    steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
   
