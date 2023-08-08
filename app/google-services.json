@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "607908723290",
+    "project_id": "mahezza-c3ed3",
+    "storage_bucket": "mahezza-c3ed3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607908723290:android:9bf87b71367b7e7b407663",
+        "android_client_info": {
+          "package_name": "com.mahezza.mahezza"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607908723290-boslijbad7mop7usr9dtv9dpr259i6ga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mahezza.mahezza",
+            "certificate_hash": "0d07cba08e4d9865f1878dbeba92332114b7b130"
+          }
+        },
+        {
+          "client_id": "607908723290-agrkbd4tbv5tpmipfika3lmnip4if0s4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfNPYIgKDEKmGuNVa_xTUary5A6ft9ZEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607908723290-agrkbd4tbv5tpmipfika3lmnip4if0s4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
