@@ -3,10 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item android:drawable="@drawable/splash_screen_background"/>
     <item
-        android:drawable="@drawable/ic_mahezza_launcher_foreground"
+        android:drawable="@drawable/logo_with_name"
         android:gravity="center"
-        android:width="180dp"
-        android:height="180dp"
         tools:ignore="UnusedAttribute"
         />
 </layer-list>

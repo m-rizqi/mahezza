@@ -68,10 +68,15 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
+    // ViewPager
+    implementation "com.google.accompanist:accompanist-pager:0.23.1"
+
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.2.2"))
     //Firebase Analytics
     implementation("com.google.firebase:firebase-analytics-ktx")
+    // Firebase Remote Config
+    implementation("com.google.firebase:firebase-config-ktx")
 
     // Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
@@ -79,8 +84,15 @@ dependencies {
     // Hilt
     implementation "com.google.dagger:hilt-android:2.44.2"
     kapt "com.google.dagger:hilt-compiler:2.44.2"
-}
 
-kapt {
-    correctErrorTypes true
+    // Glide
+    implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
+
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+
+    // System UI Controller
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.18.0"
+
 }
