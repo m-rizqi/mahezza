@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Mahezza</string>
+    <string name="lorem_ipsum_dolor_si_amet">Lorem Ipsum Dolor Si Amet</string>
+    <string name="lorem_ipsum_dolor_si_amet_consectur">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
+    <string name="page_indicator">Indikator halaman</string>
+    <string name="next">Selanjutnya</string>
+    <string name="start">Mulai\n</string>
 </resources>
