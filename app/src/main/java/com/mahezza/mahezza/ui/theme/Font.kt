@@ -42,6 +42,11 @@ val PoppinsRegular10 = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = 10.sp
 )
+val PoppinsRegular12 = TextStyle(
+    fontFamily = PoppinsFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 12.sp
+)
 val PoppinsRegular14 = TextStyle(
     fontFamily = PoppinsFamily,
     fontWeight = FontWeight.Normal,

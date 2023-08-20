@@ -3,6 +3,7 @@ package com.mahezza.mahezza.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.Surface
 import com.mahezza.mahezza.ui.features.onboarding.OnBoardingScreen
 import com.mahezza.mahezza.ui.nav.MainNavigation
 import com.mahezza.mahezza.ui.theme.MahezzaTheme
@@ -14,7 +15,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MahezzaTheme {
-                MainNavigation()
+                Surface {
+                    MainNavigation()
+                }
             }
         }
     }
