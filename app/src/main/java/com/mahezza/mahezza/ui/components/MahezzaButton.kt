@@ -1,0 +1,83 @@
+package com.mahezza.mahezza.ui.components
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedIconButton
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.mahezza.mahezza.R
+import com.mahezza.mahezza.ui.theme.AccentYellow
+import com.mahezza.mahezza.ui.theme.Black
+import com.mahezza.mahezza.ui.theme.PoppinsMedium16
+
+@Composable
+fun FilledAccentYellowButton(
+    modifier : Modifier = Modifier,
+    text : String,
+    cornerRadius: Dp = 8.dp,
+    onClick : () -> Unit
+){
+    Button(
+        modifier = modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = AccentYellow,
+            contentColor = Black
+        ),
+        shape = RoundedCornerShape(cornerRadius),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            style = PoppinsMedium16,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MahezzaAccentYellowButtonPreview() {
+    FilledAccentYellowButton(text = "Button") {
+        
+    }
+}
+
+@Composable
+fun GoogleButton(
+    onClick: () -> Unit
+) {
+    OutlinedIconButton(
+        onClick = onClick
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_google),
+                contentDescription = stringResource(id = R.string.google)
+            )
+            Text(text = stringResource(id = R.string.google))
+        }
+    }
+}
+
+@Preview
+@Composable
+fun GoogleButtonPreview() {
+    GoogleButton {
+
+    }
+}

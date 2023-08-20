@@ -1,11 +1,12 @@
 package com.mahezza.mahezza.ui.ext
 
 import android.app.Activity
-import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
-
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 fun Activity.makeStatusBarTransparent() {
     window.apply {
@@ -17,6 +18,12 @@ fun Activity.makeStatusBarTransparent() {
         } else {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
-        statusBarColor = Color.TRANSPARENT
+        statusBarColor = android.graphics.Color.TRANSPARENT
     }
+}
+
+@Composable
+fun changeStatusBarColor(color: Color) {
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color)
 }

@@ -5,4 +5,14 @@
     <string name="page_indicator">Indikator halaman</string>
     <string name="next">Selanjutnya</string>
     <string name="start">Mulai\n</string>
+    <string name="login">Masuk</string>
+    <string name="continue_mental_health_development">dan lanjutkan perkembangan kesehatan mental anak</string>
+    <string name="email">Email</string>
+    <string name="youremailcom">example@email.com</string>
+    <string name="password">Password</string>
+    <string name="examplepassword">password</string>
+    <string name="min_8_chars_letter_and_number">Minimal 8 karakter berupa huruf dan angka</string>
+    <string name="forgot_password">Lupa Password?</string>
+    <string name="or_login_with">atau masuk dengan</string>
+    <string name="google">Google</string>
 </resources>

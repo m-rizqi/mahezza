@@ -84,6 +84,7 @@ dependencies {
     // Hilt
     implementation "com.google.dagger:hilt-android:2.44.2"
     kapt "com.google.dagger:hilt-compiler:2.44.2"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
     // Glide
     implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
@@ -94,5 +95,11 @@ dependencies {
 
     // System UI Controller
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.18.0"
+
+    // Navigation
+    implementation "androidx.navigation:navigation-compose:2.7.0"
+
+    // Extended Material Icon
+    implementation "androidx.compose.material:material-icons-extended:1.0.0"
 
 }
