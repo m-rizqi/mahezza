@@ -1,5 +1,6 @@
 package com.mahezza.mahezza.common
 
+import android.content.Context
 import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
@@ -12,6 +13,28 @@ sealed class StringResource {
         @StringRes val resId : Int,
         vararg val args: Any
     ): StringResource()
+
+    fun asString(context: Context): String {
+        return when(this){
+            is DynamicString -> value
+            is StringResWithParams -> {
+                context.resources.getString(resId, *processParams(context).toTypedArray())
+            }
+        }
+    }
+
+    private fun processParams(context: Context, vararg params : Any) =
+        params.map {
+            when(it){
+                is Int -> try {
+                    context.resources.getString(it)
+                } catch (ex: Resources.NotFoundException) {
+                    it
+                }
+                is StringResWithParams -> it.asString(context)
+                else -> it
+            }
+        }
 
     @Composable
     fun asString(): String {

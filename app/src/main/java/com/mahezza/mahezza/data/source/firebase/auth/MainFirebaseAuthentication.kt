@@ -41,7 +41,7 @@ class MainFirebaseAuthentication @Inject constructor(
     }
 
     override suspend fun beginSignInRequest(): BeginSignInResultResponse {
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
             val signInRequest = BeginSignInRequest.builder()
                 .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
                     .setSupported(true)

@@ -1,8 +1,8 @@
-package com.mahezza.mahezza.ui.features.login
+package com.mahezza.mahezza.ui.features.register
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,12 +18,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,32 +33,52 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.mahezza.mahezza.R
+import com.mahezza.mahezza.domain.Result
+import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCase
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.GoogleButton
+import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.PasswordToggleTextFieldWithTitle
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
 import com.mahezza.mahezza.ui.theme.Black
 import com.mahezza.mahezza.ui.theme.PoppinsBold32
 import com.mahezza.mahezza.ui.theme.PoppinsMedium14
-import com.mahezza.mahezza.ui.theme.PoppinsMedium16
 import com.mahezza.mahezza.ui.theme.PoppinsRegular12
 import com.mahezza.mahezza.ui.theme.PoppinsRegular14
-import com.mahezza.mahezza.ui.theme.PoppinsRegular16
 import com.mahezza.mahezza.ui.theme.White
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel
+    registerViewModel: RegisterViewModel
 ) {
     changeStatusBarColor(color = AccentYellow)
     val scrollState = rememberScrollState()
-    val email = loginViewModel.email.collectAsState()
-    val password = loginViewModel.password.collectAsState()
+    val email = registerViewModel.email.collectAsState()
+    val password = registerViewModel.password.collectAsState()
+    val uiState = registerViewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = uiState.value.shouldStartCreateProfileScreen){
+        if (uiState.value.shouldStartCreateProfileScreen){
+            showToast(context, context.getString(R.string.register_success))
+            navController.navigate(Routes.CreateProfile)
+            registerViewModel.onEvent(RegisterEvent.OnCreateProfileScreenStarted)
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.value.generalError){
+        if (uiState.value.generalError != null){
+            showToast(context, uiState.value.generalError?.asString(context))
+            registerViewModel.onEvent(RegisterEvent.OnGeneralMessageShowed)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,17 +93,17 @@ fun LoginScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
+                    .align(Alignment.TopStart)
                     .fillMaxWidth()
                     .padding(24.dp),
             ) {
                 Text(
-                    text = stringResource(id = R.string.login),
+                    text = stringResource(id = R.string.register),
                     style = PoppinsBold32,
                     color = Black
                 )
                 Text(
-                    text = stringResource(id = R.string.continue_mental_health_development),
+                    text = stringResource(id = R.string.start_improve_and_observe_mental_health),
                     style = PoppinsMedium14,
                     color = Black
                 )
@@ -99,9 +119,10 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 title = stringResource(id = R.string.email),
                 placeholder = stringResource(id = R.string.youremailcom),
+                errorText = uiState.value.emailError?.asString(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
                 value = email.value,
-                onValueChange = loginViewModel::setEmail
+                onValueChange = registerViewModel::setEmail
             )
             Spacer(modifier = Modifier.height(24.dp))
             PasswordToggleTextFieldWithTitle(
@@ -109,71 +130,55 @@ fun LoginScreen(
                 title = stringResource(id = R.string.password),
                 placeholder = stringResource(id = R.string.examplepassword),
                 helperText = stringResource(id = R.string.min_8_chars_letter_and_number),
+                errorText = uiState.value.passwordError?.asString(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, imeAction = ImeAction.Go),
                 keyboardActions = KeyboardActions(
                     onGo = {
-                        loginViewModel.onEvent(LoginEvent.OnLoginClicked)
+                        registerViewModel.onEvent(RegisterEvent.OnRegisterClicked)
                     }
                 ),
                 value = password.value,
-                onValueChange = loginViewModel::setPassword
+                onValueChange = registerViewModel::setPassword
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                TextButton(
-                    onClick = {
-                        loginViewModel.onEvent(LoginEvent.OnForgotPasswordClicked)
-                    }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.forgot_password),
-                        style = PoppinsMedium14,
-                        color = AccentYellowDark
-                    )
-                }
-            }
             Spacer(modifier = Modifier.height(24.dp))
             FilledAccentYellowButton(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.login),
-                onClick = { loginViewModel.onEvent(LoginEvent.OnLoginClicked) }
+                text = stringResource(id = R.string.create_account),
+                onClick = { registerViewModel.onEvent(RegisterEvent.OnRegisterClicked) }
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
                 modifier = Modifier
-                    .align(CenterHorizontally),
-                text = stringResource(id = R.string.or_login_with),
+                    .align(Alignment.CenterHorizontally),
+                text = stringResource(id = R.string.or_register_with),
                 style = PoppinsRegular14,
                 color = Black
             )
             Spacer(modifier = Modifier.height(24.dp))
             GoogleButton(
                 modifier = Modifier
-                    .align(CenterHorizontally),
+                    .align(Alignment.CenterHorizontally),
             ) {
-                loginViewModel.onEvent(LoginEvent.OnLoginWithGoogleClicked)
+                registerViewModel.onEvent(RegisterEvent.OnRegisterWithGoogleClicked)
             }
             Spacer(modifier = Modifier.height(40.dp))
             Row(
                 modifier = Modifier
-                    .align(CenterHorizontally)
+                    .align(Alignment.CenterHorizontally)
                     .wrapContentSize(),
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = stringResource(id = R.string.dont_have_an_account),
+                    text = stringResource(id = R.string.have_account),
                     style = PoppinsRegular12,
                     color = Black
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     modifier = Modifier.clickable {
-                        navController.navigate(Routes.Register)
+                        navController.popBackStack()
                     },
-                    text = stringResource(id = R.string.register),
+                    text = stringResource(id = R.string.login),
                     style = PoppinsMedium14,
                     color = AccentYellowDark
                 )
@@ -182,11 +187,18 @@ fun LoginScreen(
         }
 
     }
+    if (uiState.value.isShowLoading){
+        LoadingScreen()
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun LoginScreenPreview() {
-    val viewModel = LoginViewModel(SavedStateHandle())
-    LoginScreen(navController = rememberNavController(), loginViewModel = viewModel)
+fun RegisterScreenPreview() {
+    val viewModel = RegisterViewModel(SavedStateHandle(), object : RegisterWithEmailAndPasswordUseCase{
+        override suspend fun invoke(email: String, password: String): Result<String> {
+            return Result.Success("")
+        }
+    })
+    RegisterScreen(navController = rememberNavController(), registerViewModel = viewModel)
 }

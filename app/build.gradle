@@ -89,6 +89,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
     // Firebase Storage
     implementation 'com.google.firebase:firebase-storage-ktx'
+    // Firebase Firestore
+    implementation("com.google.firebase:firebase-firestore-ktx")
     // Google Play Service
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
 
@@ -112,6 +114,7 @@ dependencies {
 
     // Navigation
     implementation "androidx.navigation:navigation-compose:2.7.0"
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.25.1"
 
     // Extended Material Icon
     implementation "androidx.compose.material:material-icons-extended:1.5.0"
@@ -128,5 +131,11 @@ dependencies {
 
     // Datastore Preferences
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // Lottie
+    implementation "com.airbnb.android:lottie-compose:4.0.0"
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.9.0'
 
 }
