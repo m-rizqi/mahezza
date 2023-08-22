@@ -12,9 +12,11 @@ import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.source.firebase.request.EmailAndPasswordRequest
 import com.mahezza.mahezza.data.source.firebase.response.BeginSignInResultResponse
 import com.mahezza.mahezza.data.source.firebase.response.SignInRegisterResponse
+import com.mahezza.mahezza.data.source.firebase.response.SignInResult
 import com.mahezza.mahezza.di.FirebaseModule
 import com.mahezza.mahezza.di.IODispatcher
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await

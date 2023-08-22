@@ -1,6 +1,14 @@
 package com.mahezza.mahezza.ui.features.register
 
+import android.app.Activity
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -21,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,6 +41,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.domain.Result
 import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCase
@@ -51,11 +66,13 @@ import com.mahezza.mahezza.ui.theme.PoppinsMedium14
 import com.mahezza.mahezza.ui.theme.PoppinsRegular12
 import com.mahezza.mahezza.ui.theme.PoppinsRegular14
 import com.mahezza.mahezza.ui.theme.White
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    registerViewModel: RegisterViewModel
+    registerViewModel: RegisterViewModel,
 ) {
     changeStatusBarColor(color = AccentYellow)
     val scrollState = rememberScrollState()
@@ -64,10 +81,20 @@ fun RegisterScreen(
     val uiState = registerViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
+    val registerWithGoogleLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = {result ->
+            if (result.resultCode == RESULT_OK){
+                registerViewModel.onEvent(RegisterEvent.OnGoogleSignInResult(result.data))
+            }
+        }
+    )
+
     LaunchedEffect(key1 = uiState.value.shouldStartCreateProfileScreen){
-        if (uiState.value.shouldStartCreateProfileScreen){
+        val startProfileScreen = uiState.value.shouldStartCreateProfileScreen
+        if (startProfileScreen != null){
             showToast(context, context.getString(R.string.register_success))
-            navController.navigate(Routes.CreateProfile)
+            navController.navigate("${Routes.CreateProfile}/${startProfileScreen.userId}")
             registerViewModel.onEvent(RegisterEvent.OnCreateProfileScreenStarted)
         }
     }
@@ -76,6 +103,15 @@ fun RegisterScreen(
         if (uiState.value.generalError != null){
             showToast(context, uiState.value.generalError?.asString(context))
             registerViewModel.onEvent(RegisterEvent.OnGeneralMessageShowed)
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.value.signInResultResponse){
+        uiState.value.signInResultResponse?.intentSender?.let { intentSender ->
+           registerWithGoogleLauncher.launch(
+               IntentSenderRequest.Builder(intentSender).build()
+           )
+            registerViewModel.onEvent(RegisterEvent.OnGoogleSignInStarted)
         }
     }
 
@@ -192,13 +228,14 @@ fun RegisterScreen(
     }
 }
 
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun RegisterScreenPreview() {
-    val viewModel = RegisterViewModel(SavedStateHandle(), object : RegisterWithEmailAndPasswordUseCase{
-        override suspend fun invoke(email: String, password: String): Result<String> {
-            return Result.Success("")
-        }
-    })
-    RegisterScreen(navController = rememberNavController(), registerViewModel = viewModel)
+//    val viewModel = RegisterViewModel(SavedStateHandle(), object : RegisterWithEmailAndPasswordUseCase{
+//        override suspend fun invoke(email: String, password: String): Result<String> {
+//            return Result.Success("")
+//        }
+//    })
+//    RegisterScreen(navController = rememberNavController(), registerViewModel = viewModel)
 }

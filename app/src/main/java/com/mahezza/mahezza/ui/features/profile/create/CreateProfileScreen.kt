@@ -10,7 +10,8 @@ import com.mahezza.mahezza.ui.theme.White
 
 @Composable
 fun CreateProfileScreen(
-    navController: NavController
+    navController: NavController,
+    userId: String
 ) {
     Column(modifier = Modifier
         .fillMaxSize()

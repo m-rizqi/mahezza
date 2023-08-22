@@ -1,10 +1,12 @@
 package com.mahezza.mahezza.ui.features.register
 
+import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.domain.Result
 import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCase
+import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCase
 import com.mahezza.mahezza.domain.auth.ValidateEmailUseCase
 import com.mahezza.mahezza.domain.auth.ValidatePasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val registerWithEmailAndPasswordUseCase: RegisterWithEmailAndPasswordUseCase
+    private val registerWithEmailAndPasswordUseCase: RegisterWithEmailAndPasswordUseCase,
+    private val registerWithGoogleUseCase: RegisterWithGoogleUseCase
 ) : ViewModel() {
 
     private val validateEmailUseCase: ValidateEmailUseCase = ValidateEmailUseCase()
@@ -46,13 +49,16 @@ class RegisterViewModel @Inject constructor(
 
     fun onEvent(event: RegisterEvent){
         when(event){
-            RegisterEvent.OnRegisterClicked -> registerWithEmailAndPassword()
-            RegisterEvent.OnRegisterWithGoogleClicked -> registerWithGoogle()
-            RegisterEvent.OnCreateProfileScreenStarted -> _uiState.update {
-                it.copy(shouldStartCreateProfileScreen = false)
+            is RegisterEvent.OnRegisterClicked -> registerWithEmailAndPassword()
+            is RegisterEvent.OnRegisterWithGoogleClicked -> registerWithGoogle()
+            is RegisterEvent.OnCreateProfileScreenStarted -> _uiState.update {
+                it.copy(shouldStartCreateProfileScreen = null)
             }
-
-            RegisterEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalError = null) }
+            is RegisterEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalError = null) }
+            is RegisterEvent.OnGoogleSignInResult -> {
+                signInWithCredential(event.intent)
+            }
+            RegisterEvent.OnGoogleSignInStarted -> _uiState.update { it.copy(signInResultResponse = null) }
             else -> Unit
         }
     }
@@ -89,17 +95,34 @@ class RegisterViewModel @Inject constructor(
             val result = registerWithEmailAndPasswordUseCase.invoke(latestState.email, latestState.password)
             when(result){
                 is Result.Fail -> _uiState.update { it.copy(generalError = result.message) }
-                is Result.Success -> _uiState.update { it.copy(shouldStartCreateProfileScreen = true) }
+                is Result.Success -> _uiState.update { it.copy(shouldStartCreateProfileScreen = RegisterUiState.StartCreateProfileScreen(result.data ?: "")) }
             }
             _uiState.update { it.copy(isShowLoading = false) }
         }
-
     }
 
     private fun isEmailAndPasswordValid(emailValidity: Result<String>, passwordValidity: Result<String>): Boolean =
         emailValidity is Result.Success && passwordValidity is Result.Success
 
     private fun registerWithGoogle(){
-
+        viewModelScope.launch {
+            _uiState.update { it.copy(isShowLoading = true) }
+            val signInResultResponse = registerWithGoogleUseCase.beginSignInRequest()
+            _uiState.update { it.copy(signInResultResponse = signInResultResponse, isShowLoading = false) }
+        }
     }
+
+    private fun signInWithCredential(intent: Intent?){
+        _uiState.update { it.copy(isShowLoading = true) }
+        viewModelScope.launch {
+            val result = registerWithGoogleUseCase.signInWithCredential(intent)
+            when(result){
+                is Result.Fail -> _uiState.update { it.copy(generalError = result.message) }
+                is Result.Success -> _uiState.update { it.copy(shouldStartCreateProfileScreen = RegisterUiState.StartCreateProfileScreen(result.data ?: "")) }
+            }
+            _uiState.update { it.copy(isShowLoading = false) }
+        }
+    }
+
+
 }
