@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.mahezza.mahezza.data.source.firebase.request.EmailAndPasswordRequest
 import com.mahezza.mahezza.data.source.firebase.response.BeginSignInResultResponse
 import com.mahezza.mahezza.data.source.firebase.response.SignInRegisterResponse
+import com.mahezza.mahezza.data.source.firebase.response.SignInResult
 
 interface FirebaseAuthentication {
     fun isLogin() : Boolean

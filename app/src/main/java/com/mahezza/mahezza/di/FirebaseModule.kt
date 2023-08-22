@@ -8,6 +8,8 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.firebase.auth.FirebaseAuthentication
 import com.mahezza.mahezza.data.source.firebase.auth.MainFirebaseAuthentication
+import com.mahezza.mahezza.data.source.firebase.firestore.MainUserFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,4 +54,10 @@ object FirebaseModule {
     ) : FirebaseAuthentication {
         return MainFirebaseAuthentication(firebaseWebClientId, context, distpacher)
     }
+
+    @Singleton
+    @Provides
+    fun provideUserFirebaseFirestore(
+        @IODispatcher dispatcher: CoroutineDispatcher
+    ) : UserFirebaseFirestore = MainUserFirebaseFirestore(dispatcher)
 }

@@ -1,11 +1,14 @@
 package com.mahezza.mahezza.ui.ext
 
 import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 fun Activity.makeStatusBarTransparent() {
@@ -26,4 +29,8 @@ fun Activity.makeStatusBarTransparent() {
 fun changeStatusBarColor(color: Color) {
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(color)
+}
+
+fun showToast(context: Context, text: String?, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, text, duration).show()
 }

@@ -38,6 +38,7 @@ import com.mahezza.mahezza.ui.components.GoogleButton
 import com.mahezza.mahezza.ui.components.PasswordToggleTextFieldWithTitle
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
 import com.mahezza.mahezza.ui.theme.Black
@@ -170,7 +171,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     modifier = Modifier.clickable {
-                                                  // To Register
+                        navController.navigate(Routes.Register)
                     },
                     text = stringResource(id = R.string.register),
                     style = PoppinsMedium14,

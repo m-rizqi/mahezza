@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -38,6 +39,7 @@ fun TextFieldWithTitle(
     title : String,
     value : String = "",
     placeholder : String = "",
+    errorText : String? = null,
     keyboardOptions : KeyboardOptions = KeyboardOptions.Default,
     keyboardActions : KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit
@@ -67,6 +69,17 @@ fun TextFieldWithTitle(
                     color = GreyBorder
                 )
             },
+            isError = errorText != null,
+            supportingText = {
+                if (errorText != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = errorText,
+                        style = PoppinsRegular10,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
             onValueChange = onValueChange
         )
     }
@@ -80,6 +93,7 @@ fun PasswordToggleTextFieldWithTitle(
     value: String = "",
     placeholder: String = "",
     helperText: String = "",
+    errorText: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onValueChange: (String) -> Unit
@@ -127,11 +141,12 @@ fun PasswordToggleTextFieldWithTitle(
             },
             supportingText = {
                 Text(
-                    text = helperText,
+                    text = errorText ?: helperText,
                     style = PoppinsRegular10,
-                    color = GreyText
+                    color = if (errorText == null) GreyText else MaterialTheme.colorScheme.error
                 )
             },
+            isError = errorText != null,
             onValueChange = onValueChange
         )
     }
