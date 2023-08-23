@@ -33,7 +33,8 @@ class RegisterWithEmailAndPasswordUseCaseImpl @Inject constructor(
         return User(
             id = firebaseUser.uid,
             name = firebaseUser.displayName ?: "",
-            photoUrl = firebaseUser.photoUrl.toString()
+            photoUrl = firebaseUser.photoUrl.toString(),
+            job = "", relationshipWithChildren = "", timeSpendWithChildren = ""
         )
     }
 

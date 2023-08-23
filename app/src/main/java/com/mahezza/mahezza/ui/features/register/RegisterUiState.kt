@@ -11,7 +11,7 @@ data class RegisterUiState(
     val emailError : StringResource? = null,
     val passwordError : StringResource? = null,
     val isShowLoading : Boolean = false,
-    val signInResultResponse: BeginSignInResultResponse? = null
+    val signInResultResponse: BeginSignInResultResponse? = null,
 ){
     data class StartCreateProfileScreen(
         val userId : String

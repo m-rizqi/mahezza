@@ -1,5 +1,6 @@
 package com.mahezza.mahezza.ui.features.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -24,7 +26,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,16 +69,16 @@ fun LoginScreen(
             .background(White)
             .verticalScroll(scrollState)
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp)
-                .background(AccentYellow)
+                .background(AccentYellow),
+            verticalAlignment = Alignment.Bottom,
         ) {
             Column(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .fillMaxWidth()
+                    .weight(1f)
                     .padding(24.dp),
             ) {
                 Text(
@@ -88,6 +92,12 @@ fun LoginScreen(
                     color = Black
                 )
             }
+            Image(
+                modifier = Modifier
+                    .size(200.dp),
+                painter = painterResource(id = R.drawable.login_illustration),
+                contentDescription = stringResource(id = R.string.login_illustration)
+            )
         }
 
         Column(

@@ -13,6 +13,7 @@ import com.mahezza.mahezza.ui.features.login.LoginScreen
 import com.mahezza.mahezza.ui.features.login.LoginViewModel
 import com.mahezza.mahezza.ui.features.onboarding.OnBoardingScreen
 import com.mahezza.mahezza.ui.features.profile.create.CreateProfileScreen
+import com.mahezza.mahezza.ui.features.profile.create.CreateProfileViewModel
 import com.mahezza.mahezza.ui.features.register.RegisterScreen
 import com.mahezza.mahezza.ui.features.register.RegisterViewModel
 import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
@@ -20,7 +21,10 @@ import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Routes.Register){
+    NavHost(
+        navController = navController,
+        startDestination = Routes.CreateProfile+"?userId=8XaGJ0QB9JMe9wD8Juh7RqZjSoX2"
+    ){
         composable(Routes.OnBoarding){
             OnBoardingScreen(navController)
         }
@@ -77,9 +81,12 @@ fun MainNavigation() {
             RegisterScreen(navController, registerViewModel)
         }
         composable(
-            route = "${Routes.CreateProfile}/{${USER_ID}}",
+            route = "${Routes.CreateProfile}?${USER_ID}={${USER_ID}}",
             arguments = listOf(
-                navArgument(USER_ID){type = NavType.StringType}
+                navArgument(USER_ID){
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
             ),
             enterTransition = {
                 slideInHorizontally(initialOffsetX = {fullWidth ->
@@ -103,7 +110,12 @@ fun MainNavigation() {
             },
         ){entry ->
             val userId = entry.arguments?.getString(USER_ID) ?: ""
-            CreateProfileScreen(navController, userId)
+            val createProfileViewModel : CreateProfileViewModel = hiltViewModel()
+            CreateProfileScreen(
+                navController = navController,
+                userId = userId,
+                viewModel = createProfileViewModel
+            )
         }
     }
 }

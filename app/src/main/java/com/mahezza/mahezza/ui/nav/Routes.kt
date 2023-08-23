@@ -5,4 +5,5 @@ object Routes {
     const val Login = "login"
     const val Register = "register"
     const val CreateProfile = "create-profile"
+    const val AddChildProfile = "add-child-profile"
 }

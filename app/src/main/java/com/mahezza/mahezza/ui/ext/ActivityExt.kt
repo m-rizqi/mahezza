@@ -34,3 +34,17 @@ fun changeStatusBarColor(color: Color) {
 fun showToast(context: Context, text: String?, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(context, text, duration).show()
 }
+
+@Composable
+fun disableScreen(){
+    val activity = (LocalContext.current as Activity)
+    activity.window.setFlags(
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+}
+
+@Composable
+fun enableScreen(){
+    val activity = (LocalContext.current as Activity)
+    activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+}
