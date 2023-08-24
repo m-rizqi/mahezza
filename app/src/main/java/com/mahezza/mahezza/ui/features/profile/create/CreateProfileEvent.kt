@@ -14,4 +14,5 @@ sealed class CreateProfileEvent {
     class SetPhotoProfileUri(val uri: Uri) : CreateProfileEvent()
     object OnSaveAndNextButtonClicked : CreateProfileEvent()
     object OnStartAddChildrenProfileScreen : CreateProfileEvent()
+
 }

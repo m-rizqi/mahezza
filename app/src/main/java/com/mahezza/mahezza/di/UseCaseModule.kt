@@ -4,6 +4,8 @@ import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCase
 import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCaseImpl
 import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCase
 import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCaseImpl
+import com.mahezza.mahezza.domain.children.InsertChildUseCase
+import com.mahezza.mahezza.domain.children.InsertChildUseCaseImpl
 import com.mahezza.mahezza.domain.user.CreateProfileUseCase
 import com.mahezza.mahezza.domain.user.CreateProfileUseCaseImpl
 import com.mahezza.mahezza.domain.user.GetUserByIdUseCase
@@ -27,4 +29,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindCreateProfileUseCase(useCase: CreateProfileUseCaseImpl) : CreateProfileUseCase
+
+    @Binds
+    abstract fun bindInsertChildProfileUseCase(useCase: InsertChildUseCaseImpl) : InsertChildUseCase
 }
