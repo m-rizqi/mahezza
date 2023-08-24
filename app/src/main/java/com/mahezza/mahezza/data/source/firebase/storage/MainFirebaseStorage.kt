@@ -23,10 +23,6 @@ class MainFirebaseStorage @Inject constructor(
 
     private val firebaseStorage = Firebase.storage
 
-    companion object {
-        const val USER_PATH = "users"
-    }
-
     override suspend fun insertOrUpdateImage(path: String, imageRequest: ImageRequest): FirebaseResult<String> {
         return withContext(dispatcher){
             val reference = getReferences(path).child(imageRequest.id)

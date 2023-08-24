@@ -1,5 +1,6 @@
 package com.mahezza.mahezza.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +34,7 @@ import com.mahezza.mahezza.ui.theme.Black
 import com.mahezza.mahezza.ui.theme.GreyBorder
 import com.mahezza.mahezza.ui.theme.PoppinsMedium16
 import com.mahezza.mahezza.ui.theme.PoppinsRegular14
+import com.mahezza.mahezza.ui.theme.White
 
 @Composable
 fun FilledAccentYellowButton(
@@ -61,6 +64,39 @@ fun FilledAccentYellowButton(
 @Composable
 fun MahezzaAccentYellowButtonPreview() {
     FilledAccentYellowButton(text = "Button") {
+        
+    }
+}
+
+@Composable
+fun OutlinedAccentYellowButton(
+    modifier : Modifier = Modifier,
+    text : String,
+    cornerRadius: Dp = 8.dp,
+    onClick : () -> Unit
+){
+    OutlinedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = White,
+            contentColor = Black,
+        ),
+        border = BorderStroke(1.dp, AccentYellow),
+        shape = RoundedCornerShape(cornerRadius),
+        contentPadding = PaddingValues(vertical = 12.dp),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            style = PoppinsMedium16,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun OutlinedAccentYellowButtonPreview() {
+    OutlinedAccentYellowButton(text = "Button") {
         
     }
 }

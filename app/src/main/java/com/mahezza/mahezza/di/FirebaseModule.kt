@@ -8,6 +8,8 @@ import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.firebase.auth.FirebaseAuthentication
 import com.mahezza.mahezza.data.source.firebase.auth.MainFirebaseAuthentication
+import com.mahezza.mahezza.data.source.firebase.firestore.ChildrenFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.firestore.MainChildrenFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainUserFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.storage.FirebaseStorage
@@ -62,6 +64,12 @@ object FirebaseModule {
     fun provideUserFirebaseFirestore(
         @IODispatcher dispatcher: CoroutineDispatcher
     ) : UserFirebaseFirestore = MainUserFirebaseFirestore(dispatcher)
+
+    @Singleton
+    @Provides
+    fun provideChildrenFirebaseFirestore(
+        @IODispatcher dispatcher: CoroutineDispatcher
+    ) : ChildrenFirebaseFirestore = MainChildrenFirebaseFirestore(dispatcher)
 
     @Singleton
     @Provides

@@ -1,7 +1,9 @@
 package com.mahezza.mahezza.di
 
 import com.mahezza.mahezza.data.repository.AuthRepository
+import com.mahezza.mahezza.data.repository.ChildrenRepository
 import com.mahezza.mahezza.data.repository.MainAuthRepository
+import com.mahezza.mahezza.data.repository.MainChildrenRepository
 import com.mahezza.mahezza.data.repository.MainUserRepository
 import com.mahezza.mahezza.data.repository.UserRepository
 import dagger.Binds
@@ -17,4 +19,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindUserRepository(repository: MainUserRepository): UserRepository
+
+    @Binds
+    abstract fun bindChildrenRepository(repository: MainChildrenRepository): ChildrenRepository
 }

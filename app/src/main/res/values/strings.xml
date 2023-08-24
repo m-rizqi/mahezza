@@ -50,4 +50,17 @@
     <string name="close">Tutup</string>
     <string name="profile_created_next_add_children">Profile berhasil disimpan, Lanjut membuat profil anak</string>
     <string name="user_id_is_not_found">Id user tidak ditemukan, coba login kembali.</string>
+    <string name="child_profile">Profil Anak</string>
+    <string name="gender">Jenis Kelamin</string>
+    <string name="boy">Laki-Laki</string>
+    <string name="girl">Perempuan</string>
+    <string name="birthday">Tanggal Lahir</string>
+    <string name="current_year_is">Umur sekarang adalah %1$.1f tahun</string>
+    <string name="password_visibility">Visibilitas Password</string>
+    <string name="save_and_add_profile">Simpan dan Tambah Profil</string>
+    <string name="save">Simpan</string>
+    <string name="cancel">Batal</string>
+    <string name="select_child_birthday">Pilih Tanggal Lahir Anak</string>
+    <string name="saved_child_photo_profile">Foto profil anak yang telah tersimpan</string>
+    <string name="plus_param">+%d</string>
 </resources>

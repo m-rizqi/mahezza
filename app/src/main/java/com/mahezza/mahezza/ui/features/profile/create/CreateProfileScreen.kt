@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -74,7 +75,6 @@ import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
-import com.mahezza.mahezza.ui.features.register.RegisterEvent
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.Black
@@ -87,7 +87,6 @@ import com.mahezza.mahezza.ui.theme.PoppinsRegular16
 import com.mahezza.mahezza.ui.theme.PoppinsSemiBold14
 import com.mahezza.mahezza.ui.theme.PoppinsSemiBold20
 import com.mahezza.mahezza.ui.theme.White
-import timber.log.Timber
 
 @Composable
 fun CreateProfileScreen(
@@ -119,7 +118,7 @@ fun CreateProfileScreen(
     LaunchedEffect(key1 = uiState.value.shouldStartAddChildProfile){
         if (uiState.value.shouldStartAddChildProfile){
             showToast(context, context.getString(R.string.profile_created_next_add_children))
-            navController.navigate(Routes.AddChildProfile)
+            navController.navigate(Routes.InsertChildProfile)
             viewModel.onEvent(CreateProfileEvent.OnStartAddChildrenProfileScreen)
         }
     }
@@ -404,7 +403,8 @@ fun RelationshipWithChildrenCard(
     ) {
         Column(
             modifier = Modifier
-                .wrapContentSize()
+                .fillMaxWidth()
+                .wrapContentHeight()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Image(
@@ -417,6 +417,8 @@ fun RelationshipWithChildrenCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 text = stringResource(id = relationshipWithChildren.stringResId),
                 style = PoppinsMedium14,
                 color = Black

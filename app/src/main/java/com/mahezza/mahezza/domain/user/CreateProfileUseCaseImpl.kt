@@ -9,12 +9,14 @@ import com.mahezza.mahezza.data.Result
 import com.mahezza.mahezza.data.repository.UserRepository
 import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
 import com.mahezza.mahezza.data.source.firebase.storage.FirebaseStorage
+import com.mahezza.mahezza.data.source.firebase.storage.FirebaseStorage.Companion.USER_PATH
 import com.mahezza.mahezza.data.source.firebase.storage.ImageRequest
-import com.mahezza.mahezza.data.source.firebase.storage.MainFirebaseStorage.Companion.USER_PATH
 import com.mahezza.mahezza.di.IODispatcher
 import com.mahezza.mahezza.domain.KeyValue
 import com.mahezza.mahezza.domain.ResultWithKeyMessage
 import com.mahezza.mahezza.domain.ResultWithKeyMessages
+import com.mahezza.mahezza.domain.anyOfValidatesIsFail
+import com.mahezza.mahezza.domain.gatherErrorFromValidates
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -68,22 +70,6 @@ class CreateProfileUseCaseImpl @Inject constructor(
         )
         val firebaseResult = firebaseStorage.insertOrUpdateImage(USER_PATH, imageRequest)
         return firebaseResult.data ?: ""
-    }
-
-    private fun anyOfValidatesIsFail(vararg validates : ResultWithKeyMessage<Boolean>): Boolean = validates.any {
-        it is ResultWithKeyMessage.Fail
-    }
-
-    private fun gatherErrorFromValidates(vararg validates : ResultWithKeyMessage<Boolean>): List<KeyValue<StringResource?>>{
-        return validates
-            .toList()
-            .filter{
-                it.message != null
-            }
-            .filterIsInstance(ResultWithKeyMessage.Fail::class.java)
-            .map {
-                it.message!!
-            }
     }
 
     private fun validateName(name : KeyValue<String>): ResultWithKeyMessage<Boolean> {

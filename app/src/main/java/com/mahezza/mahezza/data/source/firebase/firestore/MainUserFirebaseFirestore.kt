@@ -7,6 +7,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.source.firebase.FirebaseResult
+import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore.Companion.USER_PATH
 import com.mahezza.mahezza.data.source.firebase.request.UserRequest
 import com.mahezza.mahezza.data.source.firebase.response.UserResponse
 import com.mahezza.mahezza.di.IODispatcher
@@ -14,7 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-private const val USER_PATH = "users"
 
 class MainUserFirebaseFirestore(
     @IODispatcher

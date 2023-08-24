@@ -5,6 +5,5 @@ import com.mahezza.mahezza.data.model.User
 
 interface UserRepository {
     suspend fun insertUser(user: User) : Result<String>
-
     suspend fun getUserById(id: String) : Result<User>
 }
