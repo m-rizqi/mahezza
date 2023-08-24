@@ -23,12 +23,6 @@ Lapp/src/main/java/com/mahezza/mahezza/data/source/firebase/FirebaseResult.kt,0
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
 g
 7app/src/main/java/com/mahezza/mahezza/ui/theme/Theme.kt,6\7\67d992c7dfb65093026b98001183f3dc2148bf42
-u
-Eapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginEvent.kt,b\0\b0855b6073e6fa4b598caba6ee71e999b2124382
-y
-Iapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginViewModel.kt,e\4\e48797a4a31b257e0c16d94a269afbc4d2e39058
-w
-Gapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginUiState.kt,d\8\d81a3d29f02561e55e9001cb8a91a141fdac609d
 Ä
 Papp/src/main/java/com/mahezza/mahezza/ui/components/SlideInOutScreenAnimation.kt,7\1\71a2bf115ff657d5c53c36dd49c84ba2d26f9748
 P
@@ -55,28 +49,16 @@ Sapp/src/main/java/com/mahezza/mahezza/data/source/firebase/response/SignInResul
 Yapp/src/main/java/com/mahezza/mahezza/data/source/firebase/auth/FirebaseAuthentication.kt,0\0\00bf98ec9f0a902b159f9d07f82d66cee7fc3ed2
 ç
 ]app/src/main/java/com/mahezza/mahezza/data/source/firebase/auth/MainFirebaseAuthentication.kt,8\3\837ace5a1e62255e0b753d1c339099321ac4c578
-{
-Kapp/src/main/java/com/mahezza/mahezza/data/repository/MainAuthRepository.kt,e\7\e7bd7b978cc506826970734e320a1b584f0bbb44
-{
-Kapp/src/main/java/com/mahezza/mahezza/ui/features/register/RegisterEvent.kt,b\5\b522531bb2863b31aa35aef22134fa5d29a00b60
 ~
 Napp/src/main/java/com/mahezza/mahezza/domain/auth/RegisterWithGoogleUseCase.kt,8\3\83246687a33a8ebefb071770c71c6c6e932fce1f
-w
-Gapp/src/main/java/com/mahezza/mahezza/data/repository/AuthRepository.kt,6\7\67379176404572797371c5ad08f5e9bd4edc6948
 g
 7app/src/main/java/com/mahezza/mahezza/ui/theme/Color.kt,c\f\cf67efc4325b91d90d5a2b3cdc9c8315e4e8691f
 f
 6app/src/main/java/com/mahezza/mahezza/ui/theme/Font.kt,4\4\449f447d1ae46e9daefe9a9f2a32205a2890d197
-
-Oapp/src/main/java/com/mahezza/mahezza/ui/features/register/RegisterViewModel.kt,3\3\3304506f60b32acf5e955926c50e94f14341d157
-v
-Fapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginScreen.kt,7\6\76083ef4dab70201412a4f16277e56da1b089fd9
 {
 Kapp/src/main/java/com/mahezza/mahezza/data/repository/MainUserRepository.kt,c\2\c2165fd3bfae95741450a41dfe728f64bcc9a22d
 {
 Kapp/src/main/java/com/mahezza/mahezza/domain/user/GetUserByIdUseCaseImpl.kt,6\8\684fb9a162e73f7da4f2b833b0dd4c267c5660f9
-}
-Mapp/src/main/java/com/mahezza/mahezza/ui/features/register/RegisterUiState.kt,b\b\bbe11b088235df2f7b9477e447b8bb975bc50d4c
 k
 ;app/src/main/java/com/mahezza/mahezza/ui/ext/ActivityExt.kt,0\b\0bdccdb5b18c2e0aa13726094b89cbb1a44084d0
 t
@@ -105,8 +87,6 @@ Qapp/src/main/java/com/mahezza/mahezza/data/source/firebase/request/UserRequest.
 \app/src/main/java/com/mahezza/mahezza/domain/auth/RegisterWithEmailAndPasswordUseCaseImpl.kt,f\4\f4a10c590dc0c86b25d9e5937d8c6538d6f02f3c
 Ç
 Rapp/src/main/java/com/mahezza/mahezza/domain/auth/RegisterWithGoogleUseCaseImpl.kt,2\1\2103bfa28dc30589fe841311d75057a52b85a029
-|
-Lapp/src/main/java/com/mahezza/mahezza/ui/features/register/RegisterScreen.kt,4\d\4d9cc7cbe02366b95bc3758d14e00e0c95258547
 :
 
 .gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302
@@ -120,3 +100,7 @@ Dapp/src/main/java/com/mahezza/mahezza/ui/components/MahezzaButton.kt,f\8\f8d69
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 |
 Lapp/src/main/java/com/mahezza/mahezza/ui/components/AutoCompleteTextField.kt,a\e\ae1c4c767f6a91279ac5434c0f92609e37f2b33b
+j
+:app/src/main/java/com/mahezza/mahezza/di/FirebaseModule.kt,0\f\0f675ec85f879eb3470abb7dc75f05c51ca44d17
+f
+6app/src/main/java/com/mahezza/mahezza/ui/nav/Routes.kt,c\f\cf44fec7fd8a72232c910fcde3689e4fbe53ce8d

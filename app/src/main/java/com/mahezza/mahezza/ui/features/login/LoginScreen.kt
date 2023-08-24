@@ -1,5 +1,9 @@
 package com.mahezza.mahezza.ui.features.login
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,10 +26,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Image
@@ -39,9 +45,12 @@ import androidx.navigation.compose.rememberNavController
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.GoogleButton
+import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.PasswordToggleTextFieldWithTitle
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import com.mahezza.mahezza.ui.ext.showToast
+import com.mahezza.mahezza.ui.features.register.RegisterEvent
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
@@ -61,8 +70,43 @@ fun LoginScreen(
 ) {
     changeStatusBarColor(color = AccentYellow)
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
     val email = loginViewModel.email.collectAsState()
     val password = loginViewModel.password.collectAsState()
+    val uiState = loginViewModel.loginUiState.collectAsState()
+
+    val loginWithGoogleLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = {result ->
+            if (result.resultCode == Activity.RESULT_OK){
+                loginViewModel.onEvent(LoginEvent.OnGoogleSignInResult(result.data))
+            }
+        }
+    )
+
+    LaunchedEffect(key1 = uiState.value.generalError){
+        uiState.value.generalError?.let { message ->
+            showToast(context, message.asString(context))
+            loginViewModel.onEvent(LoginEvent.OnGeneralErrorShowed)
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.value.shouldGoToDashboard){
+        if (uiState.value.shouldGoToDashboard){
+            navController.navigate(Routes.Dashboard)
+            loginViewModel.onEvent(LoginEvent.OnDashboardScreenStarted)
+        }
+    }
+
+    LaunchedEffect(key1 = uiState.value.signInResultResponse){
+        uiState.value.signInResultResponse?.intentSender?.let { intentSender ->
+            loginWithGoogleLauncher.launch(
+                IntentSenderRequest.Builder(intentSender).build()
+            )
+            loginViewModel.onEvent(LoginEvent.OnGoogleSignInStarted)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -192,11 +236,12 @@ fun LoginScreen(
         }
 
     }
+    LoadingScreen(isShowLoading = uiState.value.isShowLoading)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
-    val viewModel = LoginViewModel(SavedStateHandle())
-    LoginScreen(navController = rememberNavController(), loginViewModel = viewModel)
+//    val viewModel = LoginViewModel(SavedStateHandle())
+//    LoginScreen(navController = rememberNavController(), loginViewModel = viewModel)
 }

@@ -1,5 +1,9 @@
 package com.mahezza.mahezza.di
 
+import com.mahezza.mahezza.domain.auth.LoginWithEmailAndPasswordUseCase
+import com.mahezza.mahezza.domain.auth.LoginWithEmailAndPasswordUseCaseImpl
+import com.mahezza.mahezza.domain.auth.LoginWithGoogleUseCase
+import com.mahezza.mahezza.domain.auth.LoginWithGoogleUseCaseImpl
 import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCase
 import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCaseImpl
 import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCase
@@ -18,6 +22,13 @@ import dagger.hilt.android.components.ViewModelComponent
 @Module
 @InstallIn(ViewModelComponent::class)
 abstract class UseCaseModule {
+
+    @Binds
+    abstract fun bindLoginWithEmailAndPasswordUseCase(useCase: LoginWithEmailAndPasswordUseCaseImpl) : LoginWithEmailAndPasswordUseCase
+
+    @Binds
+    abstract fun bindLoginWithGoogleUseCase(useCase: LoginWithGoogleUseCaseImpl) : LoginWithGoogleUseCase
+
     @Binds
     abstract fun bindRegisterUseCase(useCase: RegisterWithEmailAndPasswordUseCaseImpl) : RegisterWithEmailAndPasswordUseCase
 
