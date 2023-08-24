@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -33,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -48,8 +51,10 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mahezza.mahezza.R
+import com.mahezza.mahezza.data.source.firebase.response.BeginSignInResultResponse
 import com.mahezza.mahezza.domain.Result
 import com.mahezza.mahezza.domain.auth.RegisterWithEmailAndPasswordUseCase
+import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCase
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.GoogleButton
 import com.mahezza.mahezza.ui.components.LoadingScreen
@@ -121,7 +126,7 @@ fun RegisterScreen(
             .background(White)
             .verticalScroll(scrollState)
     ) {
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp)
@@ -129,8 +134,7 @@ fun RegisterScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .fillMaxWidth()
+                    .weight(1f)
                     .padding(24.dp),
             ) {
                 Text(
@@ -144,6 +148,12 @@ fun RegisterScreen(
                     color = Black
                 )
             }
+            Image(
+                modifier = Modifier
+                    .size(200.dp),
+                painter = painterResource(id = R.drawable.register_illustration),
+                contentDescription = stringResource(id = R.string.register_illustration)
+            )
         }
 
         Column(
@@ -223,19 +233,30 @@ fun RegisterScreen(
         }
 
     }
-    if (uiState.value.isShowLoading){
-        LoadingScreen()
-    }
+    LoadingScreen(uiState.value.isShowLoading)
 }
 
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun RegisterScreenPreview() {
-//    val viewModel = RegisterViewModel(SavedStateHandle(), object : RegisterWithEmailAndPasswordUseCase{
-//        override suspend fun invoke(email: String, password: String): Result<String> {
-//            return Result.Success("")
-//        }
-//    })
-//    RegisterScreen(navController = rememberNavController(), registerViewModel = viewModel)
+    val viewModel = RegisterViewModel(
+        SavedStateHandle(),
+        object : RegisterWithEmailAndPasswordUseCase{
+            override suspend fun invoke(email: String, password: String): Result<String> {
+                return Result.Success("")
+            }
+        },
+       object : RegisterWithGoogleUseCase {
+           override suspend fun beginSignInRequest(): BeginSignInResultResponse {
+               return BeginSignInResultResponse(true, null, null, null)
+           }
+
+           override suspend fun signInWithCredential(intent: Intent?): Result<String> {
+               return Result.Success("")
+           }
+
+       }
+    )
+    RegisterScreen(navController = rememberNavController(), registerViewModel = viewModel)
 }

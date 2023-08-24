@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -39,13 +40,14 @@ fun FilledAccentYellowButton(
     cornerRadius: Dp = 8.dp,
     onClick : () -> Unit
 ){
-    Button(
+    ElevatedButton(
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
+        colors = ButtonDefaults.elevatedButtonColors(
             containerColor = AccentYellow,
             contentColor = Black
         ),
         shape = RoundedCornerShape(cornerRadius),
+        contentPadding = PaddingValues(vertical = 12.dp),
         onClick = onClick
     ) {
         Text(

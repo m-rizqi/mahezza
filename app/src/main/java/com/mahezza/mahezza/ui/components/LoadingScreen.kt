@@ -17,28 +17,37 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mahezza.mahezza.R
+import com.mahezza.mahezza.ui.ext.disableScreen
+import com.mahezza.mahezza.ui.ext.enableScreen
 import com.mahezza.mahezza.ui.theme.Grey
 
 @Composable
-fun LoadingScreen() {
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(0x4D131313))
-    ){
-        val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.puzzle_loading))
-        val progress by animateLottieCompositionAsState(composition = composition, iterations = Integer.MAX_VALUE)
-        LottieAnimation(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(100.dp),
-            composition = composition,
-            progress = progress,
-        )
+fun LoadingScreen(
+    isShowLoading : Boolean
+) {
+    if (isShowLoading){
+        disableScreen()
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0x4D131313))
+        ){
+            val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.puzzle_loading))
+            val progress by animateLottieCompositionAsState(composition = composition, iterations = Integer.MAX_VALUE)
+            LottieAnimation(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(100.dp),
+                composition = composition,
+                progress = progress,
+            )
+        }
+    }else{
+        enableScreen()
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun LoadingScreenPreview() {
-    LoadingScreen()
+    LoadingScreen(true)
 }
