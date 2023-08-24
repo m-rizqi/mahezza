@@ -59,7 +59,6 @@ class RegisterViewModel @Inject constructor(
                 signInWithCredential(event.intent)
             }
             RegisterEvent.OnGoogleSignInStarted -> _uiState.update { it.copy(signInResultResponse = null) }
-            else -> Unit
         }
     }
 

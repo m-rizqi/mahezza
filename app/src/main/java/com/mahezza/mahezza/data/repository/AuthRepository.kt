@@ -7,6 +7,7 @@ import com.mahezza.mahezza.data.source.firebase.response.BeginSignInResultRespon
 
 interface AuthRepository {
     suspend fun registerWithEmailAndPassword(email: String, password: String): Result<FirebaseUser>
+    suspend fun loginWithEmailAndPassword(email: String, password: String): Result<FirebaseUser>
 
     suspend fun beginSignInRequest(): BeginSignInResultResponse
 

@@ -1,20 +1,28 @@
 package com.mahezza.mahezza.ui.features.login
 
+import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.domain.Result
+import com.mahezza.mahezza.domain.auth.LoginWithEmailAndPasswordUseCase
+import com.mahezza.mahezza.domain.auth.LoginWithGoogleUseCase
 import com.mahezza.mahezza.domain.auth.ValidateEmailUseCase
 import com.mahezza.mahezza.domain.auth.ValidatePasswordUseCase
+import com.mahezza.mahezza.ui.features.register.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val loginWithEmailAndPasswordUseCase: LoginWithEmailAndPasswordUseCase,
+    private val loginWithGoogleUseCase: LoginWithGoogleUseCase
 ) : ViewModel() {
 
     private val validateEmailUseCase: ValidateEmailUseCase = ValidateEmailUseCase()
@@ -45,7 +53,10 @@ class LoginViewModel @Inject constructor(
             LoginEvent.OnLoginClicked -> loginWithEmailAndPassword()
             LoginEvent.OnLoginWithGoogleClicked -> loginWithGoogle()
             LoginEvent.OnForgotPasswordClicked -> forgotPassword()
-            else -> Unit
+            LoginEvent.OnDashboardScreenStarted -> _loginUiState.update { it.copy(shouldGoToDashboard = false) }
+            LoginEvent.OnGeneralErrorShowed -> _loginUiState.update { it.copy(generalError = null) }
+            is LoginEvent.OnGoogleSignInResult -> signInWithCredential(event.intent)
+            LoginEvent.OnGoogleSignInStarted -> _loginUiState.update { it.copy(signInResultResponse = null) }
         }
     }
 
@@ -77,13 +88,40 @@ class LoginViewModel @Inject constructor(
             return
         }
 
+        viewModelScope.launch {
+            _loginUiState.update { it.copy(isShowLoading = true)}
+            val result = loginWithEmailAndPasswordUseCase(latestState.email, latestState.password)
+            when(result){
+                is Result.Fail -> _loginUiState.update { it.copy(generalError = result.message)}
+                is Result.Success -> _loginUiState.update { it.copy(shouldGoToDashboard = true)}
+            }
+            _loginUiState.update { it.copy(isShowLoading = false)}
+
+        }
+
     }
 
     private fun isEmailAndPasswordValid(emailValidity: Result<String>, passwordValidity: Result<String>): Boolean =
         emailValidity is Result.Success && passwordValidity is Result.Success
 
     private fun loginWithGoogle(){
+        viewModelScope.launch {
+            _loginUiState.update { it.copy(isShowLoading = true) }
+            val signInResultResponse = loginWithGoogleUseCase.beginSignInRequest()
+            _loginUiState.update { it.copy(signInResultResponse = signInResultResponse, isShowLoading = false) }
+        }
+    }
 
+    private fun signInWithCredential(intent: Intent?){
+        _loginUiState.update { it.copy(isShowLoading = true) }
+        viewModelScope.launch {
+            val result = loginWithGoogleUseCase.signInWithCredential(intent)
+            when(result){
+                is Result.Fail -> _loginUiState.update { it.copy(generalError = result.message) }
+                is Result.Success -> _loginUiState.update { it.copy(shouldGoToDashboard = true) }
+            }
+            _loginUiState.update { it.copy(isShowLoading = false) }
+        }
     }
 
     private fun forgotPassword(){

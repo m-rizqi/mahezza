@@ -25,6 +25,19 @@ class MainAuthRepository @Inject constructor(
         }
     }
 
+    override suspend fun loginWithEmailAndPassword(
+        email: String,
+        password: String
+    ): Result<FirebaseUser> {
+        val emailAndPasswordRequest = EmailAndPasswordRequest(email, password)
+        val response = firebaseAuthentication.signInWithEmailAndPassword(emailAndPasswordRequest)
+        return if (isRegisterSuccess(response)) {
+            Result.Success(response.firebaseUser!!)
+        } else {
+            Result.Fail(response.message)
+        }
+    }
+
     override suspend fun beginSignInRequest(): BeginSignInResultResponse {
         return firebaseAuthentication.beginSignInRequest()
     }
