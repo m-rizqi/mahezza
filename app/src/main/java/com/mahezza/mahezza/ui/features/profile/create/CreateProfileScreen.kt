@@ -354,16 +354,20 @@ fun RelationshipWithChildrenCardGroup(
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement
+                .spacedBy(8.dp)
         ) {
             relationshipWithChildrenList.forEachIndexed { index, relationshipWithChildren ->
                 RelationshipWithChildrenCard(
+                    modifier = Modifier
+                        .weight(1f),
                     isSelected = index == selectedIndex,
                     relationshipWithChildren = relationshipWithChildren,
                     contentDescription = stringResource(id = relationshipWithChildren.stringResId)
                 ) {
                     onCardSelected(index)
                 }
+
             }
         }
         if (selectedIndex == relationshipWithChildrenList.lastIndex){
