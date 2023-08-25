@@ -30,7 +30,7 @@ fun MainNavigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.Login
+        startDestination = Routes.CreateProfile
     ){
         composableWithAnimation(
             route = Routes.OnBoarding

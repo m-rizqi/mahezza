@@ -62,6 +62,7 @@ import com.mahezza.mahezza.ui.components.PasswordToggleTextFieldWithTitle
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
+import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
@@ -99,7 +100,7 @@ fun RegisterScreen(
         val startProfileScreen = uiState.value.shouldStartCreateProfileScreen
         if (startProfileScreen != null){
             showToast(context, context.getString(R.string.register_success))
-            navController.navigate("${Routes.CreateProfile}/${startProfileScreen.userId}")
+            navController.navigate("${Routes.CreateProfile}?${USER_ID}=${startProfileScreen.userId}")
             registerViewModel.onEvent(RegisterEvent.OnCreateProfileScreenStarted)
         }
     }
