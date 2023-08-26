@@ -10,7 +10,9 @@ import com.mahezza.mahezza.data.source.firebase.auth.FirebaseAuthentication
 import com.mahezza.mahezza.data.source.firebase.auth.MainFirebaseAuthentication
 import com.mahezza.mahezza.data.source.firebase.firestore.ChildrenFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainChildrenFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.firestore.MainPuzzleFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainUserFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.firestore.PuzzleFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.storage.FirebaseStorage
 import com.mahezza.mahezza.data.source.firebase.storage.MainFirebaseStorage
@@ -70,6 +72,12 @@ object FirebaseModule {
     fun provideChildrenFirebaseFirestore(
         @IODispatcher dispatcher: CoroutineDispatcher
     ) : ChildrenFirebaseFirestore = MainChildrenFirebaseFirestore(dispatcher)
+
+    @Singleton
+    @Provides
+    fun providePuzzleFirebaseFirestore(
+        @IODispatcher dispatcher: CoroutineDispatcher
+    ) : PuzzleFirebaseFirestore = MainPuzzleFirebaseFirestore(dispatcher)
 
     @Singleton
     @Provides

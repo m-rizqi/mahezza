@@ -23,5 +23,4 @@ class MainChildrenRepository @Inject constructor(
         return Result.Fail(firebaseResult.message)
     }
 
-    private fun isFirebaseResultSuccess(firebaseResult: FirebaseResult<out Any>): Boolean = firebaseResult.isSuccess && firebaseResult.data != null
 }

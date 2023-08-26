@@ -10,6 +10,8 @@ import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCase
 import com.mahezza.mahezza.domain.auth.RegisterWithGoogleUseCaseImpl
 import com.mahezza.mahezza.domain.children.InsertChildUseCase
 import com.mahezza.mahezza.domain.children.InsertChildUseCaseImpl
+import com.mahezza.mahezza.domain.puzzle.RedeemPuzzleUseCase
+import com.mahezza.mahezza.domain.puzzle.RedeemPuzzleUseCaseImpl
 import com.mahezza.mahezza.domain.user.CreateProfileUseCase
 import com.mahezza.mahezza.domain.user.CreateProfileUseCaseImpl
 import com.mahezza.mahezza.domain.user.GetUserByIdUseCase
@@ -43,4 +45,6 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindInsertChildProfileUseCase(useCase: InsertChildUseCaseImpl) : InsertChildUseCase
+    @Binds
+    abstract fun bindRedeemPuzzleUseCase(useCase: RedeemPuzzleUseCaseImpl) : RedeemPuzzleUseCase
 }
