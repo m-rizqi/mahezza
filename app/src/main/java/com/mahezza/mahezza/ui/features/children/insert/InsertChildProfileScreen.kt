@@ -43,13 +43,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,13 +66,13 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.request.RequestOptions
 import com.mahezza.mahezza.R
-import com.mahezza.mahezza.domain.common.FormatDateUseCase
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.OutlinedAccentYellowButton
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
+import com.mahezza.mahezza.ui.nav.NavArgumentConst.NEXT_ROUTE
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.Black
@@ -112,10 +106,10 @@ fun InsertChildProfileScreen(
             viewModel.onEvent(InsertChildProfileEvent.OnGeneralMessageShowed)
         }
     }
-    LaunchedEffect(key1 = uiState.value.shouldStartDashboardScreen){
-        if (uiState.value.shouldStartDashboardScreen){
-            navController.navigate(Routes.Dashboard)
-            viewModel.onEvent(InsertChildProfileEvent.OnDashboardStarted)
+    LaunchedEffect(key1 = uiState.value.shouldStartRedeemPuzzleScreen){
+        if (uiState.value.shouldStartRedeemPuzzleScreen){
+            navController.navigate("${Routes.RedeemPuzzle}?${NEXT_ROUTE}=${Routes.Dashboard}")
+            viewModel.onEvent(InsertChildProfileEvent.OnRedeemPuzzleStarted)
         }
     }
 

@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,6 +49,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.ui.ext.makeStatusBarTransparent
+import com.mahezza.mahezza.ui.ext.resetStatusBarFromTransparent
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.Black
@@ -66,7 +68,8 @@ fun OnBoardingScreen(
 ) {
     val viewModel : OnBoardingViewModel = viewModel()
     val uiState = viewModel.uiState.collectAsState()
-    (LocalContext.current as Activity).makeStatusBarTransparent()
+    val activity = (LocalContext.current as Activity)
+//    activity.makeStatusBarTransparent()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -98,6 +101,7 @@ fun OnBoardingScreen(
             pageCount = pagerState.pageCount,
             onNextClickListener = {
                 if (viewModel.isLastPage(pagerState.currentPage, pagerState.pageCount)){
+//                    activity.resetStatusBarFromTransparent()
                     navController.navigate(Routes.Login)
                 }else{
                     coroutineScope.launch {
@@ -137,7 +141,7 @@ fun OnBoardingContent(
             style = PoppinsRegular16,
             color = GreyText
         )
-        Spacer(Modifier.height(56.dp))
+        Spacer(Modifier.height(40.dp))
         Row(
             modifier = Modifier
                 .wrapContentHeight()

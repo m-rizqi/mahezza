@@ -1,4 +1,4 @@
-package com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader
+package com.mahezza.mahezza.ui.features.redeempuzzle.redeem
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,20 +14,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class QRCodeReaderViewModel @Inject constructor(
+class RedeemPuzzleViewModel @Inject constructor(
     private val redeemPuzzleUseCase: RedeemPuzzleUseCase
-) : ViewModel(){
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(QRCodeReaderUiState())
-    val uiState : StateFlow<QRCodeReaderUiState>
+    private val _uiState = MutableStateFlow(RedeemPuzzleUiState())
+    val uiState : StateFlow<RedeemPuzzleUiState>
         get() = _uiState.asStateFlow()
 
-    fun onEvent(event : QRCodeReaderEvent){
+    fun onEvent(event : RedeemPuzzleEvent){
         when(event){
-            is QRCodeReaderEvent.OnRedeemPuzzle -> redeemPuzzle(uiState.value.qrcode)
-            QRCodeReaderEvent.OnRedeemSuccessDialogShowed -> _uiState.update { it.copy(puzzleRedeemedState = null, qrcode = "") }
-            QRCodeReaderEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
-            is QRCodeReaderEvent.OnQRScanned -> _uiState.update { it.copy(qrcode = event.value) }
+            is RedeemPuzzleEvent.OnRedeemPuzzle -> redeemPuzzle(uiState.value.code)
+            RedeemPuzzleEvent.OnRedeemSuccessDialogShowed -> _uiState.update { it.copy(puzzleRedeemedState = null, code = "") }
+            RedeemPuzzleEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
+            is RedeemPuzzleEvent.OnCodeValueChanged -> _uiState.update { it.copy(code = event.value) }
         }
     }
 
