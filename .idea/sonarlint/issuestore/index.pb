@@ -31,8 +31,6 @@ d
 Oapp/src/main/java/com/mahezza/mahezza/data/source/datastore/MahezzaDataStore.kt,c\3\c3daf79430bbab0faee84779b5470091c3c69a19
 à
 Xapp/src/main/java/com/mahezza/mahezza/domain/auth/RegisterWithEmailAndPasswordUseCase.kt,9\d\9d421ba2fc306be4a960a6aed7eb8fc1998f3556
-i
-9app/src/main/java/com/mahezza/mahezza/app/MainActivity.kt,1\b\1bf465ffedc9ecf6c2206bc15056637c88e36d7a
 É
 Sapp/src/main/java/com/mahezza/mahezza/data/source/firebase/response/SignInResult.kt,d\a\da7c399b0e7a513c15e161983da2d4a59221c0ab
 ~
@@ -88,8 +86,6 @@ Oapp/src/main/java/com/mahezza/mahezza/domain/auth/LoginWithGoogleUseCaseImpl.kt
 Zapp/src/main/java/com/mahezza/mahezza/ui/features/profile/create/CreateProfileViewModel.kt,9\b\9be04fb7872ce832a0ee02aebc943b010f4a73cd
 à
 Xapp/src/main/java/com/mahezza/mahezza/ui/features/profile/create/CreateProfileUiState.kt,e\5\e5cb9ceda800d88a275a59e8fc9fbf7567c8ece6
-@
-app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 g
@@ -112,3 +108,9 @@ Gapp/src/main/java/com/mahezza/mahezza/data/repository/UserRepository.kt,7\2\72
 Kapp/src/main/java/com/mahezza/mahezza/data/repository/MainUserRepository.kt,c\2\c2165fd3bfae95741450a41dfe728f64bcc9a22d
 ç
 ]app/src/main/java/com/mahezza/mahezza/data/source/firebase/firestore/UserFirebaseFirestore.kt,3\0\305cb7f1215c74135936794ffd853c925d43b0ad
+É
+Sapp/src/main/java/com/mahezza/mahezza/ui/features/onboarding/OnBoardingViewModel.kt,f\8\f8c80194907497ef92ca0996737cf0f03b7223a5
+Ä
+Papp/src/main/java/com/mahezza/mahezza/ui/features/onboarding/OnBoardingScreen.kt,b\7\b7e7e7eb6fc0a688d1dd5d5d8d5e4d5c17a6598b
+Å
+Qapp/src/main/java/com/mahezza/mahezza/ui/features/onboarding/OnBoardingUiState.kt,6\4\64f9975a59e93bb5d9b3592e31bff9282cd14afd
