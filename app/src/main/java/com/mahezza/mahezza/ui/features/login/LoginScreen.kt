@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,20 +27,19 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.GoogleButton
@@ -49,8 +47,11 @@ import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.PasswordToggleTextFieldWithTitle
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import com.mahezza.mahezza.ui.ext.showToast
-import com.mahezza.mahezza.ui.features.register.RegisterEvent
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
@@ -74,6 +75,9 @@ fun LoginScreen(
     val email = loginViewModel.email.collectAsState()
     val password = loginViewModel.password.collectAsState()
     val uiState = loginViewModel.loginUiState.collectAsState()
+    var isShowForgotPasswordDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     val loginWithGoogleLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -179,7 +183,7 @@ fun LoginScreen(
             ) {
                 TextButton(
                     onClick = {
-                        loginViewModel.onEvent(LoginEvent.OnForgotPasswordClicked)
+                        isShowForgotPasswordDialog = true
                     }
                 ) {
                     Text(
@@ -237,6 +241,18 @@ fun LoginScreen(
 
     }
     LoadingScreen(isShowLoading = uiState.value.isShowLoading)
+
+    if (isShowForgotPasswordDialog){
+        ForgotPasswordDialog(
+            onDismissRequest = {
+                isShowForgotPasswordDialog = it
+            }, 
+            onSendResetEmail = {
+                loginViewModel.onEvent(LoginEvent.OnForgotPasswordRequest(it))
+            }
+        )
+    }
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)

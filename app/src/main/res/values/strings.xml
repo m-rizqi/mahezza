@@ -86,4 +86,7 @@
     <string name="on_boarding_desc_1">Edukasi kesehatan mental di MAHEZZA dilakukan melalui interaksi dengan puzzle yang tidak hanya menarik, tetapi juga bermanfaat untuk perkembangan anak.</string>
     <string name="on_boarding_desc_2">Jelajahi kesehatan mental dalam bentuk puzzle yang menarik dan edukatif bersama aplikasi MAHEZZA.</string>
     <string name="on_boarding_desc_3">MAHEZZA memberikan solusi inovatif untuk memperkenalkan pentingnya kesehatan mental sejak dini melalui puzzle.</string>
+    <string name="enter_your_email">Masukkan email kamu</string>
+    <string name="send_reset_email">Kirim Reset Password</string>
+    <string name="reset_email_send">Email untuk reset password terkirim, silahkan cek email kamu</string>
 </resources>

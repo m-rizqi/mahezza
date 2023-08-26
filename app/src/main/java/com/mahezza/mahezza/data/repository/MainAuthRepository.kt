@@ -51,5 +51,14 @@ class MainAuthRepository @Inject constructor(
         }
     }
 
+    override suspend fun sendPasswordResetEmail(email: String): Result<Boolean> {
+        val firebaseResult = firebaseAuthentication.sendPasswordResetEmail(email)
+        return if (firebaseResult.isSuccess) {
+            Result.Success(true)
+        } else {
+            Result.Fail(firebaseResult.message)
+        }
+    }
+
     private fun isRegisterSuccess(response: SignInRegisterResponse): Boolean = response.isSuccess && response.firebaseUser != null
 }
