@@ -9,6 +9,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mahezza.mahezza.common.StringResource
+import com.mahezza.mahezza.data.source.firebase.FirebaseResult
 import com.mahezza.mahezza.data.source.firebase.request.EmailAndPasswordRequest
 import com.mahezza.mahezza.data.source.firebase.response.BeginSignInResultResponse
 import com.mahezza.mahezza.data.source.firebase.response.SignInRegisterResponse
@@ -118,4 +119,14 @@ class MainFirebaseAuthentication @Inject constructor(
     override fun signOut() = firebaseAuth.signOut()
 
     override fun getCurrentUser() = firebaseAuth.currentUser
+    override suspend fun sendPasswordResetEmail(email: String): FirebaseResult<Boolean> {
+        return withContext(dispatcher){
+            try {
+                firebaseAuth.sendPasswordResetEmail(email).await()
+                return@withContext FirebaseResult(data = true, isSuccess = true, message = null)
+            }catch (e : Exception){
+                return@withContext FirebaseResult(null, false, StringResource.DynamicString(e.message.toString()))
+            }
+        }
+    }
 }

@@ -4,12 +4,14 @@ import android.content.Intent
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mahezza.mahezza.R
+import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.domain.Result
+import com.mahezza.mahezza.domain.auth.ForgotPasswordUseCase
 import com.mahezza.mahezza.domain.auth.LoginWithEmailAndPasswordUseCase
 import com.mahezza.mahezza.domain.auth.LoginWithGoogleUseCase
 import com.mahezza.mahezza.domain.auth.ValidateEmailUseCase
 import com.mahezza.mahezza.domain.auth.ValidatePasswordUseCase
-import com.mahezza.mahezza.ui.features.register.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +24,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val loginWithEmailAndPasswordUseCase: LoginWithEmailAndPasswordUseCase,
-    private val loginWithGoogleUseCase: LoginWithGoogleUseCase
+    private val loginWithGoogleUseCase: LoginWithGoogleUseCase,
+    private val forgotPasswordUseCase: ForgotPasswordUseCase
 ) : ViewModel() {
 
     private val validateEmailUseCase: ValidateEmailUseCase = ValidateEmailUseCase()
@@ -52,7 +55,7 @@ class LoginViewModel @Inject constructor(
         when(event){
             LoginEvent.OnLoginClicked -> loginWithEmailAndPassword()
             LoginEvent.OnLoginWithGoogleClicked -> loginWithGoogle()
-            LoginEvent.OnForgotPasswordClicked -> forgotPassword()
+            is LoginEvent.OnForgotPasswordRequest -> forgotPassword(event.email)
             LoginEvent.OnDashboardScreenStarted -> _loginUiState.update { it.copy(shouldGoToDashboard = false) }
             LoginEvent.OnGeneralErrorShowed -> _loginUiState.update { it.copy(generalError = null) }
             is LoginEvent.OnGoogleSignInResult -> signInWithCredential(event.intent)
@@ -124,8 +127,16 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun forgotPassword(){
-
+    private fun forgotPassword(email: String) {
+        _loginUiState.update { it.copy(isShowLoading = true) }
+        viewModelScope.launch {
+            val result = forgotPasswordUseCase(email)
+            when(result){
+                is Result.Fail -> _loginUiState.update { it.copy(generalError = result.message) }
+                is Result.Success -> _loginUiState.update { it.copy(generalError = StringResource.StringResWithParams(R.string.reset_email_send)) }
+            }
+            _loginUiState.update { it.copy(isShowLoading = false) }
+        }
     }
 
 }
