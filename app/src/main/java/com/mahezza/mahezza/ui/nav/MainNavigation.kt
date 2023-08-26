@@ -32,11 +32,13 @@ import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
 import timber.log.Timber
 
 @Composable
-fun MainNavigation() {
+fun MainNavigation(
+    startDestination : String = Routes.OnBoarding
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.OnBoarding
+        startDestination = startDestination
     ){
         composableWithAnimation(
             route = Routes.OnBoarding
