@@ -23,16 +23,20 @@ import com.mahezza.mahezza.ui.features.profile.create.CreateProfileScreen
 import com.mahezza.mahezza.ui.features.profile.create.CreateProfileViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
+import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleScreen
+import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleViewModel
 import com.mahezza.mahezza.ui.features.register.RegisterScreen
 import com.mahezza.mahezza.ui.features.register.RegisterViewModel
+import com.mahezza.mahezza.ui.nav.NavArgumentConst.NEXT_ROUTE
 import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
+import timber.log.Timber
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.QRCodeReader
+        startDestination = Routes.OnBoarding
     ){
         composableWithAnimation(
             route = Routes.OnBoarding
@@ -85,6 +89,23 @@ fun MainNavigation() {
             )
         }
         composableWithAnimation(
+            route = "${Routes.RedeemPuzzle}?${NEXT_ROUTE}={${NEXT_ROUTE}}",
+            arguments = listOf(
+                navArgument(NEXT_ROUTE){
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
+        ){entry ->
+            val nextRoute = entry.arguments?.getString(NEXT_ROUTE)
+            val redeemPuzzleViewModel : RedeemPuzzleViewModel = hiltViewModel()
+            RedeemPuzzleScreen(
+                navController = navController,
+                nextRoute = nextRoute,
+                viewModel = redeemPuzzleViewModel
+            )
+        }
+        composableWithAnimation(
             route = Routes.QRCodeReader
         ){
             val qrCodeReaderViewModel : QRCodeReaderViewModel = hiltViewModel()
@@ -111,12 +132,12 @@ fun NavGraphBuilder.composableWithAnimation(
         },
         exitTransition = {
             slideOutHorizontally(targetOffsetX = {fullWidth ->
-                fullWidth
+                -fullWidth
             })
         },
         popEnterTransition = {
             slideInHorizontally(initialOffsetX = {fullWidth ->
-                fullWidth
+                -fullWidth
             })
         },
         popExitTransition = {

@@ -10,7 +10,6 @@ import com.mahezza.mahezza.domain.ResultWithKeyMessages
 import com.mahezza.mahezza.domain.children.InsertChildUseCase
 import com.mahezza.mahezza.domain.common.CalculateAgeUseCase
 import com.mahezza.mahezza.domain.common.FormatDateUseCase
-import com.mahezza.mahezza.domain.user.CreateProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +50,7 @@ class InsertChildProfileViewModel @Inject constructor(
             InsertChildProfileEvent.OnSaveAndInsertMore -> saveAndAddMoreChildProfile()
             InsertChildProfileEvent.OnSaveAndNext -> saveAndNext()
             InsertChildProfileEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalErrorMessage = null) }
-            InsertChildProfileEvent.OnDashboardStarted -> _uiState.update { it.copy(shouldStartDashboardScreen = false) }
+            InsertChildProfileEvent.OnRedeemPuzzleStarted -> _uiState.update { it.copy(shouldStartRedeemPuzzleScreen = false) }
         }
     }
 
@@ -93,7 +92,7 @@ class InsertChildProfileViewModel @Inject constructor(
             if (result != null){
                 _uiState.update {
                     it.copy(
-                        shouldStartDashboardScreen = true,
+                        shouldStartRedeemPuzzleScreen = true,
                     )
                 }
             }

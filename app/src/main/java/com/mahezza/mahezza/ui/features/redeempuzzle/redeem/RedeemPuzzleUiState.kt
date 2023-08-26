@@ -1,11 +1,10 @@
-package com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader
+package com.mahezza.mahezza.ui.features.redeempuzzle.redeem
 
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.ui.features.redeempuzzle.PuzzleRedeemedState
 
-data class QRCodeReaderUiState(
-
-    val qrcode : String = "",
+data class RedeemPuzzleUiState(
+    val code : String = "",
 
     val generalMessage: StringResource? = null,
     val isShowLoading: Boolean = false,

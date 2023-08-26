@@ -42,6 +42,11 @@ val PoppinsSemiBold20 = TextStyle(
     fontWeight = FontWeight.SemiBold,
     fontSize = 20.sp
 )
+val PoppinsSemiBold24 = TextStyle(
+    fontFamily = PoppinsFamily,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 24.sp
+)
 val PoppinsRegular10 = TextStyle(
     fontFamily = PoppinsFamily,
     fontWeight = FontWeight.Normal,

@@ -69,5 +69,21 @@
     <string name="empty_or_error_screen">Screen kosong atau error</string>
     <string name="dont_have_camera_permission">Aplikasi belum memiliki akses kamera, Izinkan akses melalui pengaturan</string>
     <string name="puzzle_redeemed">Puzzle Berhasil Didapatkan</string>
-    <string name="puzzle_already_redemeed">Puzzle ini sudah didapatkan</string>
+    <string name="puzzle_already_redemeed">Kamu sudah mendapatkan puzzle ini</string>
+    <string name="dont_have_puzzle">Belum punya puzzle Mahezza?</string>
+    <string name="get_here">Dapatkan disini</string>
+    <string name="scan_qr">Scan QR Code</string>
+    <string name="redeem">Redeem</string>
+    <string name="mahezza_puzzle">Puzzle Mahezza</string>
+    <string name="or_enter_code">atau masukkan kode</string>
+    <string name="code">Kode</string>
+    <string name="puzzle_code">Kode Puzzle</string>
+    <string name="puzzle_code_can_be_find_in_packaging">Kode Puzzle dapat ditemukan pada kemasan, kartu petunjuk, dekat QR code, atau di dalam kemasan</string>
+    <string name="close_this_page">Tutup Halaman Ini</string>
+    <string name="on_boarding_title_1">Membantu anak tumbuh sehat secara mental sambil bermain puzzle bersama MAHEZZA.</string>
+    <string name="on_boarding_title_2">Jelajahi kesehatan mental dengan puzzle edukatif, bersama MAHEZZA.</string>
+    <string name="on_boarding_title_3">Puzzle untuk kesehatan mental anak dan keluarga, hanya di MAHEZZA.</string>
+    <string name="on_boarding_desc_1">Edukasi kesehatan mental di MAHEZZA dilakukan melalui interaksi dengan puzzle yang tidak hanya menarik, tetapi juga bermanfaat untuk perkembangan anak.</string>
+    <string name="on_boarding_desc_2">Jelajahi kesehatan mental dalam bentuk puzzle yang menarik dan edukatif bersama aplikasi MAHEZZA.</string>
+    <string name="on_boarding_desc_3">MAHEZZA memberikan solusi inovatif untuk memperkenalkan pentingnya kesehatan mental sejak dini melalui puzzle.</string>
 </resources>

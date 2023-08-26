@@ -12,6 +12,5 @@ interface UserFirebaseFirestore {
     }
     suspend fun insertUser(userRequest : UserRequest) : FirebaseResult<String>
     suspend fun getUserById(id : String) : FirebaseResult<UserResponse>
-
     suspend fun insertRedeemedPuzzle(userId : String, insertRedeemedPuzzleRequest: InsertRedeemedPuzzleRequest) : FirebaseResult<Boolean>
 }

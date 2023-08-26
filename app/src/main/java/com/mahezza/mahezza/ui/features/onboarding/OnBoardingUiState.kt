@@ -9,18 +9,18 @@ data class OnBoardingUiState(
     val onBoardingResources : List<OnBoardingResource> = listOf(
         OnBoardingResource(
             R.drawable.onboarding1_image,
-            R.string.lorem_ipsum_dolor_si_amet,
-            R.string.lorem_ipsum_dolor_si_amet_consectur
+            R.string.on_boarding_title_1,
+            R.string.on_boarding_desc_1
         ),
         OnBoardingResource(
             R.drawable.onboarding2_image,
-            R.string.lorem_ipsum_dolor_si_amet,
-            R.string.lorem_ipsum_dolor_si_amet_consectur
+            R.string.on_boarding_title_2,
+            R.string.on_boarding_desc_2
         ),
         OnBoardingResource(
             R.drawable.onboarding3_image,
-            R.string.lorem_ipsum_dolor_si_amet,
-            R.string.lorem_ipsum_dolor_si_amet_consectur
+            R.string.on_boarding_title_3,
+            R.string.on_boarding_desc_3
         )
     )
 ) {

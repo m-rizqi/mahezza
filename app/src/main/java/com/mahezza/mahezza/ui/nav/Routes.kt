@@ -4,8 +4,9 @@ object Routes {
     const val OnBoarding = "onboarding"
     const val Login = "login"
     const val Register = "register"
-    const val CreateProfile = "create-profile"
-    const val InsertChildProfile = "add-child-profile"
+    const val CreateProfile = "create_profile"
+    const val InsertChildProfile = "add_child_profile"
     const val Dashboard = "dashboard"
-    const val QRCodeReader = "qrcode-reader"
+    const val RedeemPuzzle = "redeem_puzzle"
+    const val QRCodeReader = "qrcode_reader"
 }

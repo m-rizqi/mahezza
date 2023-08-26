@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.mahezza.mahezza.R
 
 fun Activity.makeStatusBarTransparent() {
     window.apply {
@@ -23,6 +24,21 @@ fun Activity.makeStatusBarTransparent() {
         }
         statusBarColor = android.graphics.Color.TRANSPARENT
     }
+}
+
+fun Activity.resetStatusBarFromTransparent(){
+    window.apply {
+        // Clear the added flags
+        clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        } else {
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+        // Restore the default status bar color (you might need to provide the appropriate color)
+        statusBarColor = this.context.resources.getColor(R.color.white, null)
+    }
+
 }
 
 @Composable

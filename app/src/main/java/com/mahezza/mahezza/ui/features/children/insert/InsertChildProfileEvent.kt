@@ -11,5 +11,5 @@ sealed class InsertChildProfileEvent {
     object OnSaveAndInsertMore : InsertChildProfileEvent()
     object OnSaveAndNext : InsertChildProfileEvent()
     object OnGeneralMessageShowed : InsertChildProfileEvent()
-    object OnDashboardStarted : InsertChildProfileEvent()
+    object OnRedeemPuzzleStarted : InsertChildProfileEvent()
 }

@@ -135,6 +135,7 @@ fun AutoCompleteTextField(
                                 .clickable {
                                     inputValue = suggestion
                                     expanded = false
+                                    onValueChange(suggestion)
                                 }
                         )
                     }
@@ -170,7 +171,9 @@ fun AutoCompleteTextFieldWithTitle(
             errorText = errorText,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
-            onValueChange = onValueChange
+            onValueChange = {
+                onValueChange(it)
+            }
         )
     }
 }

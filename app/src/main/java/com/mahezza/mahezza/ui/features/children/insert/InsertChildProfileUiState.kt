@@ -20,5 +20,5 @@ data class InsertChildProfileUiState(
 
     val generalErrorMessage : StringResource? = null,
     val isShowLoading : Boolean = false,
-    val shouldStartDashboardScreen : Boolean = false
+    val shouldStartRedeemPuzzleScreen : Boolean = false
 )
