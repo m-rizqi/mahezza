@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="default_job_list">
+        <item>Pegawai Swasta</item>
+        <item>Guru</item>
+        <item>Pegawai Negeri Sipil</item>
+        <item>Dokter</item>
+        <item>Insinyur</item>
+        <item>Penyiar</item>
+        <item>Pengacara</item>
+        <item>Pedagang</item>
+        <item>Ibu Rumah Tangga</item>
+        <item>Dosen</item>
+    </string-array>
+    <string-array name="other_relationships">
+        <item>Kakak Laki-Laki</item>
+        <item>Kakak Perempuan</item>
+        <item>Paman</item>
+        <item>Tante</item>
+        <item>Kakek</item>
+        <item>Nenek</item>
+        <item>Wali</item>
+    </string-array>
+</resources>
