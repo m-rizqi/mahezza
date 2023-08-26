@@ -316,6 +316,7 @@ fun InsertChildProfileContent(
                     }
                 },
                 onCloseRequest = {
+                    focusManager.clearFocus()
                     birthDateTextFieldFocusRequester.freeFocus()
                 }
             ) {

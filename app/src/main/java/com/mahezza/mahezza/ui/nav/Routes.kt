@@ -7,4 +7,5 @@ object Routes {
     const val CreateProfile = "create-profile"
     const val InsertChildProfile = "add-child-profile"
     const val Dashboard = "dashboard"
+    const val QRCodeReader = "qrcode-reader"
 }

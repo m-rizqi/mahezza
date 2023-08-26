@@ -4,7 +4,9 @@ import com.mahezza.mahezza.data.repository.AuthRepository
 import com.mahezza.mahezza.data.repository.ChildrenRepository
 import com.mahezza.mahezza.data.repository.MainAuthRepository
 import com.mahezza.mahezza.data.repository.MainChildrenRepository
+import com.mahezza.mahezza.data.repository.MainPuzzleRepository
 import com.mahezza.mahezza.data.repository.MainUserRepository
+import com.mahezza.mahezza.data.repository.PuzzleRepository
 import com.mahezza.mahezza.data.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -22,4 +24,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindChildrenRepository(repository: MainChildrenRepository): ChildrenRepository
+
+    @Binds
+    abstract fun bindPuzzleRepository(repository: MainPuzzleRepository): PuzzleRepository
 }

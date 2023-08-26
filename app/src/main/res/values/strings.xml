@@ -63,4 +63,11 @@
     <string name="select_child_birthday">Pilih Tanggal Lahir Anak</string>
     <string name="saved_child_photo_profile">Foto profil anak yang telah tersimpan</string>
     <string name="plus_param">+%d</string>
+    <string name="back">Kembali</string>
+    <string name="point_camera_to_qrcode">Arahkan kamera ke QR code yang ada pada puzzle</string>
+    <string name="redeem_puzzle">Redeem Puzzle</string>
+    <string name="empty_or_error_screen">Screen kosong atau error</string>
+    <string name="dont_have_camera_permission">Aplikasi belum memiliki akses kamera, Izinkan akses melalui pengaturan</string>
+    <string name="puzzle_redeemed">Puzzle Berhasil Didapatkan</string>
+    <string name="puzzle_already_redemeed">Puzzle ini sudah didapatkan</string>
 </resources>

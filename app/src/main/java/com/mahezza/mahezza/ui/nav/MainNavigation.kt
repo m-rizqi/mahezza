@@ -21,6 +21,8 @@ import com.mahezza.mahezza.ui.features.login.LoginViewModel
 import com.mahezza.mahezza.ui.features.onboarding.OnBoardingScreen
 import com.mahezza.mahezza.ui.features.profile.create.CreateProfileScreen
 import com.mahezza.mahezza.ui.features.profile.create.CreateProfileViewModel
+import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
+import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
 import com.mahezza.mahezza.ui.features.register.RegisterScreen
 import com.mahezza.mahezza.ui.features.register.RegisterViewModel
 import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
@@ -30,7 +32,7 @@ fun MainNavigation() {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = Routes.CreateProfile
+        startDestination = Routes.QRCodeReader
     ){
         composableWithAnimation(
             route = Routes.OnBoarding
@@ -80,6 +82,15 @@ fun MainNavigation() {
         ){
             DashboardScreen(
                 navController = navController,
+            )
+        }
+        composableWithAnimation(
+            route = Routes.QRCodeReader
+        ){
+            val qrCodeReaderViewModel : QRCodeReaderViewModel = hiltViewModel()
+            QRCodeReaderScreen(
+                navController = navController,
+                viewModel = qrCodeReaderViewModel
             )
         }
     }

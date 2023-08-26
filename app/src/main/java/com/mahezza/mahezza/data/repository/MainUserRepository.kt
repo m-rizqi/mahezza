@@ -6,6 +6,7 @@ import com.mahezza.mahezza.data.model.toUser
 import com.mahezza.mahezza.data.model.toUserRequest
 import com.mahezza.mahezza.data.source.firebase.FirebaseResult
 import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.request.InsertRedeemedPuzzleRequest
 import javax.inject.Inject
 
 class MainUserRepository @Inject constructor(
@@ -25,5 +26,13 @@ class MainUserRepository @Inject constructor(
         return Result.Fail(firebaseResult.message)
     }
 
-    private fun isFirebaseResultSuccess(firebaseResult: FirebaseResult<out Any>): Boolean = firebaseResult.isSuccess && firebaseResult.data != null
+    override suspend fun insertRedeemedPuzzle(
+        userId: String,
+        insertRedeemedPuzzleRequest: InsertRedeemedPuzzleRequest
+    ): Result<Boolean> {
+        val firebaseResult = userFirebaseFirestore.insertRedeemedPuzzle(userId, insertRedeemedPuzzleRequest)
+        if (isFirebaseResultSuccess(firebaseResult)) return Result.Success(firebaseResult.data!!)
+        return Result.Fail(firebaseResult.message)
+    }
+
 }
