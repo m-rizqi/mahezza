@@ -9,4 +9,6 @@ object Routes {
     const val Dashboard = "dashboard"
     const val RedeemPuzzle = "redeem_puzzle"
     const val QRCodeReader = "qrcode_reader"
+    const val Auth = "auth"
+    const val Home = "home"
 }

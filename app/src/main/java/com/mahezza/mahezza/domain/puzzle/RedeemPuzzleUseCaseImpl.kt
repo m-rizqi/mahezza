@@ -23,8 +23,8 @@ class RedeemPuzzleUseCaseImpl @Inject constructor(
 
     override suspend fun invoke(qrcode: String): Result<Puzzle> {
         val getPuzzleByQRCodeResult = puzzleRepository.getPuzzleByQRCode(qrcode)
-        if (getPuzzleByQRCodeResult.data == null) return Result.Fail(StringResource.StringResWithParams(R.string.problem_occur_try_again))
         if (getPuzzleByQRCodeResult is com.mahezza.mahezza.data.Result.Fail) return Result.Fail(getPuzzleByQRCodeResult.message)
+        if (getPuzzleByQRCodeResult.data == null) return Result.Fail(StringResource.StringResWithParams(R.string.problem_occur_try_again))
 
         val userId = dataStore.firebaseUserIdPreference.first() ?: return Result.Fail(StringResource.StringResWithParams(R.string.user_id_is_not_found))
         val puzzle = getPuzzleByQRCodeResult.data

@@ -89,4 +89,13 @@
     <string name="enter_your_email">Masukkan email kamu</string>
     <string name="send_reset_email">Kirim Reset Password</string>
     <string name="reset_email_send">Email untuk reset password terkirim, silahkan cek email kamu</string>
+    <string name="home">Beranda</string>
+    <string name="mental_health">Kesehatan Mental</string>
+    <string name="notification">Notifikasi</string>
+    <string name="children">Anak</string>
+    <string name="puzzle">Puzzle</string>
+    <string name="profile">Profil</string>
+    <string name="terms_of_service">Ketentuan Layanan</string>
+    <string name="privacy_policy">Kebijakan Pribadi</string>
+    <string name="sign_out">Keluar</string>
 </resources>
