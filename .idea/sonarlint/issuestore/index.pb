@@ -110,7 +110,11 @@ Kapp/src/main/java/com/mahezza/mahezza/data/repository/MainUserRepository.kt,c\
 ]app/src/main/java/com/mahezza/mahezza/data/source/firebase/firestore/UserFirebaseFirestore.kt,3\0\305cb7f1215c74135936794ffd853c925d43b0ad
 É
 Sapp/src/main/java/com/mahezza/mahezza/ui/features/onboarding/OnBoardingViewModel.kt,f\8\f8c80194907497ef92ca0996737cf0f03b7223a5
-Ä
-Papp/src/main/java/com/mahezza/mahezza/ui/features/onboarding/OnBoardingScreen.kt,b\7\b7e7e7eb6fc0a688d1dd5d5d8d5e4d5c17a6598b
 Å
 Qapp/src/main/java/com/mahezza/mahezza/ui/features/onboarding/OnBoardingUiState.kt,6\4\64f9975a59e93bb5d9b3592e31bff9282cd14afd
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+v
+Fapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginScreen.kt,7\6\76083ef4dab70201412a4f16277e56da1b089fd9
+f
+6app/src/main/java/com/mahezza/mahezza/ui/theme/Font.kt,4\4\449f447d1ae46e9daefe9a9f2a32205a2890d197

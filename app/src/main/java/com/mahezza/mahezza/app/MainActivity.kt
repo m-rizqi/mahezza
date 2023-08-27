@@ -6,14 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -26,13 +23,12 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
-import com.mahezza.mahezza.ui.features.onboarding.OnBoardingScreen
+import com.mahezza.mahezza.ui.nav.AuthNavigation
+import com.mahezza.mahezza.ui.nav.DashboardNavigation
 import com.mahezza.mahezza.ui.nav.MainNavigation
-import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.MahezzaTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -76,9 +72,7 @@ class MainActivity : ComponentActivity() {
                         isLoginFetched = true
                     }
                     if (isLoginFetched){
-                        MainNavigation(
-                            startDestination = if (isLogin) Routes.Dashboard else Routes.OnBoarding
-                        )
+                        MainNavigation(isLoggedIn = isLogin)
                     }
                 }
             }

@@ -4,119 +4,35 @@ import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.mahezza.mahezza.ui.features.children.insert.InsertChildProfileScreen
-import com.mahezza.mahezza.ui.features.children.insert.InsertChildProfileViewModel
-import com.mahezza.mahezza.ui.features.dashboard.DashboardScreen
-import com.mahezza.mahezza.ui.features.login.LoginScreen
-import com.mahezza.mahezza.ui.features.login.LoginViewModel
-import com.mahezza.mahezza.ui.features.onboarding.OnBoardingScreen
-import com.mahezza.mahezza.ui.features.profile.create.CreateProfileScreen
-import com.mahezza.mahezza.ui.features.profile.create.CreateProfileViewModel
-import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
-import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
-import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleScreen
-import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleViewModel
-import com.mahezza.mahezza.ui.features.register.RegisterScreen
-import com.mahezza.mahezza.ui.features.register.RegisterViewModel
-import com.mahezza.mahezza.ui.nav.NavArgumentConst.NEXT_ROUTE
-import com.mahezza.mahezza.ui.nav.NavArgumentConst.USER_ID
-import timber.log.Timber
 
 @Composable
 fun MainNavigation(
-    startDestination : String = Routes.OnBoarding
+    isLoggedIn : Boolean
 ) {
-    val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ){
-        composableWithAnimation(
-            route = Routes.OnBoarding
-        ){
-            OnBoardingScreen(navController)
-        }
-        composableWithAnimation(
-            route = Routes.Login
-        ){
-            val loginViewModel : LoginViewModel = hiltViewModel()
-            LoginScreen(navController, loginViewModel)
-        }
-        composableWithAnimation(
-            route = Routes.Register,
-        ){
-            val registerViewModel : RegisterViewModel = hiltViewModel()
-            RegisterScreen(navController, registerViewModel)
-        }
-        composableWithAnimation(
-            route = "${Routes.CreateProfile}?${USER_ID}={${USER_ID}}",
-            arguments = listOf(
-                navArgument(USER_ID){
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
-        ){entry ->
-            val userId = entry.arguments?.getString(USER_ID) ?: ""
-            val createProfileViewModel : CreateProfileViewModel = hiltViewModel()
-            CreateProfileScreen(
-                navController = navController,
-                userId = userId,
-                viewModel = createProfileViewModel
-            )
-        }
-        composableWithAnimation(
-            route = Routes.InsertChildProfile
-        ){
-            val insertChildProfileViewModel : InsertChildProfileViewModel = hiltViewModel()
-            InsertChildProfileScreen(
-                navController = navController,
-                viewModel = insertChildProfileViewModel
-            )
-        }
-        composableWithAnimation(
-            route = Routes.Dashboard
-        ){
-            DashboardScreen(
-                navController = navController,
-            )
-        }
-        composableWithAnimation(
-            route = "${Routes.RedeemPuzzle}?${NEXT_ROUTE}={${NEXT_ROUTE}}",
-            arguments = listOf(
-                navArgument(NEXT_ROUTE){
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
-        ){entry ->
-            val nextRoute = entry.arguments?.getString(NEXT_ROUTE)
-            val redeemPuzzleViewModel : RedeemPuzzleViewModel = hiltViewModel()
-            RedeemPuzzleScreen(
-                navController = navController,
-                nextRoute = nextRoute,
-                viewModel = redeemPuzzleViewModel
-            )
-        }
-        composableWithAnimation(
-            route = Routes.QRCodeReader
-        ){
-            val qrCodeReaderViewModel : QRCodeReaderViewModel = hiltViewModel()
-            QRCodeReaderScreen(
-                navController = navController,
-                viewModel = qrCodeReaderViewModel
-            )
-        }
+    if (isLoggedIn){
+        DashboardNavigation()
+    } else {
+        AuthNavigation()
     }
+}
+
+@Composable
+inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {
+    val navGraphRoute = destination.parent?.route ?: return viewModel()
+    val parentEntry = remember(this) {
+        navController.getBackStackEntry(navGraphRoute)
+    }
+    return viewModel(parentEntry)
 }
 
 fun NavGraphBuilder.composableWithAnimation(

@@ -84,10 +84,14 @@ fun RedeemPuzzleScreen(
     }
 
     BackHandler {
-        if (nextRoute.isNullOrBlank()){
-            navController.popBackStack()
-        } else {
-            navController.navigate(nextRoute)
+        when{
+            nextRoute.isNullOrBlank() -> navController.popBackStack()
+            nextRoute == Routes.Dashboard -> navController.navigate(nextRoute){
+                popUpTo(0){
+                    inclusive = true
+                }
+            }
+            else -> navController.navigate(nextRoute)
         }
     }
 
