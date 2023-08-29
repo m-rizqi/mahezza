@@ -1,17 +1,22 @@
 package com.mahezza.mahezza.data.source.firebase.firestore
 
 import android.content.res.Resources
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.source.firebase.FirebaseResult
+import com.mahezza.mahezza.data.source.firebase.addSnapshotListenerFlow
 import com.mahezza.mahezza.data.source.firebase.firestore.PuzzleFirebaseFirestore.Companion.PUZZLE_PATH
 import com.mahezza.mahezza.data.source.firebase.firestore.PuzzleFirebaseFirestore.Companion.QR_CODE_PATH
 import com.mahezza.mahezza.data.source.firebase.response.PuzzleResponse
 import com.mahezza.mahezza.data.source.firebase.response.QRCodeResponse
+import com.mahezza.mahezza.data.source.firebase.response.RedeemedPuzzleResponse
 import com.mahezza.mahezza.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -63,6 +68,15 @@ class MainPuzzleFirebaseFirestore @Inject constructor(
                 return@withContext FirebaseResult(null, false, StringResource.DynamicString(e.message.toString()))
             }
         }
+    }
+
+    override fun getPuzzleByIds(ids: List<String>): Flow<FirebaseResult<out List<PuzzleResponse>>> {
+        val reference = puzzleReference.whereIn(FieldPath.documentId(), ids)
+        return reference.addSnapshotListenerFlow(
+            dataType = PuzzleResponse::class.java,
+            dispatcher = dispatcher,
+            notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.puzzle_list_not_found)
+        )
     }
 
 

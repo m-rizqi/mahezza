@@ -5,13 +5,15 @@ import com.mahezza.mahezza.data.source.firebase.response.PuzzleResponse
 data class Puzzle(
     val id : String,
     val name : String,
-    val banner : String
+    val banner : String,
+    val description : String
 )
 
 fun PuzzleResponse.toPuzzle() : Puzzle{
     return Puzzle(
         id = this.id,
         name = this.name,
-        banner = this.banner
+        banner = this.banner,
+        description = this.description
     )
 }

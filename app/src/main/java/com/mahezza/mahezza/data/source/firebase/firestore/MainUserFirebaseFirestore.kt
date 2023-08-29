@@ -9,13 +9,16 @@ import com.google.firebase.ktx.Firebase
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.source.firebase.FirebaseResult
+import com.mahezza.mahezza.data.source.firebase.addSnapshotListenerFlow
 import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore.Companion.PUZZLE_PATH
 import com.mahezza.mahezza.data.source.firebase.firestore.UserFirebaseFirestore.Companion.USER_PATH
 import com.mahezza.mahezza.data.source.firebase.request.InsertRedeemedPuzzleRequest
 import com.mahezza.mahezza.data.source.firebase.request.UserRequest
+import com.mahezza.mahezza.data.source.firebase.response.RedeemedPuzzleResponse
 import com.mahezza.mahezza.data.source.firebase.response.UserResponse
 import com.mahezza.mahezza.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -71,6 +74,15 @@ class MainUserFirebaseFirestore(
                 return@withContext FirebaseResult(null, false, StringResource.DynamicString(e.message.toString()))
             }
         }
+    }
+
+    override fun getRedeemedPuzzleIds(userId: String): Flow<FirebaseResult<out List<RedeemedPuzzleResponse>>> {
+        val puzzleReference = usersCollection.document(userId).collection(PUZZLE_PATH)
+        return puzzleReference.addSnapshotListenerFlow(
+            dataType = RedeemedPuzzleResponse::class.java,
+            dispatcher = dispatcher,
+            notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.puzzle_list_not_found)
+        )
     }
 
     private suspend fun checkIfPuzzleAlreadyRedeemed(userId: String, puzzleId : String) : Boolean {

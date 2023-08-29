@@ -71,6 +71,7 @@ fun SelectChildForGameScreen(
     LaunchedEffect(key1 = uiState.value.generalMessage){
         uiState.value.generalMessage?.let { message ->
             showToast(context, message.asString(context))
+            viewModel.onEvent(SelectChildForGameEvent.OnGeneralMessageShowed)
         }
     }
 

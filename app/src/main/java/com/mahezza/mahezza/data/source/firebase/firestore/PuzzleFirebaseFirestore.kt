@@ -2,6 +2,7 @@ package com.mahezza.mahezza.data.source.firebase.firestore
 
 import com.mahezza.mahezza.data.source.firebase.FirebaseResult
 import com.mahezza.mahezza.data.source.firebase.response.PuzzleResponse
+import kotlinx.coroutines.flow.Flow
 
 interface PuzzleFirebaseFirestore {
 
@@ -13,4 +14,6 @@ interface PuzzleFirebaseFirestore {
     suspend fun findPuzzleIdByQRCode(qrcode : String) : FirebaseResult<PuzzleResponse>
 
     suspend fun getPuzzleById(id : String) : FirebaseResult<PuzzleResponse>
+
+    fun getPuzzleByIds(ids : List<String>) : Flow<FirebaseResult<out List<PuzzleResponse>>>
 }
