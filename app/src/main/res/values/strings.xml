@@ -110,4 +110,15 @@
     <string name="children_not_found">List anak tidak ditemukan</string>
     <string name="child_data_is_empty_or_error">List anak kosong atau terjadi kesalahan</string>
     <string name="a_child_must_selected">Minimal seorang anak harus terpilih</string>
+    <string name="what_play">Apa yang Dimainkan?</string>
+    <string name="puzzle_data_is_empty_or_error">List puzzle kosong atau terjadi kesalahan</string>
+    <string name="play_puzzle">Mainkan Puzzle</string>
+    <string name="puzzle_played">Puzzle dimainkan</string>
+    <string name="select_puzzle">Pilih puzzle</string>
+    <string name="puzzle_list_not_found">List puzzle tidak ditemukan</string>
+    <string name="select_puzzle_first">Pilih puzzle terlebih dahulu</string>
+    <string name="finished">Selesai</string>
+    <string name="on_going">Berjalan</string>
+    <string name="paused">Dijeda</string>
+    <string name="playing_puzzle_name">Bermain Puzzle %1$s</string>
 </resources>

@@ -60,9 +60,11 @@ import com.mahezza.mahezza.ui.features.dashboard.DashboardViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItem
 import com.mahezza.mahezza.ui.features.game.GameViewModel
+import com.mahezza.mahezza.ui.features.game.playsession.PlaySessionScreen
 import com.mahezza.mahezza.ui.features.game.selectchild.SelectChildForGameScreen
 import com.mahezza.mahezza.ui.features.game.selectchild.SelectChildForGameViewModel
 import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameScreen
+import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameViewModel
 import com.mahezza.mahezza.ui.features.home.HomeScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
@@ -270,7 +272,7 @@ fun DashboardNavigation() {
                 composableWithAnimation(
                     route = Routes.SelectChildForGame
                 ){
-                    val gameViewModel = it.sharedViewModel<GameViewModel>(navController = navController)
+                    val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
                     val selectChildForGameViewModel : SelectChildForGameViewModel = hiltViewModel()
                     SelectChildForGameScreen(
                         navController = navController,
@@ -281,10 +283,21 @@ fun DashboardNavigation() {
                 composableWithAnimation(
                     route = Routes.SelectPuzzleForGame
                 ){
-                    val gameViewModel = it.sharedViewModel<GameViewModel>(navController = navController)
-                    val selectChildForGameViewModel : SelectChildForGameViewModel = hiltViewModel()
+                    val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
+                    val selectPuzzleForGameViewModel : SelectPuzzleForGameViewModel = hiltViewModel()
                     SelectPuzzleForGameScreen(
-                        navController = navController
+                        navController = navController,
+                        gameViewModel = gameViewModel,
+                        viewModel = selectPuzzleForGameViewModel
+                    )
+                }
+                composableWithAnimation(
+                    route = Routes.PlaySession
+                ){
+                    val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
+                    val selectPuzzleForGameViewModel : SelectPuzzleForGameViewModel = hiltViewModel()
+                    PlaySessionScreen(
+                        navController = navController,
                     )
                 }
             }
