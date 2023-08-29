@@ -16,7 +16,7 @@ interface FirebaseAuthentication {
     suspend fun signInWithEmailAndPassword(emailAndPasswordRequest: EmailAndPasswordRequest): SignInRegisterResponse
     suspend fun registerWithEmailAndPassword(emailAndPasswordRequest: EmailAndPasswordRequest) : SignInRegisterResponse
     suspend fun signInAnonymously() : SignInRegisterResponse
-    fun signOut()
+    fun signOut() : FirebaseResult<Boolean>
     fun getCurrentUser() : FirebaseUser?
     suspend fun sendPasswordResetEmail(email : String): FirebaseResult<Boolean>
 }

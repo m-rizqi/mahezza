@@ -23,7 +23,8 @@ interface InsertChildUseCase {
                 name = this.name.value,
                 gender = this.gender,
                 birthdate = this.birthdate,
-                photoUrl = photoUrl
+                photoUrl = photoUrl,
+                lastActivity = ""
             )
         }
     }

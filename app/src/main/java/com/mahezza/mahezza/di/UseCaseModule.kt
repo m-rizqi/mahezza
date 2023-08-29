@@ -2,6 +2,8 @@ package com.mahezza.mahezza.di
 
 import com.mahezza.mahezza.domain.auth.ForgotPasswordUseCase
 import com.mahezza.mahezza.domain.auth.ForgotPasswordUseCaseImpl
+import com.mahezza.mahezza.domain.auth.LogOutUseCase
+import com.mahezza.mahezza.domain.auth.LogOutUseCaseImpl
 import com.mahezza.mahezza.domain.auth.LoginWithEmailAndPasswordUseCase
 import com.mahezza.mahezza.domain.auth.LoginWithEmailAndPasswordUseCaseImpl
 import com.mahezza.mahezza.domain.auth.LoginWithGoogleUseCase
@@ -32,6 +34,9 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindLoginWithGoogleUseCase(useCase: LoginWithGoogleUseCaseImpl) : LoginWithGoogleUseCase
+
+    @Binds
+    abstract fun bindLogOutUseCase(useCase : LogOutUseCaseImpl) : LogOutUseCase
 
     @Binds
     abstract fun bindForgotPasswordUseCase(useCase: ForgotPasswordUseCaseImpl) : ForgotPasswordUseCase

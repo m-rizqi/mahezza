@@ -11,4 +11,7 @@ object Routes {
     const val QRCodeReader = "qrcode_reader"
     const val Auth = "auth"
     const val Home = "home"
+    const val Game = "game"
+    const val SelectChildForGame = "select_child_for_game"
+    const val SelectPuzzleForGame = "select_puzzle_for_game"
 }

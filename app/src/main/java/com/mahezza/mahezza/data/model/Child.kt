@@ -9,7 +9,8 @@ data class Child(
     val name : String,
     val gender : String,
     val birthdate : String,
-    val photoUrl : String
+    val photoUrl : String,
+    val lastActivity : String
 )
 
 fun Child.toChildRequest(): ChildRequest {
@@ -30,6 +31,7 @@ fun ChildResponse.toChild() : Child {
         name = this.name,
         gender = this.gender,
         birthdate = this.birthdate,
-        photoUrl = this.photoUrl
+        photoUrl = this.photoUrl,
+        lastActivity = this.lastActivity
     )
 }

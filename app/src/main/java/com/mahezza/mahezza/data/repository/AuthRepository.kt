@@ -11,4 +11,5 @@ interface AuthRepository {
     suspend fun beginSignInRequest(): BeginSignInResultResponse
     suspend fun signInWithCredential(intent: Intent?): Result<FirebaseUser>
     suspend fun sendPasswordResetEmail(email: String): Result<Boolean>
+    fun logOut() : Result<Boolean>
 }

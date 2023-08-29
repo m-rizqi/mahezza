@@ -1,11 +1,248 @@
 package com.mahezza.mahezza.ui.features.home
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.mahezza.mahezza.R
+import com.mahezza.mahezza.ui.components.OutlinedAccentYellowButton
+import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import com.mahezza.mahezza.ui.nav.Routes
+import com.mahezza.mahezza.ui.theme.AccentYellow
+import com.mahezza.mahezza.ui.theme.AccentYellowDark
+import com.mahezza.mahezza.ui.theme.Black
+import com.mahezza.mahezza.ui.theme.Grey
+import com.mahezza.mahezza.ui.theme.PoppinsMedium10
+import com.mahezza.mahezza.ui.theme.PoppinsMedium14
+import com.mahezza.mahezza.ui.theme.PoppinsMedium16
+import com.mahezza.mahezza.ui.theme.PoppinsRegular12
+import com.mahezza.mahezza.ui.theme.PoppinsSemiBold14
+import com.mahezza.mahezza.ui.theme.PoppinsSemiBold18
+import com.mahezza.mahezza.ui.theme.White
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    drawerState: DrawerState
 ) {
+    val scope = rememberCoroutineScope()
+    changeStatusBarColor(color = White)
+    HomeContent(
+        onDrawerClick = {
+            scope.launch {
+                drawerState.open()
+            }
+        },
+        onRedeemPuzzleClick = {
+            navController.navigate(Routes.RedeemPuzzle)
+        },
+        onStartPlayClick = {
+            navController.navigate(Routes.Game)
+        }
+    )
+}
 
+@Composable
+fun HomeContent(
+    onDrawerClick : () -> Unit,
+    onRedeemPuzzleClick : () -> Unit,
+    onStartPlayClick : () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White)
+    ){
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .verticalScroll(scrollState)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                IconButton(
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = AccentYellowDark,
+                        containerColor = Color.Transparent
+                    ),
+                    onClick = onDrawerClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(id = R.drawable.ic_menu),
+                        contentDescription = stringResource(id = R.string.menu)
+                    )
+                }
+                OutlinedButton(
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = White,
+                        contentColor = AccentYellowDark,
+                    ),
+                    border = BorderStroke(1.dp, AccentYellowDark),
+                    onClick = onRedeemPuzzleClick
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.redeem_puzzle),
+                        style = PoppinsMedium16,
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(40.dp))
+            Text(
+                text = stringResource(id = R.string.last_activity),
+                style = PoppinsSemiBold18,
+                color = AccentYellowDark
+            )
+        }
+        ExtendedFloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset((-16).dp, (-16).dp),
+            containerColor = AccentYellow,
+            contentColor = Black,
+            text = {
+                   Text(
+                       text = stringResource(id = R.string.start_play),
+                       style = PoppinsMedium16,
+                   )
+            },
+            icon = {
+                   Icon(
+                       modifier = Modifier.size(24.dp),
+                       painter = painterResource(id = R.drawable.ic_puzzle),
+                       contentDescription = stringResource(id = R.string.puzzle)
+                   )
+            },
+            onClick = onStartPlayClick
+        )
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun HomeContentPreview() {
+    HomeContent(
+        onDrawerClick = {},
+        onRedeemPuzzleClick = {},
+        onStartPlayClick = {}
+    )
+}
+
+@Composable
+fun LastActivityCard() {
+    val screenWidth = LocalConfiguration.current.screenWidthDp
+    val cardWidth = remember {
+        screenWidth / 2
+    }
+    Card(
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = White
+        ),
+        modifier = Modifier
+            .width(cardWidth.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.7f)
+                    .clip(shape = RoundedCornerShape(8.dp))
+                ,
+                painter = painterResource(id = R.drawable.login_illustration), // Need To Change
+                contentDescription = stringResource(id = R.string.app_name) // Need To Change
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Mahezza Family", // Temporary
+                    style = PoppinsMedium10,
+                    color = AccentYellowDark
+                )
+                Text(
+                    text = "Mendengarkan Cerita dan Tantangan", // Temporary
+                    style = PoppinsMedium14,
+                    color = Black
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Grey)
+                )
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_progress), // Temporary
+                        contentDescription = "Progress" // Temporary
+                    )
+                    Text(
+                        text = "Bab 2, Sub 3",
+                        style = PoppinsRegular12,
+                        color = Black
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun LastActivityCardPreview() {
+    LastActivityCard()
 }
