@@ -4,12 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -26,6 +35,7 @@ import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
 import com.mahezza.mahezza.ui.nav.AuthNavigation
 import com.mahezza.mahezza.ui.nav.DashboardNavigation
 import com.mahezza.mahezza.ui.nav.MainNavigation
+import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.MahezzaTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -73,6 +83,20 @@ class MainActivity : ComponentActivity() {
                     }
                     if (isLoginFetched){
                         MainNavigation(isLoggedIn = isLogin)
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(AccentYellow)
+                        ){
+                            Image(
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .scale(2f),
+                                painter = painterResource(id = R.drawable.logo_with_name),
+                                contentDescription = stringResource(id = R.string.app_name)
+                            )
+                        }
                     }
                 }
             }

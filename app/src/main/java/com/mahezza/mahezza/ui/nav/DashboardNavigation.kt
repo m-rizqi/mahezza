@@ -27,8 +27,12 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -37,35 +41,85 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.compose.navigation
 import com.mahezza.mahezza.R
+import com.mahezza.mahezza.ui.components.LoadingScreen
+import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.features.dashboard.DashboardViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItem
+import com.mahezza.mahezza.ui.features.game.GameViewModel
+import com.mahezza.mahezza.ui.features.game.selectchild.SelectChildForGameScreen
+import com.mahezza.mahezza.ui.features.game.selectchild.SelectChildForGameViewModel
+import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameScreen
 import com.mahezza.mahezza.ui.features.home.HomeScreen
+import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
+import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
+import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleScreen
+import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleViewModel
 import com.mahezza.mahezza.ui.theme.AccentOrange
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.PoppinsMedium10
 import com.mahezza.mahezza.ui.theme.PoppinsMedium14
 import com.mahezza.mahezza.ui.theme.White
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardNavigation() {
     val navController = rememberNavController()
-    val drawerItemsViewModel : DrawerItemsViewModel = viewModel()
+    val drawerItemsViewModel : DrawerItemsViewModel = hiltViewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
+    val isShowLoading = drawerItemsViewModel.isShowLoading.collectAsState()
+    val isLogOut = drawerItemsViewModel.isLogOut.collectAsState()
+    val generalMessage = drawerItemsViewModel.generalMessage.collectAsState()
+    val context = LocalContext.current
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+    LaunchedEffect(key1 = currentRoute){
+        drawerItemsViewModel.dashboardDrawerItems.find {
+            it.route?.let { routePattern ->
+                Regex(routePattern).find(currentRoute ?: "") != null
+            } ?: false
+        }?.let {
+            selectedItemIndex = drawerItemsViewModel.dashboardDrawerItems.indexOf(it)
+        }
+    }
+
+    LaunchedEffect(key1 = generalMessage.value){
+        generalMessage.value?.let { message ->
+            showToast(context, message.asString(context))
+            drawerItemsViewModel.onGeneralMessageShowed()
+        }
+    }
+
+    LaunchedEffect(key1 = isLogOut.value){
+        if (isLogOut.value){
+            navController.navigate(Routes.Auth){
+                popUpTo(navController.graph.id){
+                    inclusive = true
+                }
+            }
+        }
+    }
+    
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -124,6 +178,7 @@ fun DashboardNavigation() {
                                             drawerItem.route?.let { route ->
                                                 navController.navigate(route)
                                             }
+                                            drawerItem.onClick()
                                             scope.launch {
                                                 drawerState.close()
                                             }
@@ -165,18 +220,79 @@ fun DashboardNavigation() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.Home
+            startDestination = Routes.Game
         ){
+            composableWithAnimation(
+                route = Routes.Auth
+            ){
+                AuthNavigation()
+            }
             composableWithAnimation(
                 route = Routes.Home
             ){
                 val dashboardViewModel : DashboardViewModel = it.sharedViewModel(navController = navController)
                 HomeScreen(
+                    drawerState = drawerState,
                     navController = navController
                 )
             }
+            composableWithAnimation(
+                route = "${Routes.RedeemPuzzle}?${NavArgumentConst.NEXT_ROUTE}={${NavArgumentConst.NEXT_ROUTE}}",
+                arguments = listOf(
+                    navArgument(NavArgumentConst.NEXT_ROUTE){
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                )
+            ){entry ->
+                val nextRoute = entry.arguments?.getString(NavArgumentConst.NEXT_ROUTE)
+                val redeemPuzzleViewModel : RedeemPuzzleViewModel = hiltViewModel()
+                RedeemPuzzleScreen(
+                    navController = navController,
+                    nextRoute = nextRoute,
+                    viewModel = redeemPuzzleViewModel
+                )
+            }
+            composableWithAnimation(
+                route = Routes.QRCodeReader
+            ){
+                val qrCodeReaderViewModel : QRCodeReaderViewModel = hiltViewModel()
+                QRCodeReaderScreen(
+                    navController = navController,
+                    viewModel = qrCodeReaderViewModel
+                )
+            }
+
+            navigation(
+                startDestination = Routes.SelectChildForGame,
+                route = Routes.Game
+            ){
+                composableWithAnimation(
+                    route = Routes.SelectChildForGame
+                ){
+                    val gameViewModel = it.sharedViewModel<GameViewModel>(navController = navController)
+                    val selectChildForGameViewModel : SelectChildForGameViewModel = hiltViewModel()
+                    SelectChildForGameScreen(
+                        navController = navController,
+                        gameViewModel = gameViewModel,
+                        viewModel = selectChildForGameViewModel
+                    )
+                }
+                composableWithAnimation(
+                    route = Routes.SelectPuzzleForGame
+                ){
+                    val gameViewModel = it.sharedViewModel<GameViewModel>(navController = navController)
+                    val selectChildForGameViewModel : SelectChildForGameViewModel = hiltViewModel()
+                    SelectPuzzleForGameScreen(
+                        navController = navController
+                    )
+                }
+            }
+
         }
     }
+    
+    LoadingScreen(isShowLoading = isShowLoading.value)
 }
 
 @Preview

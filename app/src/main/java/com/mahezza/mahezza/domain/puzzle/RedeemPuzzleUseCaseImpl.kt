@@ -20,8 +20,8 @@ class RedeemPuzzleUseCaseImpl @Inject constructor(
 ) : RedeemPuzzleUseCase {
 
     private val localDateTimeAndTimestampConverter = LocalDateTimeAndTimestampConverter()
-
     override suspend fun invoke(qrcode: String): Result<Puzzle> {
+        if (qrcode.isBlank()) return Result.Fail(StringResource.StringResWithParams(R.string.puzzle_not_found))
         val getPuzzleByQRCodeResult = puzzleRepository.getPuzzleByQRCode(qrcode)
         if (getPuzzleByQRCodeResult is com.mahezza.mahezza.data.Result.Fail) return Result.Fail(getPuzzleByQRCodeResult.message)
         if (getPuzzleByQRCodeResult.data == null) return Result.Fail(StringResource.StringResWithParams(R.string.problem_occur_try_again))

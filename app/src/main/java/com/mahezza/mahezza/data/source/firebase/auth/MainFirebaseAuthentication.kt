@@ -116,7 +116,14 @@ class MainFirebaseAuthentication @Inject constructor(
         }
     }
 
-    override fun signOut() = firebaseAuth.signOut()
+    override fun signOut() : FirebaseResult<Boolean>{
+        return try {
+            firebaseAuth.signOut()
+            FirebaseResult(true, true, null)
+        }catch (e : Exception){
+            FirebaseResult(false, false, StringResource.DynamicString(e.message.toString()))
+        }
+    }
 
     override fun getCurrentUser() = firebaseAuth.currentUser
     override suspend fun sendPasswordResetEmail(email: String): FirebaseResult<Boolean> {

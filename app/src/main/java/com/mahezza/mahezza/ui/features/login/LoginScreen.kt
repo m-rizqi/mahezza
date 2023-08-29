@@ -98,7 +98,7 @@ fun LoginScreen(
     LaunchedEffect(key1 = uiState.value.shouldGoToDashboard){
         if (uiState.value.shouldGoToDashboard){
             navController.navigate(Routes.Dashboard){
-                popUpTo(0){
+                popUpTo(navController.graph.id){
                     inclusive = true
                 }
             }

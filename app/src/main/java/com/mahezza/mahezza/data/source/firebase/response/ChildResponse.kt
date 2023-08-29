@@ -10,5 +10,6 @@ data class ChildResponse(
     val gender : String = "",
     val birthdate : String = "",
     @SerializedName("photo_url")
-    val photoUrl : String = ""
+    val photoUrl : String = "",
+    val lastActivity : String = ""
 )

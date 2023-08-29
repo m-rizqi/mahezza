@@ -60,5 +60,14 @@ class MainAuthRepository @Inject constructor(
         }
     }
 
+    override fun logOut() : Result<Boolean> {
+        val firebaseResult = firebaseAuthentication.signOut()
+        return if (firebaseResult.isSuccess) {
+            Result.Success(true)
+        } else {
+            Result.Fail(firebaseResult.message)
+        }
+    }
+
     private fun isRegisterSuccess(response: SignInRegisterResponse): Boolean = response.isSuccess && response.firebaseUser != null
 }

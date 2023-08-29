@@ -6,7 +6,9 @@ import androidx.compose.ui.graphics.Color
 import com.mahezza.mahezza.ui.theme.Black
 import com.mahezza.mahezza.ui.theme.GreyText
 
-sealed class DrawerItem {
+sealed class DrawerItem(
+    open val route: String? = null,
+) {
     data class Menu(
         @StringRes
         val titleResId : Int,
@@ -15,7 +17,7 @@ sealed class DrawerItem {
         val badgeCount : Int? = null,
         val selectedColor : Color = Black,
         val unSelectedColor : Color = GreyText,
-        val route : String? = null,
+        override val route : String? = null,
         val onClick : () -> Unit = {}
     ) : DrawerItem()
     object Separator : DrawerItem()

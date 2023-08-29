@@ -23,6 +23,7 @@ class RegisterWithEmailAndPasswordUseCaseImpl @Inject constructor(
                 val firebaseUser = registerResult.data
                     ?: return Result.Fail(StringResource.StringResWithParams(R.string.problem_occur_try_again))
                 dataStore.saveFirebaseUserIdToPreferencesStore(firebaseUser.uid)
+                dataStore.saveLoginToPreferencesStore(true)
                 val user = getSimpleUserProfileFromFirebaseUser(firebaseUser)
                 return insertNewUser(user)
             }
