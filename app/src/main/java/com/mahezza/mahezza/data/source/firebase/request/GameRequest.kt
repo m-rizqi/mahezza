@@ -6,5 +6,6 @@ data class GameRequest(
     val childrenIds : List<String>,
     val puzzleId : String,
     val status : String,
-    val lastActivity : String
+    val lastActivity : String,
+    val elapsedTime : String
 )

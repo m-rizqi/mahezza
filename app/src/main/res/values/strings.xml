@@ -121,4 +121,20 @@
     <string name="on_going">Berjalan</string>
     <string name="paused">Dijeda</string>
     <string name="playing_puzzle_name">Bermain Puzzle %1$s</string>
+    <string name="puzzle_finished">Puzzle Selesai 🎉</string>
+    <string name="play">Bermain</string>
+    <string name="volume_off">Volume Mati</string>
+    <string name="repeat">Ulangi</string>
+    <string name="you_dont_choose_puzzle">Kamu belum memilih puzzle untuk dimainkan</string>
+    <string name="play_or_pause">Bermain atau Dijeda</string>
+    <string name="play_session_notification_channel">Notifikasi Sesi Bermain Puzzle</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="elapsed_time">Waktu berlalu: %1$s</string>
+    <string name="exit_game">Ingin keluar dari Game?</string>
+    <string name="game_will_be_saved_and_can_be_continue">Game akan disimpan dan dapat dilanjutkan nanti. Lanjut keluar?</string>
+    <string name="yes_exit">Ya, keluar</string>
+    <string name="no_stay">Tidak, tetap bermain</string>
+    <string name="photo_together">Foto bersama</string>
+    <string name="songs_not_found">Lagu tidak ditemukan</string>
 </resources>

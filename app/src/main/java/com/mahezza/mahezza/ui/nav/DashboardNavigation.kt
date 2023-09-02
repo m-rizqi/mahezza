@@ -47,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -61,10 +62,12 @@ import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItem
 import com.mahezza.mahezza.ui.features.game.GameViewModel
 import com.mahezza.mahezza.ui.features.game.playsession.PlaySessionScreen
+import com.mahezza.mahezza.ui.features.game.playsession.PlaySessionViewModel
 import com.mahezza.mahezza.ui.features.game.selectchild.SelectChildForGameScreen
 import com.mahezza.mahezza.ui.features.game.selectchild.SelectChildForGameViewModel
 import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameScreen
 import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameViewModel
+import com.mahezza.mahezza.ui.features.game.twibbon.TakeTwibbonScreen
 import com.mahezza.mahezza.ui.features.home.HomeScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
@@ -222,7 +225,7 @@ fun DashboardNavigation() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.Game
+            startDestination = Routes.Home
         ){
             composableWithAnimation(
                 route = Routes.Auth
@@ -295,9 +298,22 @@ fun DashboardNavigation() {
                     route = Routes.PlaySession
                 ){
                     val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
-                    val selectPuzzleForGameViewModel : SelectPuzzleForGameViewModel = hiltViewModel()
+                    val playSessionViewModel : PlaySessionViewModel = viewModel()
                     PlaySessionScreen(
                         navController = navController,
+                        gameViewModel = gameViewModel,
+                        viewModel = playSessionViewModel
+                    )
+                }
+                composableWithAnimation(
+                    route = Routes.TakeTwibbon
+                ){
+                    val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
+                    val playSessionViewModel : PlaySessionViewModel = viewModel()
+                    TakeTwibbonScreen(
+                        navController = navController,
+//                        gameViewModel = gameViewModel,
+//                        viewModel = playSessionViewModel
                     )
                 }
             }

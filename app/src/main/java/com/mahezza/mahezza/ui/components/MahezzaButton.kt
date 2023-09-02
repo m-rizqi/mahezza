@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -36,14 +37,17 @@ import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
 import com.mahezza.mahezza.ui.theme.Black
 import com.mahezza.mahezza.ui.theme.GreyBorder
+import com.mahezza.mahezza.ui.theme.PoppinsMedium14
 import com.mahezza.mahezza.ui.theme.PoppinsMedium16
 import com.mahezza.mahezza.ui.theme.PoppinsRegular14
+import com.mahezza.mahezza.ui.theme.RedDanger
 import com.mahezza.mahezza.ui.theme.White
 
 @Composable
 fun FilledAccentYellowButton(
     modifier : Modifier = Modifier,
     text : String,
+    elevation : Dp = 1.dp,
     cornerRadius: Dp = 8.dp,
     verticalPadding : Dp = 12.dp,
     onClick : () -> Unit
@@ -53,6 +57,9 @@ fun FilledAccentYellowButton(
         colors = ButtonDefaults.elevatedButtonColors(
             containerColor = AccentYellow,
             contentColor = Black
+        ),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = elevation
         ),
         shape = RoundedCornerShape(cornerRadius),
         contentPadding = PaddingValues(vertical = verticalPadding),
@@ -212,5 +219,76 @@ fun AccentYellowTextButton(
 fun AccentYellowTextButtonPreview() {
     AccentYellowTextButton(text = "Tutup Halaman") {
         
+    }
+}
+
+@Composable
+fun FilledDangerButton(
+    modifier : Modifier = Modifier,
+    text : String,
+    elevation : Dp = 1.dp,
+    cornerRadius: Dp = 8.dp,
+    verticalPadding : Dp = 12.dp,
+    onClick : () -> Unit
+){
+    ElevatedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.elevatedButtonColors(
+            containerColor = RedDanger,
+            contentColor = White
+        ),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = elevation
+        ),
+        shape = RoundedCornerShape(cornerRadius),
+        contentPadding = PaddingValues(vertical = verticalPadding),
+        onClick = onClick
+    ) {
+        Text(
+            text = text,
+            style = PoppinsMedium14,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun FilledDangerButtonPreview() {
+    FilledDangerButton(text = "Button") {
+
+    }
+}
+
+@Composable
+fun OutlinedDangerButton(
+    modifier : Modifier = Modifier,
+    text : String,
+    cornerRadius: Dp = 8.dp,
+    onClick : () -> Unit
+){
+    OutlinedButton(
+        modifier = modifier,
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = White,
+            contentColor = RedDanger,
+        ),
+        border = BorderStroke(1.dp, RedDanger),
+        shape = RoundedCornerShape(cornerRadius),
+        contentPadding = PaddingValues(vertical = 12.dp),
+        onClick = onClick
+    ) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = text,
+            style = PoppinsMedium14,
+        )
+    }
+}
+
+@Preview
+@Composable
+fun OutlinedDangerButtonPreview() {
+    OutlinedDangerButton(text = "Button") {
+
     }
 }

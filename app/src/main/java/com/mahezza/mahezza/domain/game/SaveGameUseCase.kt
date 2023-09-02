@@ -14,7 +14,8 @@ interface SaveGameUseCase {
         val children : List<Child>,
         val puzzle : Puzzle,
         val status : Game.Status? = null,
-        val lastActivity : String
+        val lastActivity : String,
+        val elapsedTime : String = "00:00:00"
     ){
         fun toGame() : Game {
             return Game(
@@ -23,7 +24,8 @@ interface SaveGameUseCase {
                 children = this.children,
                 puzzle = this.puzzle,
                 status = this.status!!,
-                lastActivity = this.lastActivity
+                lastActivity = this.lastActivity,
+                elapsedTime = this.elapsedTime
             )
         }
     }

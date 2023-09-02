@@ -27,7 +27,8 @@ class SaveGameUseCaseImpl @Inject constructor(
             children = saveGameState.children,
             puzzle = saveGameState.puzzle,
             status = status,
-            lastActivity = saveGameState.lastActivity
+            lastActivity = saveGameState.lastActivity,
+            elapsedTime = saveGameState.elapsedTime
         )
 
         val repositoryResult = gameRepository.saveGame(game)

@@ -101,6 +101,7 @@ class SelectChildForGameViewModel @Inject constructor(
             is SelectChildForGameEvent.OnCheckedChildChanged -> onCheckedChildChanged(event.childId, event.isChecked)
             SelectChildForGameEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
             SelectChildForGameEvent.OnNextListener -> validateSelectedChildForGame()
+            SelectChildForGameEvent.OnNavigatedToSelectPuzzle -> _uiState.update { it.copy(finalSelectedChildren = null) }
         }
     }
 

@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
+import timber.log.Timber
 import javax.inject.Inject
 
 class GetRedeemedPuzzleUseCaseImpl @Inject constructor(

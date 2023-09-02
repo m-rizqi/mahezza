@@ -15,6 +15,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 
 fun <T> CollectionReference.addSnapshotListenerFlow(dataType: Class<T>, dispatcher: CoroutineDispatcher, notFoundOrEmptyCollectionMessage : StringResource? = null): Flow<FirebaseResult<out List<T>>> = callbackFlow {
     val listener = object : EventListener<QuerySnapshot> {

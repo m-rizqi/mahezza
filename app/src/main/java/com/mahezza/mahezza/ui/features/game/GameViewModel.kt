@@ -30,36 +30,49 @@ class GameViewModel @Inject constructor(
             is GameEvent.SetSelectedPuzzle -> {
                 _uiState.update { it.copy(puzzle = event.puzzle) }
                 saveGame(
-                    lastActivity = resource.getString(R.string.playing_puzzle_name, uiState.value.puzzle!!.name)
+                    lastActivity = resource.getString(R.string.playing_puzzle_name, uiState.value.puzzle!!.name),
+                    gameStepSaved = event.gameStepSaved
                 )
             }
 
             GameEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
-            GameEvent.OnSaveGameStatusAcknowledged -> _uiState.update { it.copy(isSaveGameSuccess = false) }
+            is GameEvent.OnSaveGameStatusAcknowledged -> _uiState.update { it.copy(gameStepSaved = null) }
+            is GameEvent.OnSavePlaySessionGame -> {
+                _uiState.update { it.copy(elapsedTime = event.elapsedTime) }
+                saveGame(
+                    lastActivity = resource.getString(R.string.photo_together),
+                    gameStepSaved = GameUiState.GameStepSaved.PLAY_SESSION
+                )
+            }
         }
     }
 
-    private fun saveGame(lastActivity : String) {
+    private fun saveGame(lastActivity : String, gameStepSaved: GameUiState.GameStepSaved) {
         if (uiState.value.puzzle == null){
             _uiState.update { it.copy(generalMessage = StringResource.StringResWithParams(R.string.select_puzzle_first)) }
             return
         }
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, isSaveGameSuccess = false) }
+            _uiState.update { it.copy(isLoading = true, gameStepSaved = null) }
             val result=  saveGameUseCase(
                 SaveGameUseCase.SaveGameState(
                     children = uiState.value.children,
                     puzzle = uiState.value.puzzle!!,
-                    lastActivity = lastActivity
+                    lastActivity = lastActivity,
+                    elapsedTime = uiState.value.elapsedTime
                 )
             )
             when(result){
                 is Result.Fail -> _uiState.update { it.copy(generalMessage = result.message) }
                 is Result.Success -> {
-                    _uiState.update { it.copy(isSaveGameSuccess = true) }
+                    _uiState.update { it.copy(gameStepSaved = gameStepSaved) }
                 }
             }
             _uiState.update { it.copy(isLoading = false) }
         }
     }
+
+    fun getChildren() = uiState.value.children
+
+    fun getPuzzle() = uiState.value.puzzle
 }

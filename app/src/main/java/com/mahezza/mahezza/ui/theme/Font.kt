@@ -87,8 +87,18 @@ val PoppinsMedium16 = TextStyle(
     fontWeight = FontWeight.Medium,
     fontSize = 16.sp
 )
+val PoppinsMedium20 = TextStyle(
+    fontFamily = PoppinsFamily,
+    fontWeight = FontWeight.Medium,
+    fontSize = 20.sp
+)
 val PoppinsBold32 = TextStyle(
     fontFamily = PoppinsFamily,
     fontWeight = FontWeight.Bold,
     fontSize = 32.sp
+)
+val PoppinsBold40 = TextStyle(
+    fontFamily = PoppinsFamily,
+    fontWeight = FontWeight.Bold,
+    fontSize = 40.sp
 )
