@@ -15,4 +15,5 @@ object Routes {
     const val SelectChildForGame = "select_child_for_game"
     const val SelectPuzzleForGame = "select_puzzle_for_game"
     const val PlaySession = "play_session"
+    const val TakeTwibbon = "take_twibbon"
 }

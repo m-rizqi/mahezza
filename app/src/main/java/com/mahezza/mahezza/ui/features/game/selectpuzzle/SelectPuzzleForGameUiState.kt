@@ -12,7 +12,7 @@ data class SelectPuzzleForGameUiState(
     val puzzles : List<Puzzle> = emptyList(),
     val selectedPuzzle: Puzzle? = null,
 
-    val puzzleLayoutState : LayoutState = LayoutState.Shimmer
+    val puzzleLayoutState : LayoutState = LayoutState.Shimmer,
 ){
     data class PuzzleCardState(
         val id : String,

@@ -5,7 +5,8 @@ import com.mahezza.mahezza.data.model.Puzzle
 
 sealed class GameEvent {
     class SetSelectedChildren(val children : List<Child>) : GameEvent()
-    class SetSelectedPuzzle(val puzzle: Puzzle) : GameEvent()
+    class SetSelectedPuzzle(val puzzle: Puzzle, val gameStepSaved: GameUiState.GameStepSaved) : GameEvent()
+    class OnSavePlaySessionGame(val elapsedTime : String) : GameEvent()
     object OnGeneralMessageShowed : GameEvent()
-    object OnSaveGameStatusAcknowledged : GameEvent()
+    data class OnSaveGameStatusAcknowledged(val gameStepSaved: GameUiState.GameStepSaved) : GameEvent()
 }

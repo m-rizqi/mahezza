@@ -47,6 +47,7 @@ import com.mahezza.mahezza.ui.components.ShimmerEmptyContentLayout
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.features.game.GameEvent
+import com.mahezza.mahezza.ui.features.game.GameUiState
 import com.mahezza.mahezza.ui.features.game.GameViewModel
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
@@ -84,14 +85,15 @@ fun SelectPuzzleForGameScreen(
 
     LaunchedEffect(key1 = uiState.value.selectedPuzzle){
         uiState.value.selectedPuzzle?.let { puzzle ->
-            gameViewModel.onEvent(GameEvent.SetSelectedPuzzle(puzzle))
+            gameViewModel.onEvent(GameEvent.SetSelectedPuzzle(puzzle, GameUiState.GameStepSaved.STARTED))
         }
     }
 
-    LaunchedEffect(key1 = gameUiState.value.isSaveGameSuccess){
-        if (gameUiState.value.isSaveGameSuccess){
+    LaunchedEffect(key1 = gameUiState.value.gameStepSaved){
+        if (gameUiState.value.gameStepSaved?.name == GameUiState.GameStepSaved.STARTED.name){
             navController.navigate(Routes.PlaySession)
-            gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
+            gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged(GameUiState.GameStepSaved.STARTED))
+            viewModel.onEvent(SelectPuzzleForGameEvent.OnNavigatedToPlaySession)
         }
     }
 

@@ -6,7 +6,9 @@ data class Puzzle(
     val id : String,
     val name : String,
     val banner : String,
-    val description : String
+    val description : String,
+    val illustrationUrl : String,
+    val songs : List<Song>
 )
 
 fun PuzzleResponse.toPuzzle() : Puzzle{
@@ -14,6 +16,8 @@ fun PuzzleResponse.toPuzzle() : Puzzle{
         id = this.id,
         name = this.name,
         banner = this.banner,
-        description = this.description
+        description = this.description,
+        illustrationUrl = this.illustrationUrl,
+        songs = this.songs.map { it.toSong() }
     )
 }

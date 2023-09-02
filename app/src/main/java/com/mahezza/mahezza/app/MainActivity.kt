@@ -1,5 +1,8 @@
 package com.mahezza.mahezza.app
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -32,8 +36,6 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
-import com.mahezza.mahezza.ui.nav.AuthNavigation
-import com.mahezza.mahezza.ui.nav.DashboardNavigation
 import com.mahezza.mahezza.ui.nav.MainNavigation
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.MahezzaTheme
@@ -58,6 +60,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var dataStore: MahezzaDataStore
 
+    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = ResourcesCompat.getColor(resources, R.color.accent_yellow, null)
@@ -67,6 +73,7 @@ class MainActivity : ComponentActivity() {
             appUpdateManager.registerListener(installStateUpdatedListener)
         }
         checkForAppUpdates()
+        checkAndGrantForPermissions()
 
         setContent {
             MahezzaTheme {
@@ -102,6 +109,25 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun checkAndGrantForPermissions() {
+        val unGrantedPermissions = mutableListOf<String>()
+        if (isPermissionGranted(Manifest.permission.CAMERA)){
+            unGrantedPermissions.add(Manifest.permission.CAMERA)
+        }
+        if (
+            isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS) && isAndroidVersionGreaterThanTiramisu()
+        ){
+            unGrantedPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        if (unGrantedPermissions.isNotEmpty()){
+            permissionLauncher.launch(unGrantedPermissions.toTypedArray())
+        }
+    }
+
+    private fun isPermissionGranted(permission : String) = ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
+
+    private fun isAndroidVersionGreaterThanTiramisu() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     override fun onResume() {
         super.onResume()

@@ -111,6 +111,9 @@ class SelectPuzzleForGameViewModel @Inject constructor(
         when(event){
             SelectPuzzleForGameEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
             SelectPuzzleForGameEvent.OnNextListener -> onNext()
+            SelectPuzzleForGameEvent.OnNavigatedToPlaySession -> {
+
+            }
         }
     }
 

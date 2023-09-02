@@ -10,7 +10,8 @@ data class Game(
     val children : List<Child>,
     val puzzle : Puzzle,
     val status : Status,
-    val lastActivity : String
+    val lastActivity : String,
+    val elapsedTime : String
 ){
     fun toGameRequest(): GameRequest {
         return GameRequest(
@@ -19,7 +20,8 @@ data class Game(
             childrenIds = this.children.map { it.id },
             puzzleId = this.puzzle.id,
             status = this.status.const,
-            lastActivity = this.lastActivity
+            lastActivity = this.lastActivity,
+            elapsedTime = this.elapsedTime
         )
     }
 

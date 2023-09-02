@@ -79,6 +79,7 @@ fun SelectChildForGameScreen(
         uiState.value.finalSelectedChildren?.let { children ->
             gameViewModel.onEvent(GameEvent.SetSelectedChildren(children))
             navController.navigate(Routes.SelectPuzzleForGame)
+            viewModel.onEvent(SelectChildForGameEvent.OnNavigatedToSelectPuzzle)
         }
     }
 

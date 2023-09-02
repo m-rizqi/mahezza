@@ -11,9 +11,11 @@ import com.mahezza.mahezza.data.source.firebase.FirebaseResult
 import com.mahezza.mahezza.data.source.firebase.addSnapshotListenerFlow
 import com.mahezza.mahezza.data.source.firebase.firestore.PuzzleFirebaseFirestore.Companion.PUZZLE_PATH
 import com.mahezza.mahezza.data.source.firebase.firestore.PuzzleFirebaseFirestore.Companion.QR_CODE_PATH
+import com.mahezza.mahezza.data.source.firebase.firestore.PuzzleFirebaseFirestore.Companion.SONGS
 import com.mahezza.mahezza.data.source.firebase.response.PuzzleResponse
 import com.mahezza.mahezza.data.source.firebase.response.QRCodeResponse
 import com.mahezza.mahezza.data.source.firebase.response.RedeemedPuzzleResponse
+import com.mahezza.mahezza.data.source.firebase.response.SongResponse
 import com.mahezza.mahezza.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -76,6 +78,15 @@ class MainPuzzleFirebaseFirestore @Inject constructor(
             dataType = PuzzleResponse::class.java,
             dispatcher = dispatcher,
             notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.puzzle_list_not_found)
+        )
+    }
+
+    override fun getSongs(puzzleId: String): Flow<FirebaseResult<out List<SongResponse>>> {
+        val reference = puzzleReference.document(puzzleId).collection(SONGS)
+        return reference.addSnapshotListenerFlow(
+            dataType = SongResponse::class.java,
+            dispatcher = dispatcher,
+            notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.songs_not_found)
         )
     }
 

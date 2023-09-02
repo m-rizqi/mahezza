@@ -69,6 +69,7 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.OutlinedAccentYellowButton
+import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.components.TextFieldWithTitle
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
@@ -157,7 +158,7 @@ fun InsertChildProfileContent(
                     text = stringResource(id = R.string.child_profile),
                     style = PoppinsMedium16
                 )
-                StackedPhotoProfile(
+                StackedPhotoProfiles(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     photoProfiles = uiState.savedChildPhotoUrls
                 )
@@ -476,73 +477,4 @@ fun GenderCardPreview() {
             genderDrawableId = R.drawable.ic_girl
         ){}
     }
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun StackedPhotoProfile(
-    modifier : Modifier = Modifier,
-    photoProfiles : List<String>,
-    maxPhotoShowed : Int = 3
-) {
-    val circleImageModifier = remember {
-        Modifier
-            .size(32.dp)
-            .clip(CircleShape)
-            .border(
-                width = 1.dp,
-                color = AccentYellow,
-                shape = CircleShape
-            )
-    }
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy((-12).dp)
-    ){
-        photoProfiles.take(3).forEach {photoUrl ->
-            GlideImage(
-                modifier = circleImageModifier,
-                model = photoUrl,
-                contentDescription = stringResource(id = R.string.saved_child_photo_profile),
-                contentScale = ContentScale.Crop,
-                requestBuilderTransform = { request ->
-                    val requestOptions = RequestOptions()
-                        .placeholder(R.drawable.ic_loading_placeholder)
-                        .error(R.drawable.ic_error_placeholder)
-                    request.apply(requestOptions)
-                }
-            )
-        }
-        val offsetSize = remember {
-            photoProfiles.size - maxPhotoShowed
-        }
-        if (offsetSize > 0){
-            Box(
-                modifier = circleImageModifier
-                    .background(AccentYellow)
-            ){
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(id = R.string.plus_param, offsetSize),
-                    style = PoppinsMedium14,
-                    color = Black
-                )
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun StackedPhotoProfilePreview() {
-    StackedPhotoProfile(
-        photoProfiles = listOf(
-            "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000",
-            "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000",
-            "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000",
-            "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000",
-            "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000",
-        )
-    )
 }
