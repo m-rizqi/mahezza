@@ -6,5 +6,6 @@ data class PuzzleResponse(
     val banner : String = "",
     val description : String = "",
     val illustrationUrl : String = "",
-    val songs : List<SongResponse> = emptyList()
+    val songs : List<SongResponse> = emptyList(),
+    val twibbonUrl : String = ""
 )

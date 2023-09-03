@@ -27,48 +27,52 @@ class GameViewModel @Inject constructor(
     fun onEvent(event: GameEvent){
         when(event){
             is GameEvent.SetSelectedChildren -> _uiState.update { it.copy(children = event.children) }
-            is GameEvent.SetSelectedPuzzle -> {
-                _uiState.update { it.copy(puzzle = event.puzzle) }
-                saveGame(
-                    lastActivity = resource.getString(R.string.playing_puzzle_name, uiState.value.puzzle!!.name),
-                    gameStepSaved = event.gameStepSaved
-                )
-            }
-
             GameEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
-            is GameEvent.OnSaveGameStatusAcknowledged -> _uiState.update { it.copy(gameStepSaved = null) }
-            is GameEvent.OnSavePlaySessionGame -> {
-                _uiState.update { it.copy(elapsedTime = event.elapsedTime) }
-                saveGame(
-                    lastActivity = resource.getString(R.string.photo_together),
-                    gameStepSaved = GameUiState.GameStepSaved.PLAY_SESSION
-                )
-            }
+            GameEvent.OnSaveGameStatusAcknowledged -> _uiState.update { it.copy(acknowledgeCode = null) }
+            is GameEvent.SaveGame -> saveGame(event)
         }
     }
 
-    private fun saveGame(lastActivity : String, gameStepSaved: GameUiState.GameStepSaved) {
+    private fun saveGame(event: GameEvent.SaveGame){
+        updateGameUiStateForSaving(event)
         if (uiState.value.puzzle == null){
             _uiState.update { it.copy(generalMessage = StringResource.StringResWithParams(R.string.select_puzzle_first)) }
             return
         }
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, gameStepSaved = null) }
+            _uiState.update { it.copy(isLoading = true, acknowledgeCode = null) }
             val result=  saveGameUseCase(
                 SaveGameUseCase.SaveGameState(
+                    id = uiState.value.id,
                     children = uiState.value.children,
                     puzzle = uiState.value.puzzle!!,
-                    lastActivity = lastActivity,
-                    elapsedTime = uiState.value.elapsedTime
+                    lastActivity = uiState.value.lastActivity,
+                    elapsedTime = uiState.value.elapsedTime,
+                    twibbon = uiState.value.twibbon
                 )
             )
             when(result){
                 is Result.Fail -> _uiState.update { it.copy(generalMessage = result.message) }
                 is Result.Success -> {
-                    _uiState.update { it.copy(gameStepSaved = gameStepSaved) }
+                    val savedGame = result.data
+                    _uiState.update { it.copy(
+                        id = savedGame?.id,
+                        twibbonUrl = savedGame?.twibbonUrl,
+                        acknowledgeCode = event.acknowledgeCode
+                    ) }
                 }
             }
             _uiState.update { it.copy(isLoading = false) }
+        }
+    }
+
+    private fun updateGameUiStateForSaving(event: GameEvent.SaveGame){
+        with(event){
+            children?.let { children -> _uiState.update { it.copy(children = children) } }
+            puzzle?.let { puzzle -> _uiState.update { it.copy(puzzle = puzzle) } }
+            elapsedTime?.let { elapsedTime -> _uiState.update { it.copy(elapsedTime = elapsedTime) } }
+            twibbon?.let { twibbon -> _uiState.update { it.copy(twibbon = twibbon) } }
+            lastActivity?.let { lastActivity -> _uiState.update { it.copy(lastActivity = lastActivity) } }
         }
     }
 

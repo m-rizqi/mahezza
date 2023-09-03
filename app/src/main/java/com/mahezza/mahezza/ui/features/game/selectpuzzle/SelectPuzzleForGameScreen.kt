@@ -85,14 +85,18 @@ fun SelectPuzzleForGameScreen(
 
     LaunchedEffect(key1 = uiState.value.selectedPuzzle){
         uiState.value.selectedPuzzle?.let { puzzle ->
-            gameViewModel.onEvent(GameEvent.SetSelectedPuzzle(puzzle, GameUiState.GameStepSaved.STARTED))
+            gameViewModel.onEvent(GameEvent.SaveGame(
+                puzzle = puzzle,
+                lastActivity = context.getString(R.string.playing_puzzle_name, puzzle.name),
+                acknowledgeCode = GameUiState.AcknowledgeCode.PUZZLE
+            ))
         }
     }
 
-    LaunchedEffect(key1 = gameUiState.value.gameStepSaved){
-        if (gameUiState.value.gameStepSaved?.name == GameUiState.GameStepSaved.STARTED.name){
+    LaunchedEffect(key1 = gameUiState.value.acknowledgeCode){
+        if (gameUiState.value.acknowledgeCode?.name == GameUiState.AcknowledgeCode.PUZZLE.name){
             navController.navigate(Routes.PlaySession)
-            gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged(GameUiState.GameStepSaved.STARTED))
+            gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
             viewModel.onEvent(SelectPuzzleForGameEvent.OnNavigatedToPlaySession)
         }
     }

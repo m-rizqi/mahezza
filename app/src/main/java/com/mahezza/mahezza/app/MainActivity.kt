@@ -115,6 +115,9 @@ class MainActivity : ComponentActivity() {
         if (isPermissionGranted(Manifest.permission.CAMERA)){
             unGrantedPermissions.add(Manifest.permission.CAMERA)
         }
+        if (isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            unGrantedPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
         if (
             isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS) && isAndroidVersionGreaterThanTiramisu()
         ){
