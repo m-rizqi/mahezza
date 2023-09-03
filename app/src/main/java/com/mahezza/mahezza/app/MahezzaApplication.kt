@@ -33,8 +33,14 @@ class MahezzaApplication : Application() {
             ).apply {
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
+            val downloadImageChannel = NotificationChannel(
+                NotificationModule.DOWNLOAD_IMAGE_NOTIFICATION_CHANNEL_ID,
+                context.getString(R.string.download_image_notification_channel),
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(playSessionChannel)
+            notificationManager.createNotificationChannel(downloadImageChannel)
         }
     }
 

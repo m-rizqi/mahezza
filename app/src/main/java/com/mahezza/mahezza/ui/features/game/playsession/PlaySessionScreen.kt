@@ -191,8 +191,8 @@ fun PlaySessionScreen(
         mutableStateOf(true)
     }
 
-    LaunchedEffect(key1 = gameUiState.value.gameStepSaved){
-        if (gameUiState.value.gameStepSaved?.name != GameUiState.GameStepSaved.PLAY_SESSION.name) return@LaunchedEffect
+    LaunchedEffect(key1 = gameUiState.value.acknowledgeCode){
+        if (gameUiState.value.acknowledgeCode?.name != GameUiState.AcknowledgeCode.PLAY_SESSION.name) return@LaunchedEffect
         if (isFinishActionAfterSaveGame){
             navController.navigate(Routes.TakeTwibbon)
         } else {
@@ -202,6 +202,7 @@ fun PlaySessionScreen(
                 }
             }
         }
+        gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
     }
 
     LaunchedEffect(key1 = uiState.value.generalMessage){
@@ -215,11 +216,19 @@ fun PlaySessionScreen(
         uiState = uiState.value,
         onSaveGameAndExit = {
             isFinishActionAfterSaveGame = false
-            gameViewModel.onEvent(GameEvent.OnSavePlaySessionGame(uiState.value.stopwatchTime))
+            gameViewModel.onEvent(GameEvent.SaveGame(
+                elapsedTime = uiState.value.stopwatchTime,
+                lastActivity = context.getString(R.string.photo_together),
+                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION
+            ))
         },
         onSaveGameAndFinish = {
             isFinishActionAfterSaveGame = true
-            gameViewModel.onEvent(GameEvent.OnSavePlaySessionGame(uiState.value.stopwatchTime))
+            gameViewModel.onEvent(GameEvent.SaveGame(
+                elapsedTime = uiState.value.stopwatchTime,
+                lastActivity = context.getString(R.string.photo_together),
+                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION
+            ))
         },
         onPlayPauseClick = {
             PlaySessionServiceHelper.triggerForegroundService(

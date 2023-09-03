@@ -5,6 +5,7 @@ import com.mahezza.mahezza.data.source.firebase.FirebaseResult
 interface FirebaseStorage {
 
     companion object {
+        const val GAME_PATH = "games"
         const val USER_PATH = "users"
         const val CHILDREN_PATH = "children"
     }

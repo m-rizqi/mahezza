@@ -9,21 +9,24 @@ import com.mahezza.mahezza.ui.features.game.playsession.service.PlaySessionServi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ServiceScoped
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class PlaySessionNotificationBuilder
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DownloadImageNotificationBuilder
+
 @Module
-@InstallIn(ServiceComponent::class)
+@InstallIn(SingletonComponent::class)
 object NotificationModule {
     const val PLAY_SESSION_NOTIFICATION_CHANNEL_ID = "play_session"
+    const val DOWNLOAD_IMAGE_NOTIFICATION_CHANNEL_ID = "download_image"
 
-    @ServiceScoped
     @Provides
     @PlaySessionNotificationBuilder
     fun providePlaySessionNotificationBuilder(
@@ -43,7 +46,21 @@ object NotificationModule {
         return notificationBuilder
     }
 
-    @ServiceScoped
+    @Provides
+    @DownloadImageNotificationBuilder
+    fun provideDownloadImageNotificationBuilder(
+        @ApplicationContext
+        context: Context
+    ): NotificationCompat.Builder {
+        val notificationBuilder = NotificationCompat.Builder(context, PLAY_SESSION_NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_mahezza_launcher_foreground)
+            .setContentTitle(context.getString(R.string.download_image))
+            .setContentText(context.getString(R.string.tap_to_view))
+            .setAutoCancel(true)
+
+        return notificationBuilder
+    }
+
     @Provides
     fun provideNotificationManager(
         @ApplicationContext context: Context

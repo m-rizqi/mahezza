@@ -3,11 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+        android:name="android.hardware.camera.any"
+        android:required="true" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
 
     <application
         android:name=".app.MahezzaApplication"
@@ -15,6 +19,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_mahezza_launcher"
+        android:requestLegacyExternalStorage="true"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_mahezza_launcher_round"
         android:supportsRtl="true"
@@ -33,6 +38,16 @@
         </activity>
 
         <service android:name=".ui.features.game.playsession.service.PlaySessionService"/>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path_provider" />
+        </provider>
 
     </application>
 

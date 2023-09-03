@@ -11,7 +11,8 @@ data class Game(
     val puzzle : Puzzle,
     val status : Status,
     val lastActivity : String,
-    val elapsedTime : String
+    val elapsedTime : String,
+    val twibbonUrl : String?
 ){
     fun toGameRequest(): GameRequest {
         return GameRequest(
@@ -21,7 +22,8 @@ data class Game(
             puzzleId = this.puzzle.id,
             status = this.status.const,
             lastActivity = this.lastActivity,
-            elapsedTime = this.elapsedTime
+            elapsedTime = this.elapsedTime,
+            twibbonUrl = this.twibbonUrl
         )
     }
 

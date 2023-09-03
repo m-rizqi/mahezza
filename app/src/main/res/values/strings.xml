@@ -137,4 +137,16 @@
     <string name="no_stay">Tidak, tetap bermain</string>
     <string name="photo_together">Foto bersama</string>
     <string name="songs_not_found">Lagu tidak ditemukan</string>
+    <string name="twibbon_template">Template Twibbon</string>
+    <string name="take_photo">Ambil Foto</string>
+    <string name="next_to_story">Lanjut ke Cerita</string>
+    <string name="download">Download</string>
+    <string name="share">Bagikan</string>
+    <string name="download_image_notification_channel">Channel Notifikasi Download Gambar</string>
+    <string name="download_image">Unduh Gambar</string>
+    <string name="tap_to_view">Tekan untuk melihat gambar</string>
+    <string name="take_photo_first">Terjadi kesalahan, ulangi dan pastikan sudah mengambil foto</string>
+    <string name="listen_story_puzzle">Mendengarkan Cerita</string>
+    <string name="downloading_image">Sedang mengunduh gambar</string>
+    <string name="share_twibbon_mahezza">Bagikan Foto Bersama</string>
 </resources>

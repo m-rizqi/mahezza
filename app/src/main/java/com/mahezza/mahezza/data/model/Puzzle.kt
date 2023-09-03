@@ -8,7 +8,8 @@ data class Puzzle(
     val banner : String,
     val description : String,
     val illustrationUrl : String,
-    val songs : List<Song>
+    val songs : List<Song>,
+    val twibbonUrl : String
 )
 
 fun PuzzleResponse.toPuzzle() : Puzzle{
@@ -18,6 +19,7 @@ fun PuzzleResponse.toPuzzle() : Puzzle{
         banner = this.banner,
         description = this.description,
         illustrationUrl = this.illustrationUrl,
-        songs = this.songs.map { it.toSong() }
+        songs = this.songs.map { it.toSong() },
+        twibbonUrl = this.twibbonUrl
     )
 }
