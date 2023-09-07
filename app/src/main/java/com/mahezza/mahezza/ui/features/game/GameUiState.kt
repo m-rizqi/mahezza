@@ -3,11 +3,9 @@ package com.mahezza.mahezza.ui.features.game
 import android.graphics.Bitmap
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.model.Child
-import com.mahezza.mahezza.data.model.Lyric
 import com.mahezza.mahezza.data.model.Puzzle
 import com.mahezza.mahezza.data.model.Song
-import com.mahezza.mahezza.data.model.toPuzzle
-import com.mahezza.mahezza.data.model.toSong
+import com.mahezza.mahezza.ui.features.game.course.CourseUiState
 
 data class GameUiState(
     val id : String? = null,
@@ -48,6 +46,8 @@ data class GameUiState(
     val lastActivity : String = "",
     val twibbon : Bitmap? = null,
     val twibbonUrl : String? = null,
+    val course: CourseUiState.CourseState? = null,
+    val isGameFinished : Boolean = false,
 
     val isLoading : Boolean = false,
     val generalMessage : StringResource? = null,
@@ -56,10 +56,33 @@ data class GameUiState(
     enum class AcknowledgeCode {
         CHILDREN,
         PUZZLE,
-        PLAY_SESSION,
+        PLAY_SESSION_AND_EXIT,
+        PLAY_SESSION_AND_NEXT,
         TWIBBON_DOWNLOAD,
         TWIBBON_SHARE,
         TWIBBON_AND_NEXT,
-        TWIBBON_AND_EXIT
+        TWIBBON_AND_EXIT,
+        COURSE_EXIT,
+        COURSE_FINISHED
     }
+
+    fun getElapsedTimeInMinute() : Float {
+        return convertTimeStringToFloat(this.elapsedTime)
+    }
+
+    private fun convertTimeStringToFloat(timeString: String): Float {
+        val parts = timeString.split(":")
+        if (parts.size != 3) {
+            throw IllegalArgumentException("Invalid time format: $timeString")
+        }
+
+        val hours = parts[0].toInt()
+        val minutes = parts[1].toInt()
+        val seconds = parts[2].toInt()
+
+        val totalMinutes = hours * 60 + minutes + seconds / 60.0f
+
+        return totalMinutes.toFloat()
+    }
+
 }

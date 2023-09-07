@@ -36,7 +36,7 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
-import com.mahezza.mahezza.ui.nav.MainNavigation
+import com.mahezza.mahezza.ui.nav.MahezzaNavigation
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.MahezzaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                         isLoginFetched = true
                     }
                     if (isLoginFetched){
-                        MainNavigation(isLoggedIn = isLogin)
+                        MahezzaNavigation(isLoggedIn = isLogin)
                     } else {
                         Box(
                             modifier = Modifier

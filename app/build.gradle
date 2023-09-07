@@ -165,4 +165,8 @@ dependencies {
     // Compose-Screenshot
     implementation 'com.github.SmartToolFactory:Compose-Screenshot:1.0.3'
 
+    // Exo Player
+    implementation "androidx.media3:media3-exoplayer:1.1.1"
+    implementation "androidx.media3:media3-exoplayer-dash:1.1.1"
+    implementation "androidx.media3:media3-ui:1.1.1"
 }

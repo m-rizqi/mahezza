@@ -3,7 +3,6 @@ package com.mahezza.mahezza.ui.features.game.playsession.service
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.graphics.Bitmap
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Build
@@ -11,20 +10,28 @@ import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C.AUDIO_CONTENT_TYPE_MUSIC
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.model.Child
 import com.mahezza.mahezza.data.model.Puzzle
-import com.mahezza.mahezza.data.model.Song
+import com.mahezza.mahezza.di.IODispatcher
 import com.mahezza.mahezza.di.PlaySessionNotificationBuilder
 import com.mahezza.mahezza.ui.features.game.playsession.PlaySessionUiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import timber.log.Timber
+import kotlinx.coroutines.launch
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
@@ -43,6 +50,10 @@ class PlaySessionService : Service() {
     lateinit var notificationManager: NotificationManager
 
     @Inject
+    @IODispatcher
+    lateinit var dispatcher: CoroutineDispatcher
+
+    @Inject
     @PlaySessionNotificationBuilder
     lateinit var playSessionNotificationBuilder : NotificationCompat.Builder
 
@@ -50,33 +61,11 @@ class PlaySessionService : Service() {
     private var duration : Duration = Duration.ZERO
     private lateinit var timer: Timer
 
-    private val _seconds = MutableStateFlow("00")
-    val seconds: StateFlow<String> = _seconds.asStateFlow()
+    private var exoPlayer : ExoPlayer? = null
 
-    private val _minutes = MutableStateFlow("00")
-    val minutes: StateFlow<String> = _minutes.asStateFlow()
-
-    private val _hours = MutableStateFlow("00")
-    val hours: StateFlow<String> = _hours.asStateFlow()
-
-    private val _time = MutableStateFlow("00:00:00")
-    val time: StateFlow<String> = _time.asStateFlow()
-
-    private val _currentStopwatchState = MutableStateFlow(PlaySessionService.StopwatchState.Idle)
-    val currentStopwatchState: StateFlow<PlaySessionService.StopwatchState> = _currentStopwatchState.asStateFlow()
-
-    private var children : List<Child> = emptyList()
-    private var puzzle : Puzzle? = null
-    private var currentIndexSong : Int = 0
-    private val _currentSong = MutableStateFlow<Song?>(null)
-    val currentSong : StateFlow<Song?>
-        get() = _currentSong.asStateFlow()
-    private var puzzleBannerBitmap : Bitmap? = null
-
-    private var mediaPlayer: MediaPlayer? = null
-    private val _currentTrack = MutableStateFlow(PlaySessionUiState.Track(0, 0))
-    val currentTrack : StateFlow<PlaySessionUiState.Track>
-        get() = _currentTrack.asStateFlow()
+    private var _playSessionServiceUiState = MutableStateFlow(PlaySessionServiceUiState())
+    val playSessionServiceUiState : StateFlow<PlaySessionServiceUiState>
+        get() = _playSessionServiceUiState.asStateFlow()
 
     override fun onBind(intent : Intent?): IBinder {
         return binder
@@ -84,16 +73,28 @@ class PlaySessionService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        mediaPlayer = MediaPlayer()
-        mediaPlayer?.setOnCompletionListener {
-            playNextSong()
-        }
-        mediaPlayer?.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+        exoPlayer = ExoPlayer
+            .Builder(this)
+            .setWakeMode(PowerManager.PARTIAL_WAKE_LOCK)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                true
+            )
+            .build()
+        exoPlayer?.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                when(playbackState){
+                    Player.STATE_ENDED -> setNextSong()
+                }
+            }
+        })
     }
 
     override fun onDestroy() {
-        mediaPlayer?.release()
-        mediaPlayer = null
+        exoPlayer?.release()
+        exoPlayer = null
         super.onDestroy()
     }
 
@@ -103,6 +104,9 @@ class PlaySessionService : Service() {
                 setPauseButton()
                 startForegroundService()
                 startStopwatch { hours, minutes, seconds ->
+                    val elapsedTime = formatTime(seconds, minutes, hours)
+                    _playSessionServiceUiState.update { it.copy(elapsedTime = elapsedTime) }
+                    updateCurrentTrack()
                     updateNotification(hours = hours, minutes = minutes, seconds = seconds)
                 }
                 startSong()
@@ -123,49 +127,61 @@ class PlaySessionService : Service() {
     }
 
     private fun startSong() {
-        if (mediaPlayer?.isPlaying == false) {
-            mediaPlayer?.start()
+        if (playSessionServiceUiState.value.currentSong == null){
+            setNextSong()
+            return
         }
+        exoPlayer?.prepare()
+        exoPlayer?.play()
     }
 
-    private fun playNextSong(){
-        currentIndexSong++
-        if (currentIndexSong >= (puzzle?.songs?.size ?: 1)) {
-            currentIndexSong = 0
+    private fun setNextSong(){
+        val nextIndex = getNextSongIndex()
+        val nextSong = playSessionServiceUiState.value.getSong(nextIndex) ?: return
+        _playSessionServiceUiState.update {
+            it.copy(
+                currentIndexSong = nextIndex,
+                currentSong = nextSong
+            )
         }
-        val nextSong = puzzle?.songs?.get(currentIndexSong)
-        updateSong(nextSong)
+        val mediaItem = MediaItem.fromUri(nextSong.songUrl)
+        exoPlayer?.setMediaItem(mediaItem)
         startSong()
     }
 
-    private fun updateSong(song: Song?){
-        _currentSong.update { song }
-        currentSong.value?.songUrl?.let { datasource ->
-            mediaPlayer?.setDataSource(datasource)
-            mediaPlayer?.prepare()
+    private fun getNextSongIndex() : Int {
+        var index = playSessionServiceUiState.value.currentIndexSong
+        index++
+        if (isSongIndexOutOfBound(index)){
+            index = 0
         }
+        return index
+    }
+
+    private fun isSongIndexOutOfBound(index : Int) : Boolean {
+        return index >= playSessionServiceUiState.value.getSongsSize() || index < 0
     }
 
     private fun pauseSong(){
-        if (mediaPlayer?.isPlaying == true) {
-            mediaPlayer?.pause()
-        }
+        exoPlayer?.pause()
     }
 
     private fun stopSong() {
-        mediaPlayer?.stop()
-        mediaPlayer?.reset()
+        exoPlayer?.stop()
     }
 
     private fun startStopwatch(onTick: (h: String, m: String, s: String) -> Unit) {
-        _currentStopwatchState.update {
-            PlaySessionService.StopwatchState.Started
+        _playSessionServiceUiState.update {
+            it.copy(
+                stopwatchState = PlaySessionService.StopwatchState.Started
+            )
         }
         timer = fixedRateTimer(initialDelay = 1000L, period = 1000L) {
             duration = duration.plus(1.seconds)
-            updateCurrentTrack()
-            updateTimeUnits()
-            onTick(hours.value, minutes.value, seconds.value)
+            duration.toComponents { hours, minutes, seconds, _ ->
+                onTick(hours.toInt().pad(), minutes.pad(), seconds.pad())
+            }
+
         }
     }
 
@@ -173,33 +189,31 @@ class PlaySessionService : Service() {
         if (this::timer.isInitialized) {
             timer.cancel()
         }
-        _currentStopwatchState.update {
-            PlaySessionService.StopwatchState.Paused
+        _playSessionServiceUiState.update {
+            it.copy(
+                stopwatchState = PlaySessionService.StopwatchState.Paused
+            )
         }
     }
 
     private fun cancelStopwatch() {
         duration = Duration.ZERO
-        _currentStopwatchState.update {
-            PlaySessionService.StopwatchState.Idle
-        }
-        updateTimeUnits()
-    }
-
-    private fun updateTimeUnits() {
-        duration.toComponents { hours, minutes, seconds, _ ->
-            _hours.update { hours.toInt().pad() }
-            _minutes.update { minutes.pad() }
-            _seconds.update { seconds.pad() }
-            _time.update { formatTime(seconds.pad(), minutes.pad(), hours.toInt().pad()) }
+        _playSessionServiceUiState.update {
+            it.copy(
+                stopwatchState = PlaySessionService.StopwatchState.Idle
+            )
         }
     }
 
     private fun updateCurrentTrack() {
-        val currentPosition = mediaPlayer?.currentPosition ?: 0
-        val songDuration = mediaPlayer?.duration ?: 0
-        _currentTrack.update {
-            PlaySessionUiState.Track(currentPosition, songDuration)
+        CoroutineScope(Dispatchers.Main).launch{
+            val currentPosition = exoPlayer?.currentPosition ?: 0
+            val songDuration = exoPlayer?.duration ?: 0
+            _playSessionServiceUiState.update {
+                it.copy(
+                    currentTrack =  PlaySessionUiState.Track(currentPosition, songDuration)
+                )
+            }
         }
     }
 
@@ -219,10 +233,10 @@ class PlaySessionService : Service() {
         playSessionNotificationBuilder.apply {
             setStyle(
                 NotificationCompat.BigPictureStyle()
-                    .bigPicture(puzzleBannerBitmap)
+                    .bigPicture(playSessionServiceUiState.value.bannerBitmap)
             )
             setContentTitle(
-                "${children.joinToString { it.name }} - ${puzzle?.name}"
+                playSessionServiceUiState.value.getGameTitle()
             )
         }
         notificationManager.notify(
@@ -258,23 +272,32 @@ class PlaySessionService : Service() {
     }
 
     fun setChildren(children: List<Child>) {
-        this.children = children
+        _playSessionServiceUiState.update {
+            it.copy(children = children)
+        }
     }
 
     fun setPuzzle(puzzle: Puzzle?) {
-        this.puzzle = puzzle
-
         val imageLoader = ImageLoader(this)
         val request = ImageRequest.Builder(this)
             .data(puzzle?.banner)
             .target(
                 onSuccess = { result ->
-                    puzzleBannerBitmap = result.toBitmap(width = 1600, height = 900)
+                    val bannerBitmap = result.toBitmap(width = 1600, height = 900)
+                    _playSessionServiceUiState.update {
+                        it.copy(
+                            bannerBitmap = bannerBitmap,
+                        )
+                    }
                 }
             )
             .build()
         imageLoader.enqueue(request)
-        updateSong(puzzle?.songs?.get(currentIndexSong))
+        _playSessionServiceUiState.update {
+            it.copy(
+                puzzle = puzzle,
+            )
+        }
     }
 
     inner class PlaySessionBinder : Binder() {

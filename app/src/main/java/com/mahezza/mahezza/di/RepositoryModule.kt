@@ -2,9 +2,11 @@ package com.mahezza.mahezza.di
 
 import com.mahezza.mahezza.data.repository.AuthRepository
 import com.mahezza.mahezza.data.repository.ChildrenRepository
+import com.mahezza.mahezza.data.repository.CourseRepository
 import com.mahezza.mahezza.data.repository.GameRepository
 import com.mahezza.mahezza.data.repository.MainAuthRepository
 import com.mahezza.mahezza.data.repository.MainChildrenRepository
+import com.mahezza.mahezza.data.repository.MainCourseRepository
 import com.mahezza.mahezza.data.repository.MainGameRepository
 import com.mahezza.mahezza.data.repository.MainPuzzleRepository
 import com.mahezza.mahezza.data.repository.MainUserRepository
@@ -32,4 +34,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindGameRepository(repository : MainGameRepository) : GameRepository
+
+    @Binds
+    abstract fun bindCourseRepository(repository: MainCourseRepository) : CourseRepository
 }

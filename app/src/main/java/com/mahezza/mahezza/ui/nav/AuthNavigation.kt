@@ -75,7 +75,7 @@ fun AuthNavigation() {
         composableWithAnimation(
             route = Routes.Dashboard
         ){
-            DashboardNavigation()
+            MainNavigation()
         }
         composableWithAnimation(
             route = "${Routes.RedeemPuzzle}?${NEXT_ROUTE}={${NEXT_ROUTE}}",

@@ -26,8 +26,8 @@ data class PlaySessionUiState(
 ) {
 
     data class Track(
-        val currentPosition : Int,
-        val songDuration : Int
+        val currentPosition : Long = 0,
+        val songDuration : Long = 0
     )
 
 }

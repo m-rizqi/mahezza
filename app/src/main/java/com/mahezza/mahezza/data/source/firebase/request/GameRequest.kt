@@ -8,5 +8,6 @@ data class GameRequest(
     val status : String,
     val lastActivity : String,
     val elapsedTime : String,
-    val twibbonUrl : String?
+    val twibbonUrl : String?,
+    val course: CourseRequest?
 )

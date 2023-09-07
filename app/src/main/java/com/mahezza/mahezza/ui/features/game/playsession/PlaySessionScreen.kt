@@ -89,9 +89,6 @@ import com.mahezza.mahezza.ui.theme.PoppinsRegular12
 import com.mahezza.mahezza.ui.theme.PoppinsRegular14
 import com.mahezza.mahezza.ui.theme.RedDanger
 import com.mahezza.mahezza.ui.theme.White
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
-import timber.log.Timber
 
 @Composable
 fun PlaySessionScreen(
@@ -162,45 +159,34 @@ fun PlaySessionScreen(
             context.unbindService(serviceConnection)
         }
     }
-    LaunchedEffect(key1 = playSessionService?.currentSong){
-        playSessionService?.currentSong?.filterNotNull()?.collectLatest { song ->
-            viewModel.onEvent(PlaySessionEvent.SetCurrentSong(song))
-        }
-    }
-    LaunchedEffect(key1 = playSessionService){
-        playSessionService?.setChildren(uiState.value.children)
-        playSessionService?.setPuzzle(uiState.value.puzzle)
-    }
-    LaunchedEffect(key1 = playSessionService){
-        playSessionService?.time?.collect { time ->
-            viewModel.onEvent(PlaySessionEvent.SetStopwatchTime(time))
-        }
-    }
-    LaunchedEffect(key1 = playSessionService){
-        playSessionService?.currentStopwatchState?.collect { state ->
-            viewModel.onEvent(PlaySessionEvent.SetStopwatchState(state))
-        }
-    }
-    LaunchedEffect(key1 = playSessionService){
-        playSessionService?.currentTrack?.filterNotNull()?.collect { track ->
-            viewModel.onEvent(PlaySessionEvent.SetCurrentTrack(track))
-        }
-    }
 
-    var isFinishActionAfterSaveGame by remember {
-        mutableStateOf(true)
+    LaunchedEffect(key1 = playSessionService) {
+        playSessionService?.let { service ->
+            service.setChildren(uiState.value.children)
+            service.setPuzzle(uiState.value.puzzle)
+
+            service.playSessionServiceUiState.collect{ playSessionServiceUiState ->
+                playSessionServiceUiState.currentSong?.let { song ->
+                    viewModel.onEvent(PlaySessionEvent.SetCurrentSong(song))
+                }
+                viewModel.onEvent(PlaySessionEvent.SetElapsedTime(playSessionServiceUiState.elapsedTime))
+                viewModel.onEvent(PlaySessionEvent.SetStopwatchState(playSessionServiceUiState.stopwatchState))
+                viewModel.onEvent(PlaySessionEvent.SetCurrentTrack(playSessionServiceUiState.currentTrack))
+            }
+
+        }
     }
 
     LaunchedEffect(key1 = gameUiState.value.acknowledgeCode){
-        if (gameUiState.value.acknowledgeCode?.name != GameUiState.AcknowledgeCode.PLAY_SESSION.name) return@LaunchedEffect
-        if (isFinishActionAfterSaveGame){
-            navController.navigate(Routes.TakeTwibbon)
-        } else {
+        if (gameUiState.value.acknowledgeCode?.name == GameUiState.AcknowledgeCode.PLAY_SESSION_AND_EXIT.name) {
             navController.navigate(route = Routes.Home){
                 popUpTo(Routes.Home){
                     inclusive = true
                 }
             }
+        }
+        if (gameUiState.value.acknowledgeCode?.name == GameUiState.AcknowledgeCode.PLAY_SESSION_AND_NEXT.name) {
+            navController.navigate(Routes.TakeTwibbon)
         }
         gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
     }
@@ -215,26 +201,24 @@ fun PlaySessionScreen(
     PlaySessionContent(
         uiState = uiState.value,
         onSaveGameAndExit = {
-            isFinishActionAfterSaveGame = false
             gameViewModel.onEvent(GameEvent.SaveGame(
                 elapsedTime = uiState.value.stopwatchTime,
                 lastActivity = context.getString(R.string.photo_together),
-                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION
+                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION_AND_EXIT
             ))
         },
-        onSaveGameAndFinish = {
-            isFinishActionAfterSaveGame = true
+        onSaveGameAndNext = {
             gameViewModel.onEvent(GameEvent.SaveGame(
                 elapsedTime = uiState.value.stopwatchTime,
                 lastActivity = context.getString(R.string.photo_together),
-                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION
+                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION_AND_NEXT
             ))
         },
         onPlayPauseClick = {
             PlaySessionServiceHelper.triggerForegroundService(
                 context = context,
                 action = if (
-                    playSessionService?.currentStopwatchState?.value?.name == PlaySessionService.StopwatchState.Started.name
+                    uiState.value.stopwatchState.name == PlaySessionService.StopwatchState.Started.name
                 ) {
                     PlaySessionService.Actions.PAUSE.name
                 } else {
@@ -250,7 +234,7 @@ fun PlaySessionScreen(
 @Composable
 fun PlaySessionContent(
     uiState: PlaySessionUiState,
-    onSaveGameAndFinish : () -> Unit,
+    onSaveGameAndNext : () -> Unit,
     onSaveGameAndExit : () -> Unit,
     onPlayPauseClick : () -> Unit
 ) {
@@ -269,6 +253,11 @@ fun PlaySessionContent(
                 isShowExitDialog = it
             }
         )
+    }
+    var song by remember { mutableStateOf(uiState.currentSong) }
+    val isCurrentSongChanged = uiState.currentSong != null && song != uiState.currentSong
+    if (isCurrentSongChanged) {
+        song = uiState.currentSong
     }
     Box(
         modifier = Modifier
@@ -415,14 +404,14 @@ fun PlaySessionContent(
             Text(
                 modifier = Modifier
                     .align(CenterHorizontally),
-                text = uiState.currentSong?.typeOrArtist ?: "",
+                text = song?.typeOrArtist ?: "",
                 style = PoppinsMedium14,
                 color = GreyText
             )
             Text(
                 modifier = Modifier
                     .align(CenterHorizontally),
-                text = uiState.currentSong?.title ?: "",
+                text = song?.title ?: "",
                 style = PoppinsMedium20,
                 color = Black
             )
@@ -504,7 +493,7 @@ fun PlaySessionContent(
                 horizontalAlignment = CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ){
-                uiState.currentSong?.lyrics?.forEach {lyric ->
+                song?.lyrics?.forEach {lyric ->
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
@@ -528,7 +517,7 @@ fun PlaySessionContent(
                 text = stringResource(id = R.string.puzzle_finished)
             ) {
                 finishTheService(context)
-                onSaveGameAndFinish()
+                onSaveGameAndNext()
             }
         }
     }
@@ -547,7 +536,7 @@ fun PlaySessionContentPreview() {
     PlaySessionContent(
         uiState = PlaySessionUiState(),
         onSaveGameAndExit = {},
-        onSaveGameAndFinish = {},
+        onSaveGameAndNext = {},
         onPlayPauseClick = {}
     )
 }

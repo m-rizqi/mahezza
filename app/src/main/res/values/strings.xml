@@ -149,4 +149,19 @@
     <string name="listen_story_puzzle">Mendengarkan Cerita</string>
     <string name="downloading_image">Sedang mengunduh gambar</string>
     <string name="share_twibbon_mahezza">Bagikan Foto Bersama</string>
+    <string name="story">Cerita</string>
+    <string name="unfinished">Belum selesai</string>
+    <string name="course_not_found">Materi tidak ditemukan</string>
+    <string name="num_of_num_challenges_completed">%1$d dari %2$d tantangan diselesaikan</string>
+    <string name="course_is_empty_or_not_found">Cerita kosong atau terjadi masalah</string>
+    <string name="course_taught">Cerita Disampaikan</string>
+    <string name="challenge_completed">Tantangan telah diselesaikan</string>
+    <string name="mark_completed">Tandai selesai</string>
+    <string name="challenge_of_challenges">Tantangan %1$d dari %2$d</string>
+    <string name="congratulation">Selamat</string>
+    <string name="game_finished">Permainan Telah Selesai🎉</string>
+    <string name="taught">Disampaikan</string>
+    <string name="type">Jenis</string>
+    <string name="challenge">Tantangan</string>
+    <string name="share_text">Kami baru saja menyelesaikan puzzle Mahezza. Ayo tingkatkan kesehatan mental anak dengan bermain puzzle Mahezza.</string>
 </resources>
