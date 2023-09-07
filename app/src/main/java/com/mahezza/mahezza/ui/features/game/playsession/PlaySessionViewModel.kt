@@ -5,12 +5,12 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.model.Child
 import com.mahezza.mahezza.data.model.Puzzle
+import com.mahezza.mahezza.data.model.Song
 import com.mahezza.mahezza.ui.features.game.playsession.service.PlaySessionService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import timber.log.Timber
 
 class PlaySessionViewModel : ViewModel() {
 
@@ -22,13 +22,15 @@ class PlaySessionViewModel : ViewModel() {
         when(event){
             PlaySessionEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
             PlaySessionEvent.OnPlayPauseClick -> playOrPause()
-            is PlaySessionEvent.SetStopwatchTime -> setStopwatchTime(event.time)
+            is PlaySessionEvent.SetElapsedTime -> setStopwatchTime(event.time)
             is PlaySessionEvent.SetStopwatchState -> setStopwatchState(event.state)
-            is PlaySessionEvent.SetCurrentSong -> {
-                _uiState.update { it.copy(currentSong = event.song) }
-            }
+            is PlaySessionEvent.SetCurrentSong -> setSong(event.song)
             is PlaySessionEvent.SetCurrentTrack -> setCurrentTrack(event.track)
         }
+    }
+
+    private fun setSong(song: Song) {
+        _uiState.update { it.copy(currentSong = song) }
     }
 
     private fun setStopwatchTime(time: String) {
@@ -36,8 +38,8 @@ class PlaySessionViewModel : ViewModel() {
     }
 
     private fun setCurrentTrack(track: PlaySessionUiState.Track) {
-        val currentPosition = formatDuration(track.currentPosition)
-        val duration = formatDuration(track.songDuration)
+        val currentPosition = formatTime(track.currentPosition)
+        val duration = formatTime(track.songDuration)
         val sliderValue = try {
             track.currentPosition.toFloat() / track.songDuration.toFloat()
         } catch (e: Exception){ 0f }
@@ -51,7 +53,7 @@ class PlaySessionViewModel : ViewModel() {
         }
     }
 
-    private fun formatDuration(durationInMillis: Int): String {
+    private fun formatTime(durationInMillis: Long): String {
         val totalSeconds = durationInMillis / 1000
         val hours = totalSeconds / 3600
         val remainingSeconds = totalSeconds % 3600

@@ -54,17 +54,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.request.RequestOptions
 import com.mahezza.mahezza.R
-import com.mahezza.mahezza.common.createImageFile
 import com.mahezza.mahezza.common.saveBitmapToCache
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.LoadingScreen
-import com.mahezza.mahezza.ui.components.OutlinedAccentYellowButton
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
@@ -72,7 +69,6 @@ import com.mahezza.mahezza.ui.features.game.ExitGameDialog
 import com.mahezza.mahezza.ui.features.game.GameEvent
 import com.mahezza.mahezza.ui.features.game.GameUiState
 import com.mahezza.mahezza.ui.features.game.GameViewModel
-import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameEvent
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
 import com.mahezza.mahezza.ui.theme.Black
@@ -83,9 +79,6 @@ import com.mahezza.mahezza.ui.theme.RedDanger
 import com.mahezza.mahezza.ui.theme.White
 import com.smarttoolfactory.screenshot.ScreenshotBox
 import com.smarttoolfactory.screenshot.rememberScreenshotState
-import timber.log.Timber
-import java.util.Objects
-import kotlin.reflect.KFunction1
 
 @Composable
 fun TakeTwibbonScreen(
@@ -134,7 +127,8 @@ fun TakeTwibbonScreen(
             }
         }
         if (gameUiState.value.acknowledgeCode?.name == GameUiState.AcknowledgeCode.TWIBBON_AND_NEXT.name){
-            navController.navigate(Routes.COURSE)
+            navController.navigate(Routes.Course)
+            gameViewModel.onEvent(GameEvent.OnClearBitmapResource)
         }
         gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
     }
@@ -168,13 +162,9 @@ fun TakeTwibbonContent(
     onSaveTwibbon : (Bitmap?, GameUiState.AcknowledgeCode) -> Unit
 ) {
     val context = LocalContext.current
-    val file = context.createImageFile()
-    val uri = FileProvider.getUriForFile(
-        Objects.requireNonNull(context),
-        context.applicationContext.packageName + ".provider", file
-    )
+    val uri = context.saveBitmapToCache(null, "${System.currentTimeMillis()}")
     val cameraLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()){ success ->
-        if (success){
+        if (success && uri != null){
             onEvent(TakeTwibbonEvent.SetPhotoUri(uri))
         }
     }
@@ -239,12 +229,12 @@ fun TakeTwibbonContent(
                             Icon(
                                 modifier = Modifier.size(12.dp),
                                 tint = AccentYellowDark,
-                                painter = painterResource(id = R.drawable.ic_puzzle),
-                                contentDescription = stringResource(id = R.string.play)
+                                painter = painterResource(id = R.drawable.ic_camera_retro),
+                                contentDescription = stringResource(id = R.string.photo_together)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = stringResource(id = R.string.play),
+                                text = stringResource(id = R.string.photo_together),
                                 style = PoppinsRegular12,
                                 color = AccentYellowDark
                             )

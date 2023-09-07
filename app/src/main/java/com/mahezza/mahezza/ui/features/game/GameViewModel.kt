@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
+import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.domain.Result
 import com.mahezza.mahezza.domain.game.SaveGameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,7 @@ class GameViewModel @Inject constructor(
             GameEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
             GameEvent.OnSaveGameStatusAcknowledged -> _uiState.update { it.copy(acknowledgeCode = null) }
             is GameEvent.SaveGame -> saveGame(event)
+            GameEvent.OnClearBitmapResource -> _uiState.update { it.copy(twibbon = null) }
         }
     }
 
@@ -48,7 +50,9 @@ class GameViewModel @Inject constructor(
                     puzzle = uiState.value.puzzle!!,
                     lastActivity = uiState.value.lastActivity,
                     elapsedTime = uiState.value.elapsedTime,
-                    twibbon = uiState.value.twibbon
+                    twibbon = uiState.value.twibbon,
+                    courseState = uiState.value.course,
+                    status = if (uiState.value.isGameFinished) Game.Status.Finished else Game.Status.OnGoing
                 )
             )
             when(result){
@@ -72,8 +76,10 @@ class GameViewModel @Inject constructor(
             puzzle?.let { puzzle -> _uiState.update { it.copy(puzzle = puzzle) } }
             elapsedTime?.let { elapsedTime -> _uiState.update { it.copy(elapsedTime = elapsedTime) } }
             twibbon?.let { twibbon -> _uiState.update { it.copy(twibbon = twibbon) } }
+            course?.let { course -> _uiState.update { it.copy(course = course) } }
             lastActivity?.let { lastActivity -> _uiState.update { it.copy(lastActivity = lastActivity) } }
         }
+        _uiState.update { it.copy(isGameFinished = event.isGameFinished) }
     }
 
     fun getChildren() = uiState.value.children

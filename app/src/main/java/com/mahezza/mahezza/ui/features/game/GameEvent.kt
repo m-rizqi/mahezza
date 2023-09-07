@@ -3,6 +3,7 @@ package com.mahezza.mahezza.ui.features.game
 import android.graphics.Bitmap
 import com.mahezza.mahezza.data.model.Child
 import com.mahezza.mahezza.data.model.Puzzle
+import com.mahezza.mahezza.ui.features.game.course.CourseUiState
 
 sealed class GameEvent {
     class SetSelectedChildren(val children : List<Child>) : GameEvent()
@@ -14,7 +15,10 @@ sealed class GameEvent {
         val elapsedTime: String? = null,
         val twibbon : Bitmap? = null,
         val lastActivity : String? = null,
+        val course : CourseUiState.CourseState? = null,
+        val isGameFinished : Boolean = false,
         val acknowledgeCode : GameUiState.AcknowledgeCode
     ) : GameEvent()
+    object OnClearBitmapResource : GameEvent()
 
 }

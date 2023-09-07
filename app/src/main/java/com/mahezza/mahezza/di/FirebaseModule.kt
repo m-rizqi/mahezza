@@ -9,8 +9,10 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.firebase.auth.FirebaseAuthentication
 import com.mahezza.mahezza.data.source.firebase.auth.MainFirebaseAuthentication
 import com.mahezza.mahezza.data.source.firebase.firestore.ChildrenFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.firestore.CourseFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.GameFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainChildrenFirebaseFirestore
+import com.mahezza.mahezza.data.source.firebase.firestore.MainCourseFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainGameFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainPuzzleFirebaseFirestore
 import com.mahezza.mahezza.data.source.firebase.firestore.MainUserFirebaseFirestore
@@ -92,4 +94,10 @@ object FirebaseModule {
     fun provideFirebaseStorage(
         @IODispatcher dispatcher: CoroutineDispatcher
     ) : FirebaseStorage = MainFirebaseStorage(dispatcher)
+
+    @Singleton
+    @Provides
+    fun provideCourseFirebaseFirestore(
+        @IODispatcher dispatcher: CoroutineDispatcher
+    ) : CourseFirebaseFirestore = MainCourseFirebaseFirestore(dispatcher)
 }
