@@ -1,6 +1,5 @@
 package com.mahezza.mahezza.ui.features.game.course
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.data.Result
@@ -14,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,18 +28,36 @@ class CourseViewModel @Inject constructor(
     fun onEvent(event: CourseEvent){
         when(event){
             CourseEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
-            is CourseEvent.SetPuzzleId -> setPuzzleId(event.puzzleId)
+            is CourseEvent.SetPuzzleToGetCourse -> setPuzzleToGetCourse(event.puzzleId, event.course)
             CourseEvent.OnSubCourseDetailOpened -> _uiState.update { it.copy(openSubCourseDetail = null) }
             is CourseEvent.OpenSubCourse -> _uiState.update { it.copy(openedSubCourseState = findSubCourse(event.subCourseId)) }
             is CourseEvent.OnSubCourseCompleted -> onSubCourseCompleted(event.subCourseId)
+            is CourseEvent.SetResumeCourse -> setResumeCourse(event.course)
         }
+    }
+
+    private fun setResumeCourse(course: Course?) {
+        if (course == null) return
+        val courseState = mapCourseToCourseState(course)
+        _uiState.update { it.copy(
+            courseState = courseState,
+            layoutState = if (courseState.subCourseStates.isEmpty()) LayoutState.Empty else LayoutState.Content
+        ) }
     }
 
     private fun findSubCourse(subCourseId: String): CourseUiState.SubCourseState? {
         return uiState.value.courseState?.subCourseStates?.find { it.id == subCourseId }
     }
 
-    private fun setPuzzleId(puzzleId : String){
+    private fun setPuzzleToGetCourse(puzzleId: String, course: Course?){
+        if (course != null){
+            val courseState = mapCourseToCourseState(course)
+            _uiState.update { it.copy(
+                courseState = courseState,
+                layoutState = if (courseState.subCourseStates.isEmpty()) LayoutState.Empty else LayoutState.Content
+            ) }
+            return
+        }
         viewModelScope.launch {
             courseRepository.getCourseByPuzzleId(puzzleId).collect{result ->
                 _uiState.update { it.copy(layoutState = LayoutState.Shimmer) }

@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface PuzzleRepository {
     suspend fun getPuzzleByQRCode(qrcode : String) : Result<Puzzle>
-
+    suspend fun getPuzzleById(id : String) : Result<Puzzle>
     fun getPuzzleByIds(ids : List<String>) : Flow<Result<List<Puzzle>>>
 }

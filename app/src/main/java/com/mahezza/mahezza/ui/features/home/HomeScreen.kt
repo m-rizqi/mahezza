@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,30 +33,48 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.request.RequestOptions
 import com.mahezza.mahezza.R
+import com.mahezza.mahezza.common.StringResource
+import com.mahezza.mahezza.data.model.Child
+import com.mahezza.mahezza.data.model.Puzzle
+import com.mahezza.mahezza.ui.components.AccentYellowTextButton
+import com.mahezza.mahezza.ui.components.LayoutState
 import com.mahezza.mahezza.ui.components.OutlinedAccentYellowButton
+import com.mahezza.mahezza.ui.components.ShimmerEmptyContentLayout
+import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
 import com.mahezza.mahezza.ui.theme.Black
 import com.mahezza.mahezza.ui.theme.Grey
+import com.mahezza.mahezza.ui.theme.GreyBorder
 import com.mahezza.mahezza.ui.theme.PoppinsMedium10
 import com.mahezza.mahezza.ui.theme.PoppinsMedium14
 import com.mahezza.mahezza.ui.theme.PoppinsMedium16
+import com.mahezza.mahezza.ui.theme.PoppinsRegular10
 import com.mahezza.mahezza.ui.theme.PoppinsRegular12
 import com.mahezza.mahezza.ui.theme.PoppinsSemiBold14
 import com.mahezza.mahezza.ui.theme.PoppinsSemiBold18
@@ -65,11 +85,26 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     navController: NavController,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    homeViewModel: HomeViewModel
 ) {
-    val scope = rememberCoroutineScope()
     changeStatusBarColor(color = White)
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val uiState = homeViewModel.uiState.collectAsState()
+    val lastGameActivityStates = homeViewModel.lastGameActivityStates.collectAsState(initial = emptyList())
+
+    LaunchedEffect(key1 = uiState.value.generalMessage){
+        uiState.value.generalMessage?.let { message ->
+            showToast(context, message.asString(context))
+            homeViewModel.onEvent(HomeEvent.OnGeneralMessageShowed)
+        }
+    }
+
     HomeContent(
+        navController = navController,
+        uiState = uiState.value,
+        lastGameActivityStates = lastGameActivityStates.value,
         onDrawerClick = {
             scope.launch {
                 drawerState.open()
@@ -86,9 +121,12 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
+    navController: NavController,
+    uiState: HomeUiState,
+    lastGameActivityStates : List<HomeUiState.LastGameActivityState>,
     onDrawerClick : () -> Unit,
     onRedeemPuzzleClick : () -> Unit,
-    onStartPlayClick : () -> Unit
+    onStartPlayClick : () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -141,6 +179,48 @@ fun HomeContent(
                 style = PoppinsSemiBold18,
                 color = AccentYellowDark
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            ShimmerEmptyContentLayout(
+                state = uiState.layoutState,
+                modifier = Modifier.fillMaxWidth(),
+                emptyMessage = StringResource.StringResWithParams(R.string.last_activity_not_found),
+                shimmer = {brush ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(176.dp)
+                                .background(brush, RoundedCornerShape(8.dp))
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(176.dp)
+                                .background(brush, RoundedCornerShape(8.dp))
+                        )
+                    }
+                }
+            ) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ){
+                    items(items = lastGameActivityStates){lastGameActivityState ->
+                        LastActivityCard(
+                            puzzle = lastGameActivityState.puzzle,
+                            lastActivity = lastGameActivityState.lastActivity,
+                            children = lastGameActivityState.children,
+                            elapsedTime = lastGameActivityState.elapsedTime,
+                            onClick = {
+                                val destination = lastGameActivityState.onClick()
+                                navController.navigate(destination)
+                            }
+                        )
+                    }
+                }
+            }
         }
         ExtendedFloatingActionButton(
             modifier = Modifier
@@ -170,14 +250,24 @@ fun HomeContent(
 @Composable
 fun HomeContentPreview() {
     HomeContent(
+        navController = NavController(LocalContext.current),
+        uiState = HomeUiState(),
+        lastGameActivityStates = emptyList(),
         onDrawerClick = {},
         onRedeemPuzzleClick = {},
         onStartPlayClick = {}
     )
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun LastActivityCard() {
+fun LastActivityCard(
+    puzzle : Puzzle,
+    lastActivity : String,
+    children : List<Child>,
+    elapsedTime : String,
+    onClick : () -> Unit
+) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val cardWidth = remember {
         screenWidth / 2
@@ -187,20 +277,29 @@ fun LastActivityCard() {
         colors = CardDefaults.cardColors(
             containerColor = White
         ),
+        border = BorderStroke(1.dp, Grey),
+        elevation = CardDefaults.elevatedCardElevation(1.dp),
         modifier = Modifier
-            .width(cardWidth.dp)
+            .width(cardWidth.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            Image(
+            GlideImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1.7f)
-                    .clip(shape = RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
                 ,
-                painter = painterResource(id = R.drawable.login_illustration), // Need To Change
-                contentDescription = stringResource(id = R.string.app_name) // Need To Change
+                contentScale = ContentScale.Crop,
+                model = puzzle.banner,
+                contentDescription = puzzle.name,
+                requestBuilderTransform = { request ->
+                    val requestOptions = RequestOptions()
+                        .placeholder(R.drawable.ic_loading_placeholder)
+                        .error(R.drawable.ic_error_placeholder)
+                    request.apply(requestOptions)
+                }
             )
             Column(
                 modifier = Modifier
@@ -209,12 +308,12 @@ fun LastActivityCard() {
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Mahezza Family", // Temporary
+                    text = puzzle.name,
                     style = PoppinsMedium10,
                     color = AccentYellowDark
                 )
                 Text(
-                    text = "Mendengarkan Cerita dan Tantangan", // Temporary
+                    text = lastActivity,
                     style = PoppinsMedium14,
                     color = Black
                 )
@@ -225,16 +324,53 @@ fun LastActivityCard() {
                         .height(1.dp)
                         .background(Grey)
                 )
-                Row {
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_progress), // Temporary
-                        contentDescription = "Progress" // Temporary
+                        contentDescription = stringResource(id = R.string.progress)
                     )
                     Text(
-                        text = "Bab 2, Sub 3",
+                        text = elapsedTime,
                         style = PoppinsRegular12,
                         color = Black
                     )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    StackedPhotoProfiles(
+                        imageSize = 16.dp,
+                        offset = (-10).dp,
+                        photoProfiles = children.map { it.photoUrl })
+                    Text(
+                        text = children.joinToString { it.name },
+                        style = PoppinsRegular12,
+                        color = Black
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = AccentYellowDark
+                        ),
+                        onClick = onClick
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.continue_game),
+                            style = PoppinsRegular10,
+                        )
+                    }
                 }
             }
         }
@@ -244,5 +380,11 @@ fun LastActivityCard() {
 @Preview
 @Composable
 fun LastActivityCardPreview() {
-    LastActivityCard()
+    LastActivityCard(
+        puzzle = Puzzle("","", "", "", "", emptyList(), ""),
+        lastActivity = "",
+        children = emptyList(),
+        elapsedTime = "",
+        onClick = {}
+    )
 }

@@ -5,7 +5,7 @@ data class ChallengeOfContentRequest(
     val challengeId : String,
     val instruction : String,
     val title : String,
-    var isCompleted: Boolean,
+    var completed: Boolean,
     val challengeNumber : Int,
     val numberOfChallenges: Int,
 )

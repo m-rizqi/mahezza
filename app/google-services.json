@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:607908723290:android:9bf87b71367b7e7b407663",
+        "mobilesdk_app_id": "1:607908723290:android:81e5b751b1515ce1407663",
         "android_client_info": {
           "package_name": "com.mahezza.mahezza"
         }
@@ -22,7 +22,7 @@
           }
         },
         {
-          "client_id": "607908723290-agrkbd4tbv5tpmipfika3lmnip4if0s4.apps.googleusercontent.com",
+          "client_id": "607908723290-ns8npbt1oqc003k7hivu133b90a0okul.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

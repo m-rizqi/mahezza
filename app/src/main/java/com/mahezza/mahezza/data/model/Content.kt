@@ -60,7 +60,7 @@ fun Content.Challenge.toChallengeOfContentRequest() : ChallengeOfContentRequest 
     challengeId = this.id,
     instruction = this.instruction,
     title = this.title,
-    isCompleted = this.isCompleted,
+    completed = this.isCompleted,
     challengeNumber = this.challengeNumber,
     numberOfChallenges = this.numberOfChallenges,
 )

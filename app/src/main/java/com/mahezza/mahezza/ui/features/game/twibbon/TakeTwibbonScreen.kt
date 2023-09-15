@@ -60,6 +60,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.request.RequestOptions
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.saveBitmapToCache
+import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
@@ -137,14 +138,16 @@ fun TakeTwibbonScreen(
         gameUiState = gameUiState.value,
         uiState = uiState.value,
         onEvent = viewModel::onEvent,
-        onSaveTwibbon = {bitmap, acknowledgeCode ->
+        onSaveTwibbon = {bitmap, acknowledgeCode, status, lastActivity ->
             if (bitmap == null){
                 showToast(context, context.getString(R.string.take_photo_first))
             } else {
-                gameViewModel.onEvent(GameEvent.SaveGame(
-                    twibbon = bitmap,
-                    lastActivity = context.getString(R.string.listen_story_puzzle),
-                    acknowledgeCode = acknowledgeCode)
+                    gameViewModel.onEvent(GameEvent.SaveGame(
+                        twibbon = bitmap,
+                        lastActivity = lastActivity,
+                        acknowledgeCode = acknowledgeCode,
+                        status = status
+                    )
                 )
             }
         },
@@ -159,7 +162,7 @@ fun TakeTwibbonContent(
     gameUiState: GameUiState,
     uiState: TakeTwibbonUiState,
     onEvent: (TakeTwibbonEvent) -> Unit,
-    onSaveTwibbon : (Bitmap?, GameUiState.AcknowledgeCode) -> Unit
+    onSaveTwibbon : (Bitmap?, GameUiState.AcknowledgeCode, Game.Status, String) -> Unit
 ) {
     val context = LocalContext.current
     val uri = context.saveBitmapToCache(null, "${System.currentTimeMillis()}")
@@ -178,7 +181,7 @@ fun TakeTwibbonContent(
                 isShowExitDialog = false
                 screenshotState.capture()
                 screenshotState.capture()
-                onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_AND_EXIT)
+                onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_AND_EXIT, Game.Status.TakeTwibbon, context.getString(R.string.photo_together))
             },
             onDismissRequest = {
                 isShowExitDialog = it
@@ -344,7 +347,7 @@ fun TakeTwibbonContent(
                     onClick = {
                         screenshotState.capture()
                         screenshotState.capture()
-                        onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_SHARE)
+                        onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_SHARE, Game.Status.Course, context.getString(R.string.listen_story_puzzle))
                     }
                 ) {
                     Row(
@@ -373,7 +376,7 @@ fun TakeTwibbonContent(
                     onClick = {
                         screenshotState.capture()
                         screenshotState.capture()
-                        onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_DOWNLOAD)
+                        onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_DOWNLOAD, Game.Status.Course, context.getString(R.string.listen_story_puzzle))
                     }
                 ) {
                     Icon(
@@ -389,7 +392,7 @@ fun TakeTwibbonContent(
             ) {
                 screenshotState.capture()
                 screenshotState.capture()
-                onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_AND_NEXT)
+                onSaveTwibbon(screenshotState.bitmap, GameUiState.AcknowledgeCode.TWIBBON_AND_NEXT, Game.Status.Course, context.getString(R.string.listen_story_puzzle))
             }
         }
     }
@@ -402,6 +405,6 @@ fun TakeTwibbonContentPreview() {
         gameUiState = GameUiState(),
         uiState = TakeTwibbonUiState(),
         onEvent = {},
-        onSaveTwibbon = {_, _ ->}
+        onSaveTwibbon = {_, _, _, _ ->}
     )
 }

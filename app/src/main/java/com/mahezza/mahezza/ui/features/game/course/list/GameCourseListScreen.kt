@@ -1,7 +1,6 @@
 package com.mahezza.mahezza.ui.features.game.course.list
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,14 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -36,7 +31,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,9 +51,8 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.common.saveBitmapToCache
 import com.mahezza.mahezza.data.model.Child
+import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.data.model.Puzzle
-import com.mahezza.mahezza.data.model.SubCourse
-import com.mahezza.mahezza.ui.components.LayoutState
 import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.ShimmerEmptyContentLayout
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
@@ -90,8 +83,8 @@ import com.mahezza.mahezza.ui.theme.White
 @Composable
 fun GameCourseListScreen(
     navController: NavController,
-    gameViewModel : GameViewModel,
-    courseViewModel: CourseViewModel
+    gameViewModel: GameViewModel,
+    courseViewModel: CourseViewModel,
 ) {
     changeStatusBarColor(color = White)
     val context = LocalContext.current
@@ -103,7 +96,7 @@ fun GameCourseListScreen(
 
     LaunchedEffect(key1 = gameUiState.value){
         gameUiState.value.puzzle?.let {
-            courseViewModel.onEvent(CourseEvent.SetPuzzleId(it.id))
+            courseViewModel.onEvent(CourseEvent.SetPuzzleToGetCourse(it.id, gameUiState.value.course))
         }
         gameUiState.value.acknowledgeCode?.let {acknowledgeCode ->
             if (acknowledgeCode == GameUiState.AcknowledgeCode.COURSE_FINISHED){
@@ -117,6 +110,9 @@ fun GameCourseListScreen(
                 }
             }
             gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
+        }
+        gameUiState.value.course?.let {
+//            courseViewModel.onEvent(CourseEvent.SetResumeCourse(it))
         }
     }
 
@@ -138,7 +134,8 @@ fun GameCourseListScreen(
             course = courseUiState.value.courseState,
             acknowledgeCode = GameUiState.AcknowledgeCode.COURSE_FINISHED,
             lastActivity = stringResource(id = R.string.puzzle_finished),
-            isGameFinished = true
+            isGameFinished = true,
+            status = Game.Status.Finished
         ))
     }
 
@@ -174,8 +171,12 @@ fun GameCourseListScreen(
         puzzle = gameUiState.value.puzzle,
         courseUiState = courseUiState.value,
         onEventCourse = courseViewModel::onEvent,
-        onSaveCourseWithAckCode = {acknowledgeCode ->
-            gameViewModel.onEvent(GameEvent.SaveGame(course = courseUiState.value.courseState, acknowledgeCode = acknowledgeCode))
+        onSaveCourseWithAckCode = {acknowledgeCode, status ->
+            gameViewModel.onEvent(GameEvent.SaveGame(
+                course = courseUiState.value.courseState,
+                acknowledgeCode = acknowledgeCode,
+                status = status
+            ))
         }
     )
 
@@ -189,7 +190,7 @@ fun GameCourseListContent(
     puzzle : Puzzle?,
     courseUiState: CourseUiState,
     onEventCourse : (CourseEvent) -> Unit,
-    onSaveCourseWithAckCode : (GameUiState.AcknowledgeCode) -> Unit
+    onSaveCourseWithAckCode : (GameUiState.AcknowledgeCode, Game.Status) -> Unit
 ) {
     val context = LocalContext.current
     var isShowExitDialog by remember {
@@ -199,7 +200,7 @@ fun GameCourseListContent(
         ExitGameDialog(
             onExit = {
                 isShowExitDialog = false
-                onSaveCourseWithAckCode(GameUiState.AcknowledgeCode.COURSE_EXIT)
+                onSaveCourseWithAckCode(GameUiState.AcknowledgeCode.COURSE_EXIT, Game.Status.Course)
             },
             onDismissRequest = {
                 isShowExitDialog = it
@@ -361,7 +362,7 @@ fun GameCourseListContentPreview() {
         puzzle = Puzzle("", "", "", "", "", emptyList(), ""),
         courseUiState = CourseUiState(),
         onEventCourse = {},
-        onSaveCourseWithAckCode = {}
+        onSaveCourseWithAckCode = {_, _ ->}
     )
 }
 

@@ -46,7 +46,7 @@ fun SubCourse.toSubCourseRequest() : SubCourseRequest = SubCourseRequest(
     illustrationUrl = this.illustrationUrl,
 
     progress = this.progress,
-    isCompleted = this.isCompleted,
+    completed = this.isCompleted,
     numberOfCompletedChallenges = this.numberOfCompletedChallenges,
 )
 

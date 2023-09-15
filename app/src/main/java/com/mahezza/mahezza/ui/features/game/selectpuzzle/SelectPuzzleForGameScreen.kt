@@ -40,6 +40,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.request.RequestOptions
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
+import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.LayoutState
 import com.mahezza.mahezza.ui.components.LoadingScreen
@@ -88,7 +89,8 @@ fun SelectPuzzleForGameScreen(
             gameViewModel.onEvent(GameEvent.SaveGame(
                 puzzle = puzzle,
                 lastActivity = context.getString(R.string.playing_puzzle_name, puzzle.name),
-                acknowledgeCode = GameUiState.AcknowledgeCode.PUZZLE
+                acknowledgeCode = GameUiState.AcknowledgeCode.PUZZLE,
+                status = Game.Status.PlaySession
             ))
         }
     }
