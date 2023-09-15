@@ -164,4 +164,8 @@
     <string name="type">Jenis</string>
     <string name="challenge">Tantangan</string>
     <string name="share_text">Kami baru saja menyelesaikan puzzle Mahezza. Ayo tingkatkan kesehatan mental anak dengan bermain puzzle Mahezza.</string>
+    <string name="progress">Progress</string>
+    <string name="continue_game">Lanjutkan</string>
+    <string name="last_activity_not_found">Kamu belum memiliki aktivitas bermain</string>
+    <string name="select_child">Pilih Anak</string>
 </resources>

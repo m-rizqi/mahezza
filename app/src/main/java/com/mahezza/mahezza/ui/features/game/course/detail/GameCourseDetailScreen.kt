@@ -60,6 +60,7 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.model.Child
 import com.mahezza.mahezza.data.model.Puzzle
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
+import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.features.game.GameViewModel
@@ -102,6 +103,8 @@ fun GameCourseDetailScreen(
         },
         onBack = {navController.popBackStack()}
     )
+    
+    LoadingScreen(isShowLoading = gameUiState.value.isLoading || courseUiState.value.isShowLoading)
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -171,7 +174,8 @@ fun GameCourseDetailContent(
                     ) {
                         subCourseState?.illustrationUrl?.let { illustration ->
                             GlideImage(
-                                modifier = Modifier.fillMaxHeight()
+                                modifier = Modifier
+                                    .fillMaxHeight()
                                     .aspectRatio(1f)
                                     .align(BottomEnd)
                                 ,

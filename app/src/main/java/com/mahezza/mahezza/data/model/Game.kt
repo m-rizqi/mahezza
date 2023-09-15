@@ -3,6 +3,8 @@ package com.mahezza.mahezza.data.model
 import androidx.annotation.StringRes
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.data.source.firebase.request.GameRequest
+import com.mahezza.mahezza.data.source.firebase.response.GameResponse
+import com.mahezza.mahezza.data.source.firebase.response.LastGameActivityResponse
 
 data class Game(
     val id : String,
@@ -34,17 +36,56 @@ data class Game(
         @StringRes
         val stringResId : Int
     ){
-        OnGoing(
-            const = "on_going",
-            stringResId = R.string.on_going
+        SelectChild(
+            const = "select_child",
+            stringResId = R.string.select_child
+        ),
+        SelectPuzzle(
+            const = "select_puzzle",
+            stringResId = R.string.select_puzzle
+        ),
+        PlaySession(
+            const = "play_session",
+            stringResId = R.string.play
+        ),
+        TakeTwibbon(
+        const = "take_twibbon",
+        stringResId = R.string.take_photo
+        ),
+        Course(
+            const = "course",
+            stringResId = R.string.story
         ),
         Finished(
             const = "finished",
             stringResId = R.string.finished
-        ),
-        Paused(
-            const = "paused",
-            stringResId = R.string.paused
         )
+    }
+}
+
+fun GameResponse.toGame(
+    children: List<Child>,
+    puzzle: Puzzle
+): Game {
+    return Game(
+        id = this.id,
+        parentId = this.parentId,
+        children = children,
+        puzzle = puzzle,
+        status = mapStatusToGameStatus(this.status),
+        lastActivity = this.lastActivity,
+        elapsedTime = this.elapsedTime,
+        twibbonUrl = this.twibbonUrl,
+        course = this.course?.toCourse()
+    )
+}
+
+fun mapStatusToGameStatus(status: String): Game.Status {
+    return when(status){
+        Game.Status.SelectPuzzle.const -> Game.Status.SelectPuzzle
+        Game.Status.PlaySession.const -> Game.Status.PlaySession
+        Game.Status.TakeTwibbon.const -> Game.Status.TakeTwibbon
+        Game.Status.Course.const -> Game.Status.Course
+        else -> Game.Status.SelectChild
     }
 }

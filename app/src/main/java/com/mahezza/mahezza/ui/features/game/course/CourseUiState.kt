@@ -40,7 +40,7 @@ data class CourseUiState(
         val isCompleted : Boolean,
         val numberOfCompletedChallenges : Int,
         val numberOfChallenges : Int,
-        val illustrationUrl : String,
+        val illustrationUrl : String?,
         val contentStates : List<ContentState>,
         val onClick : () -> Unit
     )

@@ -36,7 +36,9 @@ fun Activity.resetStatusBarFromTransparent(){
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
         // Restore the default status bar color (you might need to provide the appropriate color)
-        statusBarColor = this.context.resources.getColor(R.color.white, null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarColor = this.context.resources.getColor(R.color.white, null)
+        }
     }
 
 }

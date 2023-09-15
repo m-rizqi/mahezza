@@ -16,6 +16,8 @@ import com.mahezza.mahezza.domain.children.InsertChildUseCase
 import com.mahezza.mahezza.domain.children.InsertChildUseCaseImpl
 import com.mahezza.mahezza.domain.common.DownloadTwibbonUseCase
 import com.mahezza.mahezza.domain.common.DownloadTwibbonUseCaseImpl
+import com.mahezza.mahezza.domain.game.ResumeGameUseCase
+import com.mahezza.mahezza.domain.game.ResumeGameUseCaseImpl
 import com.mahezza.mahezza.domain.game.SaveGameUseCase
 import com.mahezza.mahezza.domain.game.SaveGameUseCaseImpl
 import com.mahezza.mahezza.domain.puzzle.GetRedeemedPuzzleUseCase
@@ -72,4 +74,7 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun bindDownloadTwibbonUseCase(useCase : DownloadTwibbonUseCaseImpl) : DownloadTwibbonUseCase
+
+    @Binds
+    abstract fun bindResumeGameUseCase(useCase: ResumeGameUseCaseImpl) : ResumeGameUseCase
 }

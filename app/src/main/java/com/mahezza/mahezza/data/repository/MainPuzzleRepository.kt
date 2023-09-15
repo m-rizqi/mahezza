@@ -11,6 +11,7 @@ import com.mahezza.mahezza.data.source.firebase.response.PuzzleResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -25,6 +26,22 @@ class MainPuzzleRepository @Inject constructor(
     override suspend fun getPuzzleByQRCode(qrcode: String): Result<Puzzle> {
         val firebaseResult = puzzleFirebaseFirestore.findPuzzleIdByQRCode(qrcode)
         if (isFirebaseResultSuccess(firebaseResult)) return Result.Success(firebaseResult.data!!.toPuzzle())
+        return Result.Fail(firebaseResult.message)
+    }
+
+    override suspend fun getPuzzleById(id: String): Result<Puzzle> {
+        val firebaseResult = puzzleFirebaseFirestore.getPuzzleById(id)
+        if (isFirebaseResultSuccess(firebaseResult)) {
+            var puzzle = firebaseResult.data!!.toPuzzle()
+            val songsFirebase = puzzleFirebaseFirestore.getSongs(puzzle.id).first()
+            val songs = if (isFirebaseResultSuccess(songsFirebase)){
+                songsFirebase.data?.map { it.toSong() } ?: emptyList()
+            } else {
+                emptyList()
+            }
+            puzzle = puzzle.copy(songs = songs)
+            return Result.Success(puzzle)
+        }
         return Result.Fail(firebaseResult.message)
     }
 

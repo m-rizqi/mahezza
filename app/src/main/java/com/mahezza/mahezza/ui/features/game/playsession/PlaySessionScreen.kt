@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.mahezza.mahezza.R
+import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.GifImage
 import com.mahezza.mahezza.ui.components.LoadingScreen
@@ -100,11 +101,6 @@ fun PlaySessionScreen(
     val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsState()
     val gameUiState = gameViewModel.uiState.collectAsState()
-
-    viewModel.setChildrenAndPuzzle(
-        gameViewModel.getChildren(),
-        gameViewModel.getPuzzle()
-    )
 
     var hasPostNotifications by remember {
         mutableStateOf(
@@ -162,9 +158,6 @@ fun PlaySessionScreen(
 
     LaunchedEffect(key1 = playSessionService) {
         playSessionService?.let { service ->
-            service.setChildren(uiState.value.children)
-            service.setPuzzle(uiState.value.puzzle)
-
             service.playSessionServiceUiState.collect{ playSessionServiceUiState ->
                 playSessionServiceUiState.currentSong?.let { song ->
                     viewModel.onEvent(PlaySessionEvent.SetCurrentSong(song))
@@ -173,25 +166,34 @@ fun PlaySessionScreen(
                 viewModel.onEvent(PlaySessionEvent.SetStopwatchState(playSessionServiceUiState.stopwatchState))
                 viewModel.onEvent(PlaySessionEvent.SetCurrentTrack(playSessionServiceUiState.currentTrack))
             }
-
         }
     }
 
-    LaunchedEffect(key1 = gameUiState.value.acknowledgeCode){
+    LaunchedEffect(key1 = gameUiState.value){
         if (gameUiState.value.acknowledgeCode?.name == GameUiState.AcknowledgeCode.PLAY_SESSION_AND_EXIT.name) {
             navController.navigate(route = Routes.Home){
                 popUpTo(Routes.Home){
                     inclusive = true
                 }
             }
+            gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
         }
         if (gameUiState.value.acknowledgeCode?.name == GameUiState.AcknowledgeCode.PLAY_SESSION_AND_NEXT.name) {
             navController.navigate(Routes.TakeTwibbon)
+            gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
         }
-        gameViewModel.onEvent(GameEvent.OnSaveGameStatusAcknowledged)
+        if(gameUiState.value.isLoading.not()){
+            val children = gameViewModel.getChildren()
+            val puzzle = gameViewModel.getPuzzle()
+            viewModel.setChildrenAndPuzzle(children, puzzle)
+            playSessionService?.let { service ->
+                service.setChildren(children)
+                service.setPuzzle(puzzle)
+            }
+        }
     }
 
-    LaunchedEffect(key1 = uiState.value.generalMessage){
+    LaunchedEffect(key1 = uiState.value){
         uiState.value.generalMessage?.let { message ->
             showToast(context, message.asString(context))
             viewModel.onEvent(PlaySessionEvent.OnGeneralMessageShowed)
@@ -203,15 +205,17 @@ fun PlaySessionScreen(
         onSaveGameAndExit = {
             gameViewModel.onEvent(GameEvent.SaveGame(
                 elapsedTime = uiState.value.stopwatchTime,
-                lastActivity = context.getString(R.string.photo_together),
-                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION_AND_EXIT
+                lastActivity = context.getString(R.string.playing_puzzle_name, gameUiState.value.puzzle?.name ?: context.getString(R.string.app_name)),
+                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION_AND_EXIT,
+                status = Game.Status.PlaySession
             ))
         },
         onSaveGameAndNext = {
             gameViewModel.onEvent(GameEvent.SaveGame(
                 elapsedTime = uiState.value.stopwatchTime,
                 lastActivity = context.getString(R.string.photo_together),
-                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION_AND_NEXT
+                acknowledgeCode = GameUiState.AcknowledgeCode.PLAY_SESSION_AND_NEXT,
+                status = Game.Status.TakeTwibbon
             ))
         },
         onPlayPauseClick = {

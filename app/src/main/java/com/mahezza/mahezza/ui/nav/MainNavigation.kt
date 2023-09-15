@@ -58,6 +58,7 @@ import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.features.dashboard.DashboardViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItem
+import com.mahezza.mahezza.ui.features.game.GameEvent
 import com.mahezza.mahezza.ui.features.game.GameViewModel
 import com.mahezza.mahezza.ui.features.game.course.CourseViewModel
 import com.mahezza.mahezza.ui.features.game.course.detail.GameCourseDetailScreen
@@ -71,10 +72,13 @@ import com.mahezza.mahezza.ui.features.game.selectpuzzle.SelectPuzzleForGameView
 import com.mahezza.mahezza.ui.features.game.twibbon.TakeTwibbonScreen
 import com.mahezza.mahezza.ui.features.game.twibbon.TakeTwibbonViewModel
 import com.mahezza.mahezza.ui.features.home.HomeScreen
+import com.mahezza.mahezza.ui.features.home.HomeViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleViewModel
+import com.mahezza.mahezza.ui.nav.NavArgumentConst.GAME_ID
+import com.mahezza.mahezza.ui.nav.NavArgumentConst.IS_RESUME_GAME
 import com.mahezza.mahezza.ui.theme.AccentOrange
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.PoppinsMedium10
@@ -226,7 +230,7 @@ fun MainNavigation() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.Game
+            startDestination = Routes.Home
         ){
             composableWithAnimation(
                 route = Routes.Auth
@@ -237,9 +241,11 @@ fun MainNavigation() {
                 route = Routes.Home
             ){
                 val dashboardViewModel : DashboardViewModel = it.sharedViewModel(navController = navController)
+                val homeViewModel : HomeViewModel = hiltViewModel()
                 HomeScreen(
                     drawerState = drawerState,
-                    navController = navController
+                    navController = navController,
+                    homeViewModel = homeViewModel
                 )
             }
             composableWithAnimation(
@@ -296,10 +302,27 @@ fun MainNavigation() {
                     )
                 }
                 composableWithAnimation(
-                    route = Routes.PlaySession
+                    route = "${Routes.PlaySession}?${IS_RESUME_GAME}={${IS_RESUME_GAME}}&${GAME_ID}={${GAME_ID}}",
+                    arguments = listOf(
+                        navArgument(IS_RESUME_GAME){
+                            type = NavType.BoolType
+                            defaultValue = false
+                            nullable = false
+                        },
+                        navArgument(GAME_ID){
+                            type = NavType.StringType
+                            defaultValue = null
+                            nullable = true
+                        }
+                    )
                 ){
+                    val isResumeGame = it.arguments?.getBoolean(IS_RESUME_GAME, false) ?: false
+                    val gameId = it.arguments?.getString(GAME_ID)
                     val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
                     val playSessionViewModel : PlaySessionViewModel = viewModel()
+                    if (isResumeGame && gameId != null){
+                        gameViewModel.onEvent(GameEvent.ResumeGame(gameId))
+                    }
                     PlaySessionScreen(
                         navController = navController,
                         gameViewModel = gameViewModel,
@@ -307,10 +330,27 @@ fun MainNavigation() {
                     )
                 }
                 composableWithAnimation(
-                    route = Routes.TakeTwibbon
+                    route = "${Routes.TakeTwibbon}?${IS_RESUME_GAME}={${IS_RESUME_GAME}}&${GAME_ID}={${GAME_ID}}",
+                    arguments = listOf(
+                        navArgument(IS_RESUME_GAME){
+                            type = NavType.BoolType
+                            defaultValue = false
+                            nullable = false
+                        },
+                        navArgument(GAME_ID){
+                            type = NavType.StringType
+                            defaultValue = null
+                            nullable = true
+                        }
+                    )
                 ){
+                    val isResumeGame = it.arguments?.getBoolean(IS_RESUME_GAME, false) ?: false
+                    val gameId = it.arguments?.getString(GAME_ID)
                     val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController)
                     val takeTwibbonViewModel : TakeTwibbonViewModel = hiltViewModel()
+                    if (isResumeGame && gameId != null){
+                        gameViewModel.onEvent(GameEvent.ResumeGame(gameId))
+                    }
                     TakeTwibbonScreen(
                         navController = navController,
                         gameViewModel = gameViewModel,
@@ -319,17 +359,34 @@ fun MainNavigation() {
                 }
                 navigation(
                     startDestination = Routes.CourseList,
-                    route = Routes.Course
+                    route = "${Routes.Course}?${IS_RESUME_GAME}={${IS_RESUME_GAME}}&${GAME_ID}={${GAME_ID}}",
+                    arguments = listOf(
+                        navArgument(IS_RESUME_GAME){
+                            type = NavType.BoolType
+                            defaultValue = false
+                            nullable = false
+                        },
+                        navArgument(GAME_ID){
+                            type = NavType.StringType
+                            defaultValue = null
+                            nullable = true
+                        }
+                    )
                 ){
                     composableWithAnimation(
-                        route = Routes.CourseList
+                        route = Routes.CourseList,
                     ){
+                        val isResumeGame = it.arguments?.getBoolean(IS_RESUME_GAME, false) ?: false
+                        val gameId = it.arguments?.getString(GAME_ID)
                         val gameViewModel = it.sharedHiltViewModel<GameViewModel>(navController = navController, nestedParentCount = 2)
                         val courseViewModel = it.sharedHiltViewModel<CourseViewModel>(navController = navController)
+                        if (isResumeGame && gameId != null){
+                            gameViewModel.onEvent(GameEvent.ResumeGame(gameId))
+                        }
                         GameCourseListScreen(
                             navController = navController,
                             gameViewModel = gameViewModel,
-                            courseViewModel = courseViewModel
+                            courseViewModel = courseViewModel,
                         )
                     }
                     composableWithAnimation(

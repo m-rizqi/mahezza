@@ -6,4 +6,8 @@ data class SubCourseResponse(
     val numberOfChallenges : Int = 0,
     val subCourseId : String = "",
     val illustrationUrl : String? = null,
+
+    val progress : Float = 0f,
+    val completed : Boolean = false,
+    val numberOfCompletedChallenges : Int = 0,
 )

@@ -1,12 +1,11 @@
 package com.mahezza.mahezza.ui.features.game
 
-import android.content.res.Resources
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
-import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.domain.Result
+import com.mahezza.mahezza.domain.game.ResumeGameUseCase
 import com.mahezza.mahezza.domain.game.SaveGameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val saveGameUseCase: SaveGameUseCase,
-    private val resource: Resources
+    private val resumeGameUseCase: ResumeGameUseCase
 ): ViewModel(){
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState : StateFlow<GameUiState>
@@ -32,6 +31,35 @@ class GameViewModel @Inject constructor(
             GameEvent.OnSaveGameStatusAcknowledged -> _uiState.update { it.copy(acknowledgeCode = null) }
             is GameEvent.SaveGame -> saveGame(event)
             GameEvent.OnClearBitmapResource -> _uiState.update { it.copy(twibbon = null) }
+            is GameEvent.ResumeGame -> resumeGame(event.gameId)
+        }
+    }
+
+    private fun resumeGame(gameId: String) {
+        if (uiState.value.game != null) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, acknowledgeCode = null) }
+            val result = resumeGameUseCase(gameId)
+            when(result){
+                is Result.Fail -> {
+                    _uiState.update { it.copy(generalMessage = result.message) }
+                }
+                is Result.Success -> {
+                    result.data?.let { game ->
+                        _uiState.update { it.copy(
+                            id = game.id,
+                            children = game.children,
+                            puzzle = game.puzzle,
+                            elapsedTime = game.elapsedTime,
+                            lastActivity = game.lastActivity,
+                            twibbonUrl = game.twibbonUrl,
+                            course = game.course,
+                            game = game
+                        ) }
+                    }
+                }
+            }
+            _uiState.update { it.copy(isLoading = false, acknowledgeCode = null) }
         }
     }
 
@@ -43,7 +71,7 @@ class GameViewModel @Inject constructor(
         }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, acknowledgeCode = null) }
-            val result=  saveGameUseCase(
+            val result = saveGameUseCase(
                 SaveGameUseCase.SaveGameState(
                     id = uiState.value.id,
                     children = uiState.value.children,
@@ -51,8 +79,8 @@ class GameViewModel @Inject constructor(
                     lastActivity = uiState.value.lastActivity,
                     elapsedTime = uiState.value.elapsedTime,
                     twibbon = uiState.value.twibbon,
-                    courseState = uiState.value.course,
-                    status = if (uiState.value.isGameFinished) Game.Status.Finished else Game.Status.OnGoing
+                    courseState = uiState.value.courseState,
+                    status = uiState.value.status
                 )
             )
             when(result){
@@ -76,7 +104,8 @@ class GameViewModel @Inject constructor(
             puzzle?.let { puzzle -> _uiState.update { it.copy(puzzle = puzzle) } }
             elapsedTime?.let { elapsedTime -> _uiState.update { it.copy(elapsedTime = elapsedTime) } }
             twibbon?.let { twibbon -> _uiState.update { it.copy(twibbon = twibbon) } }
-            course?.let { course -> _uiState.update { it.copy(course = course) } }
+            course?.let { course -> _uiState.update { it.copy(courseState = course) } }
+            status.let { status -> _uiState.update { it.copy(status = status) } }
             lastActivity?.let { lastActivity -> _uiState.update { it.copy(lastActivity = lastActivity) } }
         }
         _uiState.update { it.copy(isGameFinished = event.isGameFinished) }

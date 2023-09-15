@@ -40,13 +40,7 @@ class MainPuzzleFirebaseFirestore @Inject constructor(
                     ?: throw Resources.NotFoundException("Puzzle with code $qrcode not found!")
 
                 return@withContext getPuzzleById(qrCodeResponse.puzzleId)
-            } catch (e: FirebaseFirestoreException) {
-                return@withContext FirebaseResult(
-                    null,
-                    false,
-                    StringResource.DynamicString(e.message.toString())
-                )
-            } catch (e: Resources.NotFoundException) {
+            } catch (e: Exception) {
                 return@withContext FirebaseResult(
                     null,
                     false,

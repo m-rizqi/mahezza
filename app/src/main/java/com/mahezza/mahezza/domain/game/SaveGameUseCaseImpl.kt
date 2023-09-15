@@ -28,7 +28,7 @@ class SaveGameUseCaseImpl @Inject constructor(
         val parentId = saveGameState.parentId ?:
             dataStore.firebaseUserIdPreference.first() ?:
             return Result.Fail(StringResource.StringResWithParams(R.string.user_id_is_not_found))
-        val status = saveGameState.status ?: Game.Status.OnGoing
+        val status = saveGameState.status ?: Game.Status.SelectChild
 
         val twibbonFileName = "${saveGameState.puzzle.name}-${saveGameState.children.joinToString { it.name }}"
         val twibbonUrl = if (saveGameState.twibbon == null) saveGameState.twibbonUrl else saveTwibbonAndGetUrl(saveGameState.twibbon, twibbonFileName)
