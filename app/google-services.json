@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "607908723290-na140dbpg8eb6eh6fc783omiqgf5f48f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mahezza.mahezza",
+            "certificate_hash": "04f4608ce501ac39ed1130d6653554921ee231aa"
+          }
+        },
+        {
           "client_id": "607908723290-ns8npbt1oqc003k7hivu133b90a0okul.apps.googleusercontent.com",
           "client_type": 3
         }

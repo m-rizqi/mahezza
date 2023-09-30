@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep public class com.google.firebase.** {*;}
+-keep class com.google.android.gms.internal.** {*;}
+-keepnames class com.google.android.gms.** {*;}
+-keepclasseswithmembers class com.google.firebase.FirebaseException
+
+-keep class packagename.data.source.firebase.request.** { *; }
+-keep class packagename.data.source.firebase.response.** { *; }
