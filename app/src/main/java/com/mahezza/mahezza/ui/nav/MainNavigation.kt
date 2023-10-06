@@ -1,5 +1,8 @@
 package com.mahezza.mahezza.ui.nav
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +57,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.navigation
 import com.mahezza.mahezza.R
 import com.mahezza.mahezza.ui.components.LoadingScreen
+import com.mahezza.mahezza.ui.ext.getUnGrantedPermissions
 import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.features.dashboard.DashboardViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
@@ -100,6 +104,22 @@ fun MainNavigation() {
     val isLogOut = drawerItemsViewModel.isLogOut.collectAsState()
     val generalMessage = drawerItemsViewModel.generalMessage.collectAsState()
     val context = LocalContext.current
+
+
+    val unGrantedPermissions = context.getUnGrantedPermissions(
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.POST_NOTIFICATIONS,
+    );
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { _ -> }
+    )
+    LaunchedEffect(key1 = unGrantedPermissions) {
+        if (unGrantedPermissions.isNotEmpty()){
+            launcher.launch(unGrantedPermissions.toTypedArray())
+        }
+    }
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route

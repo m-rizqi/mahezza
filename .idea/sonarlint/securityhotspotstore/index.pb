@@ -344,3 +344,5 @@ y
 Iapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginViewModel.kt,e\4\e48797a4a31b257e0c16d94a269afbc4d2e39058
 F
 app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
+m
+=app/src/main/java/com/mahezza/mahezza/ui/ext/PermissionExt.kt,7\a\7a06673c39c6fd0af521cbf7245036a522e39d05
