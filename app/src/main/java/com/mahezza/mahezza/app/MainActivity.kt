@@ -60,10 +60,6 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var dataStore: MahezzaDataStore
 
-    private val permissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = ResourcesCompat.getColor(resources, R.color.accent_yellow, null)
@@ -73,7 +69,6 @@ class MainActivity : ComponentActivity() {
             appUpdateManager.registerListener(installStateUpdatedListener)
         }
         checkForAppUpdates()
-        checkAndGrantForPermissions()
 
         setContent {
             MahezzaTheme {
@@ -109,28 +104,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-    private fun checkAndGrantForPermissions() {
-        val unGrantedPermissions = mutableListOf<String>()
-        if (isPermissionGranted(Manifest.permission.CAMERA)){
-            unGrantedPermissions.add(Manifest.permission.CAMERA)
-        }
-        if (isPermissionGranted(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            unGrantedPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-        if (
-            isPermissionGranted(Manifest.permission.POST_NOTIFICATIONS) && isAndroidVersionGreaterThanTiramisu()
-        ){
-            unGrantedPermissions.add(Manifest.permission.POST_NOTIFICATIONS)
-        }
-        if (unGrantedPermissions.isNotEmpty()){
-            permissionLauncher.launch(unGrantedPermissions.toTypedArray())
-        }
-    }
-
-    private fun isPermissionGranted(permission : String) = ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED
-
-    private fun isAndroidVersionGreaterThanTiramisu() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
     override fun onResume() {
         super.onResume()

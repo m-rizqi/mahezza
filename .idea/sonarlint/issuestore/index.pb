@@ -336,3 +336,13 @@ z
 Japp/src/main/java/com/mahezza/mahezza/domain/game/ResumeGameUseCaseImpl.kt,3\2\32704efd9307534487d8f1ccf3669406a4d6ecfd
 H
 app/google-services.json,f\d\fd8d34b142d02ec743a8efefefd2c097961666e9
+7
+gradlew,5\b\5bbfa66edb4db3c7c33c5181f43510990d3307f9
+A
+gradle.properties,2\a\2afbb999f001938c88fa43fc2ef52abf0f8213e4
+y
+Iapp/src/main/java/com/mahezza/mahezza/ui/features/login/LoginViewModel.kt,e\4\e48797a4a31b257e0c16d94a269afbc4d2e39058
+F
+app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
+m
+=app/src/main/java/com/mahezza/mahezza/ui/ext/PermissionExt.kt,7\a\7a06673c39c6fd0af521cbf7245036a522e39d05

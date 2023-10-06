@@ -1,8 +1,10 @@
 package com.mahezza.mahezza.ui.features.game.twibbon
 
+import android.Manifest
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment
@@ -54,6 +56,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -65,6 +68,7 @@ import com.mahezza.mahezza.ui.components.FilledAccentYellowButton
 import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
+import com.mahezza.mahezza.ui.ext.getUnGrantedPermissions
 import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.features.game.ExitGameDialog
 import com.mahezza.mahezza.ui.features.game.GameEvent
@@ -92,6 +96,21 @@ fun TakeTwibbonScreen(
     val uiState = viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+    val unGrantedPermissions = context.getUnGrantedPermissions(
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.POST_NOTIFICATIONS,
+        )
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { _ -> }
+    )
+    LaunchedEffect(key1 = unGrantedPermissions) {
+        if (unGrantedPermissions.isNotEmpty()){
+            launcher.launch(unGrantedPermissions.toTypedArray())
+        }
+    }
 
     LaunchedEffect(key1 = uiState.value.generalMessage){
         uiState.value.generalMessage?.let { message ->
