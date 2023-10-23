@@ -88,14 +88,14 @@ class InsertChildProfileViewModel @Inject constructor(
     private fun saveAndNext(){
         viewModelScope.launch {
             _uiState.update { it.copy(isShowLoading = true) }
-//            val result = save()
-//            if (result != null){
+            val result = save()
+            if (result != null){
                 _uiState.update {
                     it.copy(
                         shouldStartRedeemPuzzleScreen = true,
                     )
                 }
-//            }
+            }
             _uiState.update { it.copy(isShowLoading = false) }
         }
     }

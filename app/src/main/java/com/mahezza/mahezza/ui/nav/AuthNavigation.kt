@@ -69,7 +69,8 @@ fun AuthNavigation() {
             val insertChildProfileViewModel : InsertChildProfileViewModel = hiltViewModel()
             InsertChildProfileScreen(
                 navController = navController,
-                viewModel = insertChildProfileViewModel
+                viewModel = insertChildProfileViewModel,
+                isFromDashboard = false
             )
         }
         composableWithAnimation(

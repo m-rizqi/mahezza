@@ -156,7 +156,6 @@ fun <T> Query.addTakeOneSnapshotListenerFlow(
                 return
             }
             if (isCollectionExistAndNotEmpty(snapshot)) {
-                Timber.tag("asdasd").d(snapshot?.documents?.firstOrNull()?.data.toString())
                 val convertedData = snapshot?.documents?.firstOrNull()?.let { document ->
                     document.toObject(dataType)
                 }

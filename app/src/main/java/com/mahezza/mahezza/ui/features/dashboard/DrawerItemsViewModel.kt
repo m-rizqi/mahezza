@@ -42,7 +42,7 @@ class DrawerItemsViewModel @Inject constructor(
         ),
         DrawerItem.Menu(
             titleResId = R.string.redeem_puzzle,
-            iconResId = R.drawable.ic_puzzle,
+            iconResId = R.drawable.ic_qrcode,
             route = Routes.RedeemPuzzle,
         ),
 //        DrawerItem.Menu(
@@ -55,12 +55,12 @@ class DrawerItemsViewModel @Inject constructor(
 //            iconResId = R.drawable.ic_notification,
 //            route = Routes.Home,
 //        ),
-//        DrawerItem.Separator,
-//        DrawerItem.Menu(
-//            titleResId = R.string.children,
-//            iconResId = R.drawable.ic_children,
-//            route = Routes.Home,
-//        ),
+        DrawerItem.Separator,
+        DrawerItem.Menu(
+            titleResId = R.string.children,
+            iconResId = R.drawable.ic_children,
+            route = Routes.InsertChildProfile,
+        ),
 //        DrawerItem.Menu(
 //            titleResId = R.string.puzzle,
 //            iconResId = R.drawable.ic_puzzle,

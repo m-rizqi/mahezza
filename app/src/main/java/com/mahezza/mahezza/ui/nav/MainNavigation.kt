@@ -59,6 +59,8 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.ui.components.LoadingScreen
 import com.mahezza.mahezza.ui.ext.getUnGrantedPermissions
 import com.mahezza.mahezza.ui.ext.showToast
+import com.mahezza.mahezza.ui.features.children.insert.InsertChildProfileScreen
+import com.mahezza.mahezza.ui.features.children.insert.InsertChildProfileViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DashboardViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItem
@@ -77,6 +79,8 @@ import com.mahezza.mahezza.ui.features.game.twibbon.TakeTwibbonScreen
 import com.mahezza.mahezza.ui.features.game.twibbon.TakeTwibbonViewModel
 import com.mahezza.mahezza.ui.features.home.HomeScreen
 import com.mahezza.mahezza.ui.features.home.HomeViewModel
+import com.mahezza.mahezza.ui.features.profile.create.CreateProfileScreen
+import com.mahezza.mahezza.ui.features.profile.create.CreateProfileViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleScreen
@@ -428,6 +432,33 @@ fun MainNavigation() {
                         )
                     }
                 }
+            }
+
+            composableWithAnimation(
+                route = "${Routes.CreateProfile}?${NavArgumentConst.USER_ID}={${NavArgumentConst.USER_ID}}",
+                arguments = listOf(
+                    navArgument(NavArgumentConst.USER_ID){
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                )
+            ){entry ->
+                val userId = entry.arguments?.getString(NavArgumentConst.USER_ID) ?: ""
+                val createProfileViewModel : CreateProfileViewModel = hiltViewModel()
+                CreateProfileScreen(
+                    navController = navController,
+                    userId = userId,
+                    viewModel = createProfileViewModel
+                )
+            }
+            composableWithAnimation(
+                route = Routes.InsertChildProfile
+            ){
+                val insertChildProfileViewModel : InsertChildProfileViewModel = hiltViewModel()
+                InsertChildProfileScreen(
+                    navController = navController,
+                    viewModel = insertChildProfileViewModel
+                )
             }
 
         }

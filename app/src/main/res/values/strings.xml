@@ -168,4 +168,6 @@
     <string name="continue_game">Lanjutkan</string>
     <string name="last_activity_not_found">Kamu belum memiliki aktivitas bermain</string>
     <string name="select_child">Pilih Anak</string>
+    <string name="add_child_profile">Tambah Profil Anak</string>
+    <string name="save_and_close">Simpan dan Tutup</string>
 </resources>

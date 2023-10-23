@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -95,7 +94,8 @@ import java.time.LocalDate
 @Composable
 fun InsertChildProfileScreen(
     navController: NavController,
-    viewModel: InsertChildProfileViewModel
+    viewModel: InsertChildProfileViewModel,
+    isFromDashboard: Boolean = true,
 ) {
     changeStatusBarColor(color = White)
     val uiState = viewModel.uiState.collectAsState()
@@ -108,6 +108,10 @@ fun InsertChildProfileScreen(
         }
     }
     LaunchedEffect(key1 = uiState.value.shouldStartRedeemPuzzleScreen){
+        if (isFromDashboard){
+            navController.popBackStack()
+            return@LaunchedEffect
+        }
         if (uiState.value.shouldStartRedeemPuzzleScreen){
             navController.navigate("${Routes.RedeemPuzzle}?${NEXT_ROUTE}=${Routes.Dashboard}")
             viewModel.onEvent(InsertChildProfileEvent.OnRedeemPuzzleStarted)
@@ -116,6 +120,7 @@ fun InsertChildProfileScreen(
 
     InsertChildProfileContent(
         uiState = uiState.value,
+        isFromDashboard = isFromDashboard,
         onEvent = viewModel::onEvent
     )
 
@@ -126,6 +131,7 @@ fun InsertChildProfileScreen(
 @Composable
 fun InsertChildProfileContent(
     uiState: InsertChildProfileUiState,
+    isFromDashboard: Boolean,
     onEvent : (InsertChildProfileEvent) -> Unit
 ) {
     val galleryLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){ uri: Uri? ->
@@ -155,7 +161,13 @@ fun InsertChildProfileContent(
                 Text(
                     modifier = Modifier
                         .align(Alignment.Center),
-                    text = stringResource(id = R.string.child_profile),
+                    text = stringResource(
+                        id = if(isFromDashboard){
+                            R.string.add_child_profile
+                        } else {
+                            R.string.child_profile
+                        }
+                    ),
                     style = PoppinsMedium16
                 )
                 StackedPhotoProfiles(
@@ -352,7 +364,13 @@ fun InsertChildProfileContent(
             FilledAccentYellowButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                text = stringResource(id = R.string.save_and_next)
+                text = stringResource(
+                    if (isFromDashboard) {
+                        R.string.save_and_close
+                    } else {
+                        R.string.save_and_next
+                    }
+                )
             ) {
                 onEvent(InsertChildProfileEvent.OnSaveAndNext)
             }
@@ -364,7 +382,8 @@ fun InsertChildProfileContent(
 @Composable
 fun AddChildProfileContentPreview() {
     InsertChildProfileContent(
-        InsertChildProfileUiState()
+        InsertChildProfileUiState(),
+        true,
     ){}
 }
 
