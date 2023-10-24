@@ -1,5 +1,7 @@
 package com.mahezza.mahezza.ui.features.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +63,7 @@ import com.mahezza.mahezza.ui.components.ShimmerEmptyContentLayout
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
+import com.mahezza.mahezza.ui.features.home.components.ChildSummaryItem
 import com.mahezza.mahezza.ui.features.home.components.PuzzleLandscapeThumbnail
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
@@ -77,6 +80,7 @@ import com.mahezza.mahezza.ui.theme.PoppinsSemiBold18
 import com.mahezza.mahezza.ui.theme.White
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.M)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -90,6 +94,7 @@ fun HomeScreen(
     val uiState = homeViewModel.uiState.collectAsState()
     val lastGameActivityStates = homeViewModel.lastGameActivityStates.collectAsState(initial = emptyList())
     val puzzleStates = homeViewModel.redeemedPuzzleStates.collectAsState(initial = emptyList())
+    val childrenSummaryStates = homeViewModel.childrenSummaryStates.collectAsState(initial = emptyList())
 
     LaunchedEffect(key1 = uiState.value.generalMessage){
         uiState.value.generalMessage?.let { message ->
@@ -103,6 +108,7 @@ fun HomeScreen(
         uiState = uiState.value,
         lastGameActivityStates = lastGameActivityStates.value,
         puzzleStates = puzzleStates.value,
+        childrenSummaryStates = childrenSummaryStates.value,
         onDrawerClick = {
             scope.launch {
                 drawerState.open()
@@ -117,12 +123,14 @@ fun HomeScreen(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Composable
 fun HomeContent(
     navController: NavController,
     uiState: HomeUiState,
     lastGameActivityStates : List<HomeUiState.LastGameActivityState>,
     puzzleStates : List<Puzzle>,
+    childrenSummaryStates : List<HomeUiState.ChildrenSummaryState>,
     onDrawerClick : () -> Unit,
     onRedeemPuzzleClick : () -> Unit,
     onStartPlayClick : () -> Unit,
@@ -271,6 +279,63 @@ fun HomeContent(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(32.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.child_growth),
+                    style = PoppinsSemiBold18,
+                    color = AccentYellowDark
+                )
+                Text(
+                    text = stringResource(id = R.string.view_more),
+                    style = PoppinsRegular12,
+                    color = GreyText
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            ShimmerEmptyContentLayout(
+                state = uiState.childrenSummaryLayoutState,
+                modifier = Modifier.fillMaxWidth(),
+                emptyMessage = StringResource.StringResWithParams(R.string.no_children_data),
+                shimmer = {brush ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(200.dp)
+                                .background(brush, RoundedCornerShape(8.dp))
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(200.dp)
+                                .background(brush, RoundedCornerShape(8.dp))
+                        )
+                    }
+                }
+            ) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ){
+                    items(items = childrenSummaryStates){childrenSummary ->
+                        ChildSummaryItem(
+                            childImageUrl = childrenSummary.photoUrl,
+                            childName = childrenSummary.name,
+                            numberOfPlay = childrenSummary.numberOfPlay,
+                            timeOfPlay = childrenSummary.timeOfPlay,
+                            numberOfCompletedChallenges = childrenSummary.numberOfCompletedChallenge,
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(64.dp))
         }
         ExtendedFloatingActionButton(
@@ -297,6 +362,7 @@ fun HomeContent(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @Preview(showSystemUi = true)
 @Composable
 fun HomeContentPreview() {
@@ -305,6 +371,7 @@ fun HomeContentPreview() {
         uiState = HomeUiState(),
         lastGameActivityStates = emptyList(),
         puzzleStates = emptyList(),
+        childrenSummaryStates = emptyList(),
         onDrawerClick = {},
         onRedeemPuzzleClick = {},
         onStartPlayClick = {}

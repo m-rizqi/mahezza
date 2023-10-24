@@ -173,4 +173,6 @@
     <string name="owned_puzzle_series">Seri Puzzle yang Dimiliki</string>
     <string name="view_more">Selengkapnya</string>
     <string name="yout_dont_have_puzzle">Kamu belum memiliki Puzzle</string>
+    <string name="child_growth">Perkembangan Anak</string>
+    <string name="no_children_data">Tidak ada data anak</string>
 </resources>

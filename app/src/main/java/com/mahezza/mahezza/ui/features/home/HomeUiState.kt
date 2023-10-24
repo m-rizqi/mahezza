@@ -10,6 +10,7 @@ data class HomeUiState(
     val generalMessage : StringResource? = null,
     val lastGameActivityLayoutState : LayoutState = LayoutState.Shimmer,
     val puzzleLayoutState : LayoutState = LayoutState.Shimmer,
+    val childrenSummaryLayoutState : LayoutState = LayoutState.Shimmer,
 ) {
     data class LastGameActivityState(
         val gameId : String,
@@ -19,4 +20,13 @@ data class HomeUiState(
         val elapsedTime: String,
         val onClick : () -> String,
     )
+
+    data class ChildrenSummaryState (
+        val name : String,
+        val photoUrl : String,
+        val numberOfPlay : Int,
+        val timeOfPlay : Int,
+        val numberOfCompletedChallenge : Int,
+    )
+
 }

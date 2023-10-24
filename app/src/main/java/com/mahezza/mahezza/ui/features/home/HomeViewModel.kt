@@ -3,9 +3,12 @@ package com.mahezza.mahezza.ui.features.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.data.Result
+import com.mahezza.mahezza.data.model.Child
 import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.data.model.Game.Status.*
+import com.mahezza.mahezza.data.model.LastGameActivity
 import com.mahezza.mahezza.data.model.Puzzle
+import com.mahezza.mahezza.data.repository.ChildrenRepository
 import com.mahezza.mahezza.data.repository.GameRepository
 import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
 import com.mahezza.mahezza.domain.puzzle.GetRedeemedPuzzleUseCase
@@ -20,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -31,28 +35,34 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val gameRepository: GameRepository,
-    private val getRedeemedPuzzleUseCase: GetRedeemedPuzzleUseCase,
-    private val dataStore: MahezzaDataStore,
+    getRedeemedPuzzleUseCase: GetRedeemedPuzzleUseCase,
+    dataStore: MahezzaDataStore,
+    private val childrenRepository: ChildrenRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState : StateFlow<HomeUiState>
+    val uiState: StateFlow<HomeUiState>
         get() = _uiState.asStateFlow()
 
     val parentId = dataStore.firebaseUserIdPreference
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val lastGameActivityStates : Flow<List<HomeUiState.LastGameActivityState>> = parentId
+    val lastGameActivityStates: Flow<List<HomeUiState.LastGameActivityState>> = parentId
         .filterNotNull()
-        .flatMapLatest {parentId ->
+        .flatMapLatest { parentId ->
             _uiState.update { it.copy(lastGameActivityLayoutState = LayoutState.Shimmer) }
             gameRepository.getLastGameActivities(parentId)
         }
-        .map {result ->
+        .map { result ->
             if (result is Result.Fail) {
-                _uiState.update { it.copy(generalMessage = result.message, lastGameActivityLayoutState = LayoutState.Empty) }
+                _uiState.update {
+                    it.copy(
+                        generalMessage = result.message,
+                        lastGameActivityLayoutState = LayoutState.Empty
+                    )
+                }
             }
-            val lastGameActivities = result.data?.map {lastGameActivity ->
+            val lastGameActivities = result.data?.map { lastGameActivity ->
                 HomeUiState.LastGameActivityState(
                     gameId = lastGameActivity.id,
                     children = lastGameActivity.children,
@@ -68,9 +78,9 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val redeemedPuzzleStates : Flow<List<Puzzle>> = getRedeemedPuzzleUseCase()
-        .mapLatest { resultOfPuzzle  ->
-            when(resultOfPuzzle){
+    val redeemedPuzzleStates: Flow<List<Puzzle>> = getRedeemedPuzzleUseCase()
+        .mapLatest { resultOfPuzzle ->
+            when (resultOfPuzzle) {
                 is com.mahezza.mahezza.domain.Result.Fail -> {
                     _uiState.update {
                         it.copy(
@@ -80,6 +90,7 @@ class HomeViewModel @Inject constructor(
                     }
                     return@mapLatest emptyList();
                 }
+
                 is com.mahezza.mahezza.domain.Result.Success -> {
                     _uiState.update {
                         it.copy(
@@ -90,9 +101,59 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val childrens: Flow<List<Child>> = parentId
+        .filterNotNull()
+        .flatMapLatest { parentId ->
+            childrenRepository.getAllChild(parentId)
+        }.map { result ->
+            return@map result.data ?: emptyList()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val allGameActivities: Flow<List<LastGameActivity>> = parentId
+        .filterNotNull()
+        .flatMapLatest { parentId ->
+            gameRepository.getAllGameActivities(parentId)
+        }
+        .map { result ->
+            return@map result.data ?: emptyList()
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    val childrenSummaryStates: Flow<List<HomeUiState.ChildrenSummaryState>> =
+        combine(childrens, allGameActivities) { children, lastGameActivities ->
+            _uiState.update {
+                it.copy(
+                    childrenSummaryLayoutState = LayoutState.Content,
+                )
+            }
+            return@combine children.map { child ->
+                val numberOfPlay = lastGameActivities.count { gameActivity ->
+                    gameActivity.children.any {
+                        it.id == child.id
+                    }
+                }
+                val timeOfPlay = lastGameActivities
+                    .filter { gameActivity ->
+                    gameActivity.children.any {
+                        it.id == child.id
+                    }
+                }.sumOf { calculateTotalMinutes(it.elapsedTime) }
+
+                HomeUiState.ChildrenSummaryState(
+                    name = child.name,
+                    photoUrl = child.photoUrl,
+                    numberOfPlay = numberOfPlay,
+                    timeOfPlay = timeOfPlay,
+                    numberOfCompletedChallenge = timeOfPlay
+                )
+            }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private fun getResumeDestination(status: Game.Status, id: String): String {
-        return when(status){
+        return when (status) {
             SelectChild -> Routes.SelectChildForGame
             SelectPuzzle -> Routes.SelectPuzzleForGame
             PlaySession -> "${Routes.PlaySession}?${IS_RESUME_GAME}=${true}&${GAME_ID}=${id}"
@@ -102,9 +163,27 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event : HomeEvent){
-        when(event){
+    fun onEvent(event: HomeEvent) {
+        when (event) {
             HomeEvent.OnGeneralMessageShowed -> _uiState.update { it.copy(generalMessage = null) }
+        }
+    }
+
+    private fun calculateTotalMinutes(timeString: String): Int {
+        try {
+            val parts = timeString.split(":")
+
+            if (parts.size != 3) {
+                return 0
+            }
+
+            val hours = parts[0].toInt()
+            val minutes = parts[1].toInt()
+            val seconds = parts[2].toInt()
+
+            return hours * 60 + minutes + seconds / 60
+        } catch (e : Exception){
+            return 0
         }
     }
 }

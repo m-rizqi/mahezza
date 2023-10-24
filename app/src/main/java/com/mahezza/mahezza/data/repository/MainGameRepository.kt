@@ -69,6 +69,40 @@ class MainGameRepository @Inject constructor(
         return Result.Success(game)
     }
 
+    override fun getAllGameActivities(parentId: String): Flow<Result<List<LastGameActivity>>> {
+        return gameFirebaseFirestore.getAllGameActivities(parentId).map { firebaseResult ->
+            if (!isFirebaseResultSuccess(firebaseResult)) return@map Result.Fail(firebaseResult.message)
+            val lastGameActivityResponses = firebaseResult.data!!
+            val lastGameActivities = mutableListOf<LastGameActivity>()
+            lastGameActivityResponses.forEach { lastGameActivityResponse ->
+                val children = mutableListOf<Child>()
+                var puzzle : Puzzle? = null
+                lastGameActivityResponse.childrenIds.forEach { childId ->
+                    val result = childrenRepository.getChildById(parentId, childId)
+                    if (result is Result.Success && result.data != null){
+                        children.add(result.data)
+                    }
+                }
+                puzzle = puzzleRepository.getPuzzleById(lastGameActivityResponse.puzzleId).data ?: return@forEach
+
+                lastGameActivities.add(
+                    LastGameActivity(
+                        id = lastGameActivityResponse.id,
+                        parentId = lastGameActivityResponse.parentId,
+                        children = children,
+                        puzzle = puzzle,
+                        status = mapStatusToGameStatus(lastGameActivityResponse.status),
+                        lastActivity = lastGameActivityResponse.lastActivity,
+                        elapsedTime = lastGameActivityResponse.elapsedTime
+                    )
+                )
+            }
+            return@map Result.Success(
+                data = lastGameActivities
+            )
+        }
+    }
+
     private suspend fun getChildren(parentId: String, childrenIds: List<String>): List<Child> {
         val children = mutableListOf<Child>()
         childrenIds.forEach { childId ->

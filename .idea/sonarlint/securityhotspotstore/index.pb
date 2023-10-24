@@ -214,12 +214,6 @@ capp/src/main/java/com/mahezza/mahezza/data/source/firebase/firestore/MainPuzzle
 ]app/src/main/java/com/mahezza/mahezza/data/source/firebase/firestore/GameFirebaseFirestore.kt,d\a\da96a13d588af97d61e816eb5501fbf44a120b3a
 ë
 aapp/src/main/java/com/mahezza/mahezza/data/source/firebase/firestore/MainGameFirebaseFirestore.kt,4\2\425bd5617a9a87a3305e1c052aaf2f332abfcc89
-ç
-]app/src/main/java/com/mahezza/mahezza/data/source/firebase/response/ImageOfContentResponse.kt,8\e\8eb01eb88689daae631f910096e1abe22dad11c0
-é
-^app/src/main/java/com/mahezza/mahezza/data/source/firebase/response/ScriptOfContentResponse.kt,a\8\a8798520a8fd0bbc9ee338054583ee82f4e7e01e
-ç
-]app/src/main/java/com/mahezza/mahezza/data/source/firebase/response/VideoOfContentResponse.kt,6\a\6ab9e8fc61e93d02510f50cfefbfa97d4ba7828a
 w
 Gapp/src/main/java/com/mahezza/mahezza/data/repository/GameRepository.kt,2\e\2e5cb460e1d59fd6be9ad3d69400369bcf59bc50
 }
@@ -232,8 +226,6 @@ Iapp/src/main/java/com/mahezza/mahezza/data/repository/PuzzleRepository.kt,3\a\
 _app/src/main/java/com/mahezza/mahezza/data/source/firebase/firestore/CourseFirebaseFirestore.kt,9\4\949e953f927622e93a6c851eb9bf235aba2a31ac
 Ü
 Vapp/src/main/java/com/mahezza/mahezza/data/source/firebase/response/ContentResponse.kt,3\a\3a829c62316834ffb23df72fe2ef19896e4de3f0
-ë
-aapp/src/main/java/com/mahezza/mahezza/data/source/firebase/response/ChallengeOfContentResponse.kt,3\2\32903097ea3ddc4592100e26ad642dad4ad25866
 j
 :app/src/main/java/com/mahezza/mahezza/data/model/Puzzle.kt,e\8\e8f06febc5dc14d9f19bc144a6a244d94049d06a
 y
@@ -318,12 +310,6 @@ Sapp/src/main/java/com/mahezza/mahezza/data/source/firebase/request/CourseReques
 Vapp/src/main/java/com/mahezza/mahezza/data/source/firebase/request/SubCourseRequest.kt,5\f\5fcbdf24c75094e2a97ca498c9f779cbc2fabc71
 Ñ
 Tapp/src/main/java/com/mahezza/mahezza/data/source/firebase/request/ContentRequest.kt,6\b\6b95c531fc25f08f87bb239f8ad1ecb2b7eb553a
-è
-_app/src/main/java/com/mahezza/mahezza/data/source/firebase/request/ChallengeOfContentRequest.kt,5\6\5694e442e628c5fd5c678f6a619dbad43123d056
-å
-\app/src/main/java/com/mahezza/mahezza/data/source/firebase/request/ScriptOfContentRequest.kt,1\f\1fc1f16689baa569684da1046b8084515541f059
-ã
-[app/src/main/java/com/mahezza/mahezza/data/source/firebase/request/VideoOfContentRequest.kt,b\3\b33836aa138485a4f4ae2a91bf27ebef3f5bc335
 v
 Fapp/src/main/java/com/mahezza/mahezza/domain/game/ResumeGameUseCase.kt,8\4\843fddb1b09fcb129b9195e65b08e543558cadac
 i
@@ -358,3 +344,5 @@ f
 6app/src/main/java/com/mahezza/mahezza/domain/Result.kt,d\a\dabded9365d652b6488fea32fed91ebf58becf38
 ç
 ]app/src/main/java/com/mahezza/mahezza/ui/features/home/components/PuzzleLandscapeThumbnail.kt,b\d\bdd36807566d8725a2db9ec063f51f02f4f6728b
+Ö
+Uapp/src/main/java/com/mahezza/mahezza/ui/features/home/components/ChildSummaryItem.kt,f\7\f745366676a066dd7742ad8621b1954a61efadd9

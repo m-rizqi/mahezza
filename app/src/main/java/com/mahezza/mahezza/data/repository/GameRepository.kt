@@ -9,4 +9,5 @@ interface GameRepository {
     suspend fun saveGame(game: Game): Result<String>
     fun getLastGameActivities(parentId : String) : Flow<Result<List<LastGameActivity>>>
     suspend fun getGame(parentId: String, gameId : String) : Result<Game>
+    fun getAllGameActivities(parentId : String) : Flow<Result<List<LastGameActivity>>>
 }

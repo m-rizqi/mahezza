@@ -70,4 +70,13 @@ class MainGameFirebaseFirestore @Inject constructor(
             }
         }
     }
+
+    override fun getAllGameActivities(parentId: String): Flow<FirebaseResult<out List<LastGameActivityResponse>>> {
+        if (parentId == "") return emptyFlow()
+        return gameCollection(parentId).addSnapshotListenerFlow(
+            dataType = LastGameActivityResponse::class.java,
+            dispatcher = dispatcher,
+            notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.last_activity_not_found)
+        )
+    }
 }

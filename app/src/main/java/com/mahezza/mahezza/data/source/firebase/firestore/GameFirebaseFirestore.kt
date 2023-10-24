@@ -15,4 +15,5 @@ interface GameFirebaseFirestore {
     suspend fun saveGame(gameRequest: GameRequest) : FirebaseResult<String>
     fun getLastGameActivities(parentId : String) : Flow<FirebaseResult<out List<LastGameActivityResponse>>>
     suspend fun getGame(parentId:String, gameId : String) : FirebaseResult<GameResponse>
+    fun getAllGameActivities(parentId: String) : Flow<FirebaseResult<out List<LastGameActivityResponse>>>
 }
