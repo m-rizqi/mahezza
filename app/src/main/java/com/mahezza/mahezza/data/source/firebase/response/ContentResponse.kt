@@ -1,8 +1,11 @@
 package com.mahezza.mahezza.data.source.firebase.response
 
 data class ContentResponse(
-    val challenge: ChallengeOfContentResponse? = null,
-    val image : ImageOfContentResponse? = null,
-    val video : VideoOfContentResponse? = null,
-    val script : ScriptOfContentResponse? = null
+    val id : String? = null,
+    val content : String = "",
+    val title : String? = null,
+    val type : String = "",
+    val isCompleted : Boolean?,
+    val challengeNumber : Int?,
+    val numberOfChallenges : Int?,
 )

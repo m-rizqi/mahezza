@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -58,25 +57,22 @@ import com.mahezza.mahezza.R
 import com.mahezza.mahezza.common.StringResource
 import com.mahezza.mahezza.data.model.Child
 import com.mahezza.mahezza.data.model.Puzzle
-import com.mahezza.mahezza.ui.components.AccentYellowTextButton
-import com.mahezza.mahezza.ui.components.LayoutState
-import com.mahezza.mahezza.ui.components.OutlinedAccentYellowButton
 import com.mahezza.mahezza.ui.components.ShimmerEmptyContentLayout
 import com.mahezza.mahezza.ui.components.StackedPhotoProfiles
 import com.mahezza.mahezza.ui.ext.changeStatusBarColor
 import com.mahezza.mahezza.ui.ext.showToast
+import com.mahezza.mahezza.ui.features.home.components.PuzzleLandscapeThumbnail
 import com.mahezza.mahezza.ui.nav.Routes
 import com.mahezza.mahezza.ui.theme.AccentYellow
 import com.mahezza.mahezza.ui.theme.AccentYellowDark
 import com.mahezza.mahezza.ui.theme.Black
 import com.mahezza.mahezza.ui.theme.Grey
-import com.mahezza.mahezza.ui.theme.GreyBorder
+import com.mahezza.mahezza.ui.theme.GreyText
 import com.mahezza.mahezza.ui.theme.PoppinsMedium10
 import com.mahezza.mahezza.ui.theme.PoppinsMedium14
 import com.mahezza.mahezza.ui.theme.PoppinsMedium16
 import com.mahezza.mahezza.ui.theme.PoppinsRegular10
 import com.mahezza.mahezza.ui.theme.PoppinsRegular12
-import com.mahezza.mahezza.ui.theme.PoppinsSemiBold14
 import com.mahezza.mahezza.ui.theme.PoppinsSemiBold18
 import com.mahezza.mahezza.ui.theme.White
 import kotlinx.coroutines.launch
@@ -93,6 +89,7 @@ fun HomeScreen(
     val context = LocalContext.current
     val uiState = homeViewModel.uiState.collectAsState()
     val lastGameActivityStates = homeViewModel.lastGameActivityStates.collectAsState(initial = emptyList())
+    val puzzleStates = homeViewModel.redeemedPuzzleStates.collectAsState(initial = emptyList())
 
     LaunchedEffect(key1 = uiState.value.generalMessage){
         uiState.value.generalMessage?.let { message ->
@@ -105,6 +102,7 @@ fun HomeScreen(
         navController = navController,
         uiState = uiState.value,
         lastGameActivityStates = lastGameActivityStates.value,
+        puzzleStates = puzzleStates.value,
         onDrawerClick = {
             scope.launch {
                 drawerState.open()
@@ -124,6 +122,7 @@ fun HomeContent(
     navController: NavController,
     uiState: HomeUiState,
     lastGameActivityStates : List<HomeUiState.LastGameActivityState>,
+    puzzleStates : List<Puzzle>,
     onDrawerClick : () -> Unit,
     onRedeemPuzzleClick : () -> Unit,
     onStartPlayClick : () -> Unit,
@@ -181,7 +180,7 @@ fun HomeContent(
             )
             Spacer(modifier = Modifier.height(16.dp))
             ShimmerEmptyContentLayout(
-                state = uiState.layoutState,
+                state = uiState.lastGameActivityLayoutState,
                 modifier = Modifier.fillMaxWidth(),
                 emptyMessage = StringResource.StringResWithParams(R.string.last_activity_not_found),
                 shimmer = {brush ->
@@ -221,6 +220,58 @@ fun HomeContent(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(32.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.owned_puzzle_series),
+                    style = PoppinsSemiBold18,
+                    color = AccentYellowDark
+                )
+                Text(
+                    text = stringResource(id = R.string.view_more),
+                    style = PoppinsRegular12,
+                    color = GreyText
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            ShimmerEmptyContentLayout(
+                state = uiState.puzzleLayoutState,
+                modifier = Modifier.fillMaxWidth(),
+                emptyMessage = StringResource.StringResWithParams(R.string.yout_dont_have_puzzle),
+                shimmer = {brush ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .height(140.dp)
+                                .aspectRatio(16f / 9f)
+                                .background(brush, RoundedCornerShape(8.dp))
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .height(140.dp)
+                                .aspectRatio(16f / 9f)
+                                .background(brush, RoundedCornerShape(8.dp))
+                        )
+                    }
+                }
+            ) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ){
+                    items(items = puzzleStates){puzzleState ->
+                        PuzzleLandscapeThumbnail(puzzle = puzzleState)
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(64.dp))
         }
         ExtendedFloatingActionButton(
             modifier = Modifier
@@ -253,6 +304,7 @@ fun HomeContentPreview() {
         navController = NavController(LocalContext.current),
         uiState = HomeUiState(),
         lastGameActivityStates = emptyList(),
+        puzzleStates = emptyList(),
         onDrawerClick = {},
         onRedeemPuzzleClick = {},
         onStartPlayClick = {}

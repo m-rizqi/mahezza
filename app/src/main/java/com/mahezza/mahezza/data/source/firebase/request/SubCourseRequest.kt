@@ -1,7 +1,7 @@
 package com.mahezza.mahezza.data.source.firebase.request
 
 data class SubCourseRequest(
-    val content : List<ContentRequest>,
+    val contents : List<ContentRequest>,
     val name : String,
     val numberOfChallenges : Int,
     val subCourseId : String,

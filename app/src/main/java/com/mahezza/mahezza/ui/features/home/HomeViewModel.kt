@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.mahezza.mahezza.data.Result
 import com.mahezza.mahezza.data.model.Game
 import com.mahezza.mahezza.data.model.Game.Status.*
+import com.mahezza.mahezza.data.model.Puzzle
 import com.mahezza.mahezza.data.repository.GameRepository
 import com.mahezza.mahezza.data.source.datastore.MahezzaDataStore
+import com.mahezza.mahezza.domain.puzzle.GetRedeemedPuzzleUseCase
 import com.mahezza.mahezza.ui.components.LayoutState
 import com.mahezza.mahezza.ui.nav.NavArgumentConst.GAME_ID
 import com.mahezza.mahezza.ui.nav.NavArgumentConst.IS_RESUME_GAME
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -28,7 +31,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val gameRepository: GameRepository,
-    private val dataStore: MahezzaDataStore
+    private val getRedeemedPuzzleUseCase: GetRedeemedPuzzleUseCase,
+    private val dataStore: MahezzaDataStore,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -41,12 +45,12 @@ class HomeViewModel @Inject constructor(
     val lastGameActivityStates : Flow<List<HomeUiState.LastGameActivityState>> = parentId
         .filterNotNull()
         .flatMapLatest {parentId ->
-            _uiState.update { it.copy(layoutState = LayoutState.Shimmer) }
+            _uiState.update { it.copy(lastGameActivityLayoutState = LayoutState.Shimmer) }
             gameRepository.getLastGameActivities(parentId)
         }
         .map {result ->
             if (result is Result.Fail) {
-                _uiState.update { it.copy(generalMessage = result.message, layoutState = LayoutState.Empty) }
+                _uiState.update { it.copy(generalMessage = result.message, lastGameActivityLayoutState = LayoutState.Empty) }
             }
             val lastGameActivities = result.data?.map {lastGameActivity ->
                 HomeUiState.LastGameActivityState(
@@ -58,10 +62,34 @@ class HomeViewModel @Inject constructor(
                     onClick = { getResumeDestination(lastGameActivity.status, lastGameActivity.id) }
                 )
             } ?: emptyList()
-            _uiState.update { it.copy(layoutState = if (lastGameActivities.isEmpty()) LayoutState.Empty else LayoutState.Content) }
+            _uiState.update { it.copy(lastGameActivityLayoutState = if (lastGameActivities.isEmpty()) LayoutState.Empty else LayoutState.Content) }
             return@map lastGameActivities
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val redeemedPuzzleStates : Flow<List<Puzzle>> = getRedeemedPuzzleUseCase()
+        .mapLatest { resultOfPuzzle  ->
+            when(resultOfPuzzle){
+                is com.mahezza.mahezza.domain.Result.Fail -> {
+                    _uiState.update {
+                        it.copy(
+                            generalMessage = resultOfPuzzle.message,
+                            puzzleLayoutState = LayoutState.Empty,
+                        )
+                    }
+                    return@mapLatest emptyList();
+                }
+                is com.mahezza.mahezza.domain.Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            puzzleLayoutState = LayoutState.Content,
+                        )
+                    }
+                    return@mapLatest resultOfPuzzle.data ?: emptyList();
+                }
+            }
+        }
 
     private fun getResumeDestination(status: Game.Status, id: String): String {
         return when(status){

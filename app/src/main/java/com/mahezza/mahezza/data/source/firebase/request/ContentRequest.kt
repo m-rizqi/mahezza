@@ -1,8 +1,11 @@
 package com.mahezza.mahezza.data.source.firebase.request
 
 data class ContentRequest(
-    val challenge: ChallengeOfContentRequest? = null,
-    val image : ImageOfContentRequest? = null,
-    val video : VideoOfContentRequest? = null,
-    val script : ScriptOfContentRequest? = null
+    val id : String? = null,
+    val content : String = "",
+    val title : String? = null,
+    val isCompleted : Boolean?,
+    val challengeNumber : Int?,
+    val numberOfChallenges : Int?,
+    val type : String = "",
 )

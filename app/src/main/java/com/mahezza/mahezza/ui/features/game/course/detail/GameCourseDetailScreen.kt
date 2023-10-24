@@ -304,7 +304,7 @@ fun ChallengeContentCourse(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = challengeState.instruction,
+                text = challengeState.content,
                 style = PoppinsRegular14,
                 color = Black
             )
@@ -337,7 +337,7 @@ fun ImageContentCourse(
             .clip(RoundedCornerShape(8.dp))
         ,
         contentScale = ContentScale.Crop,
-        model = imageState.url,
+        model = imageState.content,
         contentDescription = null,
         requestBuilderTransform = { request ->
             val requestOptions = RequestOptions()
@@ -355,7 +355,7 @@ fun ScriptContentCourse(
 ) {
     Text(
         modifier = modifier,
-        text = scriptState.text,
+        text = scriptState.content,
         style = PoppinsRegular16,
         color = Black
     )
@@ -383,7 +383,7 @@ fun VideoContentCourse(
     val applicationContext = LocalContext.current.applicationContext
     val player = remember {
         ExoPlayer.Builder(applicationContext).build().also {
-            it.setMediaItem(MediaItem.fromUri(videoState.url))
+            it.setMediaItem(MediaItem.fromUri(videoState.content))
         }
     }
     AndroidView(
@@ -415,6 +415,6 @@ fun VideoContentCourse(
 @Preview
 @Composable
 fun ContentCoursePreview() {
-    ContentCourse(contentState = CourseUiState.ContentState.ImageState(0, ""))
+    ContentCourse(contentState = CourseUiState.ContentState.ImageState("", "", ""))
 }
 

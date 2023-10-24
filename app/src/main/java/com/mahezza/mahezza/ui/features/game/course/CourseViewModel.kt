@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -107,7 +108,7 @@ class CourseViewModel @Inject constructor(
                     onClick = {
                               openSubCourseDetail(subCourse.id)
                     },
-                    contentStates = subCourse.contents.sortedBy { it.position }.map { content ->
+                    contentStates = subCourse.contents.map { content ->
                         when(content){
                             is Content.Challenge -> {
                                 val latestChallenge = latestSubCourseState?.contentStates?.find { contentState ->
@@ -115,29 +116,31 @@ class CourseViewModel @Inject constructor(
                                 } as CourseUiState.ContentState.ChallengeState?
                                 challengeNumber++
                                 CourseUiState.ContentState.ChallengeState(
-                                    position = content.position,
-                                    id = content.id,
-                                    instruction = content.instruction,
-                                    title = content.title,
+                                    id = content.id ?: UUID.randomUUID().toString(),
+                                    title = content.title ?: "",
+                                    content = content.content,
                                     isCompleted = latestChallenge?.isCompleted ?: false,
                                     challengeNumber = challengeNumber,
                                     numberOfChallenges = subCourse.numberOfChallenges,
                                     onCompletionClick = {
-                                        onChallengeCompletionChange(content.id)
+                                        onChallengeCompletionChange(content.id ?: UUID.randomUUID().toString())
                                     }
                                 )
                             }
                             is Content.Image -> CourseUiState.ContentState.ImageState(
-                                position = content.position,
-                                url = content.url
+                                id = content.id,
+                                title = content.title,
+                                content = content.content,
                             )
                             is Content.Script -> CourseUiState.ContentState.ScriptState(
-                                position = content.position,
-                                text = content.text
+                                id = content.id,
+                                title = content.title,
+                                content = content.content,
                             )
                             is Content.Video -> CourseUiState.ContentState.VideoState(
-                                position = content.position,
-                                url = content.url
+                                id = content.id,
+                                title = content.title,
+                                content = content.content,
                             )
                         }
                     }

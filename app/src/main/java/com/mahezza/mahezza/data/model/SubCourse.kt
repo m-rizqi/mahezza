@@ -21,25 +21,12 @@ fun SubCourseResponse.toSubCourse() : SubCourse = SubCourse(
     name = this.name,
     numberOfChallenges = this.numberOfChallenges,
     id = this.subCourseId,
-    contents = mapContentResponsesToContents(this.content),
+    contents = this.contents.map { it.toContent() },
     illustrationUrl = this.illustrationUrl
 )
 
-private fun mapContentResponsesToContents(contentResponses: List<ContentResponse>) : List<Content> {
-    val contents = mutableListOf<Content>()
-    contentResponses.forEach {contentResponse ->
-        with(contentResponse){
-            challenge?.let { contents.add(it.toChallenge()) }
-            script?.let { contents.add(it.toScript()) }
-            image?.let { contents.add(it.toImage()) }
-            video?.let { contents.add(it.toVideo()) }
-        }
-    }
-    return contents
-}
-
 fun SubCourse.toSubCourseRequest() : SubCourseRequest = SubCourseRequest(
-    content = mapContentToContentRequests(this.contents),
+    contents = this.contents.map { it.toContentRequest() },
     name = this.name,
     numberOfChallenges = this.numberOfChallenges,
     subCourseId = this.id,
@@ -49,16 +36,3 @@ fun SubCourse.toSubCourseRequest() : SubCourseRequest = SubCourseRequest(
     completed = this.isCompleted,
     numberOfCompletedChallenges = this.numberOfCompletedChallenges,
 )
-
-private fun mapContentToContentRequests(contents: List<Content>) : List<ContentRequest> {
-    val contentRequests = mutableListOf<ContentRequest>()
-    contents.forEach {content ->
-        when(content){
-            is Content.Challenge -> contentRequests.add(ContentRequest(challenge = content.toChallengeOfContentRequest()))
-            is Content.Image -> contentRequests.add(ContentRequest(image = content.toImageOfContentRequest()))
-            is Content.Script -> contentRequests.add(ContentRequest(script = content.toScriptOfContentRequest()))
-            is Content.Video -> contentRequests.add(ContentRequest(video = content.toVideoOfContentRequest()))
-        }
-    }
-    return contentRequests
-}

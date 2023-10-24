@@ -45,30 +45,37 @@ data class CourseUiState(
         val onClick : () -> Unit
     )
     sealed class ContentState(
-        open val position : Int
+        open val id : String?,
+        open val content : String,
+        open val title : String?,
+        open val isCompleted : Boolean?,
+        open val challengeNumber : Int?,
+        open val numberOfChallenges : Int?,
     ) {
         data class ChallengeState(
-            override val position: Int,
-            val id : String,
-            val instruction : String,
-            val title : String,
-            var isCompleted: Boolean,
-            val challengeNumber : Int,
-            val numberOfChallenges: Int,
+            override val id: String,
+            override val content: String,
+            override val title: String,
+            override val isCompleted: Boolean,
+            override val challengeNumber: Int,
+            override val numberOfChallenges: Int,
             val onCompletionClick: () -> Unit
-        ) : ContentState(position = position)
+        ) : ContentState(id, content, title, isCompleted, challengeNumber, numberOfChallenges)
         data class VideoState(
-            override val position: Int,
-            val url : String,
-        ) : ContentState(position = position)
+            override val id: String?,
+            override val content: String,
+            override val title: String?,
+        ) : ContentState(id, content, title, null, null, null)
         data class ImageState(
-            override val position: Int,
-            val url : String,
-        ) : ContentState(position = position)
+            override val id: String?,
+            override val content: String,
+            override val title: String?,
+        ) : ContentState(id, content, title, null, null, null)
         data class ScriptState(
-            override val position: Int,
-            val text : String,
-        ) : ContentState(position = position)
+            override val id: String?,
+            override val content: String,
+            override val title: String?,
+        ) : ContentState(id, content, title, null, null, null)
     }
 
 }

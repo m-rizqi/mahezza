@@ -8,7 +8,8 @@ import com.mahezza.mahezza.ui.components.LayoutState
 data class HomeUiState(
 
     val generalMessage : StringResource? = null,
-    val layoutState : LayoutState = LayoutState.Shimmer
+    val lastGameActivityLayoutState : LayoutState = LayoutState.Shimmer,
+    val puzzleLayoutState : LayoutState = LayoutState.Shimmer,
 ) {
     data class LastGameActivityState(
         val gameId : String,

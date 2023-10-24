@@ -53,25 +53,27 @@ class SaveGameUseCaseImpl @Inject constructor(
                         contents = subCourseState.contentStates.map { contentState ->
                             when(contentState){
                                 is CourseUiState.ContentState.ChallengeState -> Content.Challenge(
-                                    position = contentState.position,
                                     id = contentState.id,
-                                    instruction = contentState.instruction,
                                     title = contentState.title,
+                                    content = contentState.content,
                                     isCompleted = contentState.isCompleted,
                                     challengeNumber = contentState.challengeNumber,
                                     numberOfChallenges = contentState.numberOfChallenges,
                                 )
                                 is CourseUiState.ContentState.ImageState -> Content.Image(
-                                    position = contentState.position,
-                                    url = contentState.url
+                                    id = contentState.id,
+                                    title = contentState.title,
+                                    content = contentState.content,
                                 )
                                 is CourseUiState.ContentState.ScriptState -> Content.Script(
-                                    position = contentState.position,
-                                    text = contentState.text
+                                    id = contentState.id,
+                                    title = contentState.title,
+                                    content = contentState.content,
                                 )
                                 is CourseUiState.ContentState.VideoState -> Content.Video(
-                                    position = contentState.position,
-                                    url = contentState.url
+                                    id = contentState.id,
+                                    title = contentState.title,
+                                    content = contentState.content,
                                 )
                             }
                         }
