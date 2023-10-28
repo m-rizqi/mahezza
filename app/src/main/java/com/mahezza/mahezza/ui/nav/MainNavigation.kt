@@ -1,8 +1,10 @@
 package com.mahezza.mahezza.ui.nav
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +63,8 @@ import com.mahezza.mahezza.ui.ext.getUnGrantedPermissions
 import com.mahezza.mahezza.ui.ext.showToast
 import com.mahezza.mahezza.ui.features.children.insert.InsertChildProfileScreen
 import com.mahezza.mahezza.ui.features.children.insert.InsertChildProfileViewModel
+import com.mahezza.mahezza.ui.features.children.list.ChildrenListScreen
+import com.mahezza.mahezza.ui.features.children.list.ChildrenListViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DashboardViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItemsViewModel
 import com.mahezza.mahezza.ui.features.dashboard.DrawerItem
@@ -94,6 +98,7 @@ import com.mahezza.mahezza.ui.theme.PoppinsMedium14
 import com.mahezza.mahezza.ui.theme.White
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.M)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavigation() {
@@ -451,6 +456,7 @@ fun MainNavigation() {
                     viewModel = createProfileViewModel
                 )
             }
+
             composableWithAnimation(
                 route = Routes.InsertChildProfile
             ){
@@ -460,7 +466,16 @@ fun MainNavigation() {
                     viewModel = insertChildProfileViewModel
                 )
             }
-
+            composableWithAnimation(
+                route = Routes.ChildrenList
+            ){
+                val childrenListViewModel : ChildrenListViewModel = hiltViewModel()
+                ChildrenListScreen(
+                    navController = navController,
+                    drawerState = drawerState,
+                    viewModel = childrenListViewModel,
+                )
+            }
         }
     }
     

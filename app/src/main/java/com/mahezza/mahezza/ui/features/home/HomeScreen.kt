@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -292,6 +293,10 @@ fun HomeContent(
                     color = AccentYellowDark
                 )
                 Text(
+                    modifier = Modifier.
+                        clickable {
+                            navController.navigate(route = Routes.InsertChildProfile)
+                        },
                     text = stringResource(id = R.string.view_more),
                     style = PoppinsRegular12,
                     color = GreyText

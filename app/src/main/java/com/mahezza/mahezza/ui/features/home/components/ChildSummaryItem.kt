@@ -143,7 +143,7 @@ fun ChildSummaryItem(
 
 @RequiresApi(Build.VERSION_CODES.M)
 @Composable
-private fun BadgeChip(
+fun BadgeChip(
     text: String,
     modifier: Modifier = Modifier,
     backgroundColor: Color,

@@ -59,7 +59,7 @@ class DrawerItemsViewModel @Inject constructor(
         DrawerItem.Menu(
             titleResId = R.string.children,
             iconResId = R.drawable.ic_children,
-            route = Routes.InsertChildProfile,
+            route = Routes.ChildrenList,
         ),
 //        DrawerItem.Menu(
 //            titleResId = R.string.puzzle,
