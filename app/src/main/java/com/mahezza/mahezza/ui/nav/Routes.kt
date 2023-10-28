@@ -20,4 +20,5 @@ object Routes {
     const val CourseList = "course_list"
     const val CourseDetail = "course_detail"
     const val ChildrenList = "children_list"
+    const val PuzzleList = "puzzle_list"
 }

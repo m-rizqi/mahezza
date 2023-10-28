@@ -61,11 +61,11 @@ class DrawerItemsViewModel @Inject constructor(
             iconResId = R.drawable.ic_children,
             route = Routes.ChildrenList,
         ),
-//        DrawerItem.Menu(
-//            titleResId = R.string.puzzle,
-//            iconResId = R.drawable.ic_puzzle,
-//            route = Routes.Home,
-//        ),
+        DrawerItem.Menu(
+            titleResId = R.string.puzzle,
+            iconResId = R.drawable.ic_puzzle,
+            route = Routes.PuzzleList,
+        ),
 //        DrawerItem.Menu(
 //            titleResId = R.string.profile,
 //            iconResId = R.drawable.ic_user,

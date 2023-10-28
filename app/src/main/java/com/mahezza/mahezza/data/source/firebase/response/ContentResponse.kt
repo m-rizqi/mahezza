@@ -5,7 +5,7 @@ data class ContentResponse(
     val content : String = "",
     val title : String? = null,
     val type : String = "",
-    val isCompleted : Boolean?,
-    val challengeNumber : Int?,
-    val numberOfChallenges : Int?,
+    val isCompleted : Boolean? = false,
+    val challengeNumber : Int? = 0,
+    val numberOfChallenges : Int? = 0,
 )

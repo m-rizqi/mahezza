@@ -85,6 +85,8 @@ import com.mahezza.mahezza.ui.features.home.HomeScreen
 import com.mahezza.mahezza.ui.features.home.HomeViewModel
 import com.mahezza.mahezza.ui.features.profile.create.CreateProfileScreen
 import com.mahezza.mahezza.ui.features.profile.create.CreateProfileViewModel
+import com.mahezza.mahezza.ui.features.puzzle.list.PuzzleListScreen
+import com.mahezza.mahezza.ui.features.puzzle.list.PuzzleListViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderScreen
 import com.mahezza.mahezza.ui.features.redeempuzzle.qrcodereader.QRCodeReaderViewModel
 import com.mahezza.mahezza.ui.features.redeempuzzle.redeem.RedeemPuzzleScreen
@@ -474,6 +476,16 @@ fun MainNavigation() {
                     navController = navController,
                     drawerState = drawerState,
                     viewModel = childrenListViewModel,
+                )
+            }
+            composableWithAnimation(
+                route = Routes.PuzzleList
+            ){
+                val puzzleListViewModel : PuzzleListViewModel = hiltViewModel()
+                PuzzleListScreen(
+                    navController = navController,
+                    drawerState = drawerState,
+                    viewModel = puzzleListViewModel,
                 )
             }
         }

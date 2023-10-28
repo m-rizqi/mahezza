@@ -24,17 +24,17 @@ sealed class Content(
         id: String?,
         content: String,
         title: String?,
-    ) : Content(id, content, title, null, null, null, Type.SCRIPT)
+    ) : Content(id, content, title, null, null, null, type = Type.SCRIPT)
     class Image(
         id: String?,
         content: String,
         title: String?,
-    ) : Content(id, content, title, null, null, null, Type.IMAGE)
+    ) : Content(id, content, title, null, null, null, type = Type.IMAGE)
     class Video(
         id: String?,
         content: String,
         title: String?,
-    ) : Content(id, content, title, null, null, null, Type.VIDEO)
+    ) : Content(id, content, title, null, null, null, type = Type.VIDEO)
 
     companion object Type {
         const val SCRIPT = "script"

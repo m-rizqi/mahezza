@@ -242,6 +242,10 @@ fun HomeContent(
                     color = AccentYellowDark
                 )
                 Text(
+                    modifier = Modifier.
+                    clickable {
+                        navController.navigate(route = Routes.PuzzleList)
+                    },
                     text = stringResource(id = R.string.view_more),
                     style = PoppinsRegular12,
                     color = GreyText
@@ -295,7 +299,7 @@ fun HomeContent(
                 Text(
                     modifier = Modifier.
                         clickable {
-                            navController.navigate(route = Routes.InsertChildProfile)
+                            navController.navigate(route = Routes.ChildrenList)
                         },
                     text = stringResource(id = R.string.view_more),
                     style = PoppinsRegular12,
