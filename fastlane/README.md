@@ -15,6 +15,22 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
+### android build_and_upload
+
+```sh
+[bundle exec] fastlane android build_and_upload
+```
+
+Runs linting, tests, and builds APK and AAB before uploading to Firebase
+
+### android lint
+
+```sh
+[bundle exec] fastlane android lint
+```
+
+Runs linting
+
 ### android test
 
 ```sh
@@ -23,21 +39,29 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Runs all the tests
 
-### android beta
+### android build_apk
 
 ```sh
-[bundle exec] fastlane android beta
+[bundle exec] fastlane android build_apk
 ```
 
-Submit a new Beta Build to Crashlytics Beta
+Builds APK
 
-### android deploy
+### android build_aab
 
 ```sh
-[bundle exec] fastlane android deploy
+[bundle exec] fastlane android build_aab
 ```
 
-Deploy a new version to the Google Play
+Builds AAB
+
+### android upload_to_firebase
+
+```sh
+[bundle exec] fastlane android upload_to_firebase
+```
+
+Uploads APK to Firebase App Distribution
 
 ----
 

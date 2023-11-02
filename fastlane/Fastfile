@@ -16,23 +16,43 @@
 default_platform(:android)
 
 platform :android do
+  desc "Runs linting, tests, and builds APK and AAB before uploading to Firebase"
+  lane :build_and_upload do
+    lint
+    test
+    build_apk
+    build_aab
+    upload_to_firebase
+  end
+
+  desc "Runs linting"
+  lane :lint do
+    gradle(task: "lint")
+  end
+
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+  desc "Builds APK"
+  lane :build_apk do
+    gradle(task: "clean assembleDebug")
   end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+  desc "Builds AAB"
+  lane :build_aab do
+    gradle(task: "clean bundleDebug")
+  end
+
+  desc "Uploads APK to Firebase App Distribution"
+  lane :upload_to_firebase do
+    firebase_app_distribution(
+      app: "1:607908723290:android:81e5b751b1515ce1407663",
+      service_credentials_file: "/app/google-service.json",
+      testers: "mrizqi070502@gmail.com",
+      android_artifact_type: "APK"
+    )
   end
 end
+
