@@ -24,31 +24,31 @@ pipeline {
         
         stage('Run Lints'){
             steps {
-                sh 'fastlane lint'
+                sh 'bundle exec fastlane lint'
             }
         }
 
         stage('Run Tests'){
             steps {
-                sh 'fastlane test'
+                sh 'bundle exec fastlane test'
             }
         }
         
         stage('Build APK'){
             steps {
-                sh 'fastlane build_apk'
+                sh 'bundle exec fastlane build_apk'
             }
         }
 
         stage('Build AAB'){
             steps {
-                sh 'fastlane build_aab'
+                sh 'bundle exec fastlane build_aab'
             }
         }
 
         stage('Upload to Firebase App Distribution'){
             steps {
-                sh 'fastlane upload_to_firebase'
+                sh 'bundle exec fastlane upload_to_firebase'
             }
         }
     }
@@ -57,7 +57,7 @@ pipeline {
         failure {
             emailext body: 'Something went wrong with the build.',
                 recipientProviders: [culprits(), developers()],
-                subject: 'Flutter Build Failed',
+                subject: 'Android Build Failed',
                 to: 'muhammad.rizqi@divistant.com'
         }
     }
