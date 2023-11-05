@@ -35,7 +35,7 @@ class ValidatePasswordUseCaseTest {
     @Test
     fun `Password is min 8 chars and contains letter, number, and symbol, success`(){
         val result = validatePasswordUseCase("Sdjk123.8,")
-        Assert.assertTrue(result is Result.Fail)
+        Assert.assertTrue(result is Result.Success)
     }
 
 }
