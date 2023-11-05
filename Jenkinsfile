@@ -58,8 +58,7 @@ pipeline {
 
         stage('Upload to Firebase App Distribution'){
             steps {
-                sh 'cd $WORKSPACE'
-                sh 'bundle exec fastlane upload_to_firebase'
+                sh 'bundle exec fastlane upload_to_firebase workspace:$WORKSPACE'
             }
         }
     }
