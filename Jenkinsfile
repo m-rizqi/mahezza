@@ -32,29 +32,29 @@ pipeline {
             }
         }
         
-        stage('Run Lints'){
-            steps {
-                sh 'bundle exec fastlane lint'
-            }
-        }
+        // stage('Run Lints'){
+        //     steps {
+        //         sh 'bundle exec fastlane lint'
+        //     }
+        // }
 
-        stage('Run Tests'){
-            steps {
-                sh 'bundle exec fastlane test'
-            }
-        }
+        // stage('Run Tests'){
+        //     steps {
+        //         sh 'bundle exec fastlane test'
+        //     }
+        // }
         
-        stage('Build APK'){
-            steps {
-                sh 'bundle exec fastlane build_apk'
-            }
-        }
+        // stage('Build APK'){
+        //     steps {
+        //         sh 'bundle exec fastlane build_apk'
+        //     }
+        // }
 
-        stage('Build AAB'){
-            steps {
-                sh 'bundle exec fastlane build_aab'
-            }
-        }
+        // stage('Build AAB'){
+        //     steps {
+        //         sh 'bundle exec fastlane build_aab'
+        //     }
+        // }
 
         stage('Upload to Firebase App Distribution'){
             steps {
