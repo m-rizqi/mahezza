@@ -22,9 +22,10 @@ pipeline {
             }
         }
 
-        stage('Install Fastlane'){
+        stage('Setup Fastlane & Gradle'){
             steps {
                 sh 'bundle install'
+                sh 'chmod +x gradlew'
             }
         }
         
