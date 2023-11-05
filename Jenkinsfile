@@ -26,8 +26,8 @@ pipeline {
             steps {
                 sh 'bundle install'
                 sh 'chmod +x gradlew'
-                sh 'echo "y" | sdkmanager --licenses'
-                sh 'sdkmanager "build-tools;33.0.1" "platforms;android-34"'
+                sh 'echo "y" | ./sdkmanager --licenses --sdk_root=$ANDROID_HOME'
+                sh './sdkmanager "build-tools;33.0.1" "platforms;android-34" --sdk_root=$ANDROID_HOME'
             }
         }
         
