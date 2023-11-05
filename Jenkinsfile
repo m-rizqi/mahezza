@@ -44,11 +44,11 @@ pipeline {
         //     }
         // }
         
-        // stage('Build APK'){
-        //     steps {
-        //         sh 'bundle exec fastlane build_apk'
-        //     }
-        // }
+        stage('Build APK'){
+            steps {
+                sh 'bundle exec fastlane build_apk'
+            }
+        }
 
         // stage('Build AAB'){
         //     steps {
