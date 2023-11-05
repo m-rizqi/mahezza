@@ -21,6 +21,12 @@ pipeline {
                 sh 'echo "sdk.dir=$ANDROID_HOME" > local.properties'
             }
         }
+
+        stage('Install Fastlane'){
+            steps {
+                sh 'bundle install'
+            }
+        }
         
         stage('Run Lints'){
             steps {
