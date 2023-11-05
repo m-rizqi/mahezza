@@ -16,15 +16,7 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs linting, tests, and builds APK and AAB before uploading to Firebase"
-  lane :build_and_upload do
-    lint
-    test
-    build_apk
-    build_aab
-    upload_to_firebase
-  end
-
+  
   desc "Runs linting"
   lane :lint do
     gradle(task: "lint")
@@ -49,9 +41,10 @@ platform :android do
   lane :upload_to_firebase do
     firebase_app_distribution(
       app: "1:607908723290:android:81e5b751b1515ce1407663",
-      service_credentials_file: "/app/google-service.json",
       testers: "mrizqi070502@gmail.com",
-      android_artifact_type: "APK"
+      firebase_cli_token: "1//0gifWhp_5hJitCgYIARAAGBASNwF-L9IrswotIe8mKk5hJfVYsL0gblDvnafikoArQI5eBb9p-QyUfvmu4b9846UipLaXkxr2piA",
+      android_artifact_type: "APK",
+      android_artifact_path: "./app/build/outputs/apk/debug/app-debug.apk"
     )
   end
 end
