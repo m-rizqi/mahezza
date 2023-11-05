@@ -50,11 +50,11 @@ pipeline {
             }
         }
 
-        stage('Build AAB'){
-            steps {
-                sh 'bundle exec fastlane build_aab'
-            }
-        }
+        // stage('Build AAB'){
+        //     steps {
+        //         sh 'bundle exec fastlane build_aab'
+        //     }
+        // }
 
         stage('Upload to Firebase App Distribution'){
             steps {
