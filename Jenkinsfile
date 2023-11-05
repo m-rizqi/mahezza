@@ -14,6 +14,13 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('Set local.properties'){
+            steps {
+                sh 'if [ ! -f "local.properties" ]; then touch local.properties; fi'
+                sh 'echo "sdk.dir=$ANDROID_HOME" > local.properties'
+            }
+        }
         
         stage('Run Lints'){
             steps {
