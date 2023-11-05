@@ -6,6 +6,7 @@ pipeline {
         KEYSTORE_PASSWORD = 'password'
         KEY_ALIAS = 'alias'
         KEY_PASSWORD = 'password'
+        ANDROID_HOME = "${env.ANDROID_HOME}"
     }
 
     stages {
