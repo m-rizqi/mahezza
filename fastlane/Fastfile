@@ -44,7 +44,7 @@ platform :android do
       testers: "mrizqi070502@gmail.com",
       firebase_cli_token: "1//0gifWhp_5hJitCgYIARAAGBASNwF-L9IrswotIe8mKk5hJfVYsL0gblDvnafikoArQI5eBb9p-QyUfvmu4b9846UipLaXkxr2piA",
       android_artifact_type: "APK",
-      android_artifact_path: "/app/build/outputs/apk/debug/app-debug.apk"
+      android_artifact_path: "/var/lib/jenkins/workspace/Research/android-kotlin-fastlane/app/build/outputs/apk/debug/app-debug.apk"
     )
   end
 end
