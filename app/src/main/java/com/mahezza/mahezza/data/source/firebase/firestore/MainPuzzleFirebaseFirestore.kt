@@ -19,6 +19,9 @@ import com.mahezza.mahezza.data.source.firebase.response.SongResponse
 import com.mahezza.mahezza.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -67,6 +70,9 @@ class MainPuzzleFirebaseFirestore @Inject constructor(
     }
 
     override fun getPuzzleByIds(ids: List<String>): Flow<FirebaseResult<out List<PuzzleResponse>>> {
+        if (ids.isEmpty()) return flow{
+            emit(FirebaseResult(data = emptyList(), isSuccess = true, message = null))
+        }
         val reference = puzzleReference.whereIn(FieldPath.documentId(), ids)
         return reference.addSnapshotListenerFlow(
             dataType = PuzzleResponse::class.java,

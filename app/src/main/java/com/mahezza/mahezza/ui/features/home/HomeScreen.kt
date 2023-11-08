@@ -257,22 +257,18 @@ fun HomeContent(
                 modifier = Modifier.fillMaxWidth(),
                 emptyMessage = StringResource.StringResWithParams(R.string.yout_dont_have_puzzle),
                 shimmer = {brush ->
-                    Row(
+                    LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Spacer(
-                            modifier = Modifier
-                                .height(140.dp)
-                                .aspectRatio(16f / 9f)
-                                .background(brush, RoundedCornerShape(8.dp))
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .height(140.dp)
-                                .aspectRatio(16f / 9f)
-                                .background(brush, RoundedCornerShape(8.dp))
-                        )
+                        items(count = 2){
+                            Spacer(
+                                modifier = Modifier
+                                    .height(140.dp)
+                                    .aspectRatio(16f / 9f)
+                                    .background(brush, RoundedCornerShape(8.dp))
+                            )
+                        }
                     }
                 }
             ) {

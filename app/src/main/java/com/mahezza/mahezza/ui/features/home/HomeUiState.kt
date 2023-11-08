@@ -9,8 +9,8 @@ data class HomeUiState(
 
     val generalMessage : StringResource? = null,
     val lastGameActivityLayoutState : LayoutState = LayoutState.Shimmer,
-    val puzzleLayoutState : LayoutState = LayoutState.Shimmer,
-    val childrenSummaryLayoutState : LayoutState = LayoutState.Shimmer,
+    val puzzleLayoutState : LayoutState = LayoutState.Empty,
+    val childrenSummaryLayoutState : LayoutState = LayoutState.Empty,
 ) {
     data class LastGameActivityState(
         val gameId : String,

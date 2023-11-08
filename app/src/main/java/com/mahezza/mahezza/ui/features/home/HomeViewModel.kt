@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -101,6 +102,13 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+        .onEmpty {
+            _uiState.update {
+                it.copy(
+                    puzzleLayoutState = LayoutState.Empty,
+                )
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val childrens: Flow<List<Child>> = parentId
@@ -129,6 +137,14 @@ class HomeViewModel @Inject constructor(
                     childrenSummaryLayoutState = LayoutState.Content,
                 )
             }
+            if (children.isEmpty()) {
+                _uiState.update {
+                    it.copy(
+                        childrenSummaryLayoutState = LayoutState.Empty,
+                    )
+                }
+                return@combine emptyList()
+            }
             return@combine children.map { child ->
                 val numberOfPlay = lastGameActivities.count { gameActivity ->
                     gameActivity.children.any {
@@ -137,10 +153,10 @@ class HomeViewModel @Inject constructor(
                 }
                 val timeOfPlay = lastGameActivities
                     .filter { gameActivity ->
-                    gameActivity.children.any {
-                        it.id == child.id
-                    }
-                }.sumOf { calculateTotalMinutes(it.elapsedTime) }
+                        gameActivity.children.any {
+                            it.id == child.id
+                        }
+                    }.sumOf { calculateTotalMinutes(it.elapsedTime) }
 
                 HomeUiState.ChildrenSummaryState(
                     name = child.name,
@@ -150,7 +166,15 @@ class HomeViewModel @Inject constructor(
                     numberOfCompletedChallenge = timeOfPlay
                 )
             }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        }
+            .onEmpty {
+                _uiState.update {
+                    it.copy(
+                        childrenSummaryLayoutState = LayoutState.Empty,
+                    )
+                }
+            }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private fun getResumeDestination(status: Game.Status, id: String): String {
         return when (status) {
@@ -182,7 +206,7 @@ class HomeViewModel @Inject constructor(
             val seconds = parts[2].toInt()
 
             return hours * 60 + minutes + seconds / 60
-        } catch (e : Exception){
+        } catch (e: Exception) {
             return 0
         }
     }
