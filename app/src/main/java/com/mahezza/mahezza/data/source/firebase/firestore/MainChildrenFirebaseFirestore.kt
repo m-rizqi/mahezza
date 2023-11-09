@@ -17,6 +17,7 @@ import com.mahezza.mahezza.data.source.firebase.response.ChildResponse
 import com.mahezza.mahezza.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -67,12 +68,16 @@ class MainChildrenFirebaseFirestore(
     }
 
     override fun getAllChild(parentId: String): Flow<FirebaseResult<out List<ChildResponse>>> {
-        val childrenReference = getAllChildReference(parentId)
-        return childrenReference.addSnapshotListenerFlow(
+        val childrenReference = try {
+            getAllChildReference(parentId)
+        } catch (e: Exception){
+            null
+        }
+        return childrenReference?.addSnapshotListenerFlow(
             dataType = ChildResponse::class.java,
             dispatcher = dispatcher,
             notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.children_not_found)
-        )
+        ) ?: emptyFlow()
     }
 
     private fun getChildReference(parentId : String, childId : String): DocumentReference {

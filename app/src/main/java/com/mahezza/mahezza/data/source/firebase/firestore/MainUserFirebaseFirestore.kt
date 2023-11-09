@@ -3,6 +3,8 @@ package com.mahezza.mahezza.data.source.firebase.firestore
 import android.content.res.Resources.NotFoundException
 import com.google.firebase.Timestamp
 import com.google.firebase.database.DatabaseException
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -19,6 +21,7 @@ import com.mahezza.mahezza.data.source.firebase.response.UserResponse
 import com.mahezza.mahezza.di.IODispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -77,12 +80,16 @@ class MainUserFirebaseFirestore(
     }
 
     override fun getRedeemedPuzzleIds(userId: String): Flow<FirebaseResult<out List<RedeemedPuzzleResponse>>> {
-        val puzzleReference = usersCollection.document(userId).collection(PUZZLE_PATH)
-        return puzzleReference.addSnapshotListenerFlow(
+        val puzzleReference : CollectionReference? = try {
+            usersCollection.document(userId).collection(PUZZLE_PATH)
+        } catch (e: Exception){
+            null
+        }
+        return puzzleReference?.addSnapshotListenerFlow(
             dataType = RedeemedPuzzleResponse::class.java,
             dispatcher = dispatcher,
             notFoundOrEmptyCollectionMessage = StringResource.StringResWithParams(R.string.puzzle_list_not_found)
-        )
+        ) ?: emptyFlow()
     }
 
     private suspend fun checkIfPuzzleAlreadyRedeemed(userId: String, puzzleId : String) : Boolean {
