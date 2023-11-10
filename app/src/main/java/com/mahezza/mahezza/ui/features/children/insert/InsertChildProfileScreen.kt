@@ -108,11 +108,11 @@ fun InsertChildProfileScreen(
         }
     }
     LaunchedEffect(key1 = uiState.value.shouldStartRedeemPuzzleScreen){
-        if (isFromDashboard){
-            navController.popBackStack()
-            return@LaunchedEffect
-        }
         if (uiState.value.shouldStartRedeemPuzzleScreen){
+            if (isFromDashboard){
+                navController.popBackStack()
+                return@LaunchedEffect
+            }
             navController.navigate("${Routes.RedeemPuzzle}?${NEXT_ROUTE}=${Routes.Dashboard}")
             viewModel.onEvent(InsertChildProfileEvent.OnRedeemPuzzleStarted)
         }

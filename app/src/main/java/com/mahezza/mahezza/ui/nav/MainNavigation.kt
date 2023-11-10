@@ -465,7 +465,8 @@ fun MainNavigation() {
                 val insertChildProfileViewModel : InsertChildProfileViewModel = hiltViewModel()
                 InsertChildProfileScreen(
                     navController = navController,
-                    viewModel = insertChildProfileViewModel
+                    viewModel = insertChildProfileViewModel,
+                    isFromDashboard = true
                 )
             }
             composableWithAnimation(
